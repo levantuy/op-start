@@ -1,0 +1,36 @@
+{
+  "name": "opstart",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc -b && vite build",
+    "lint": "eslint .",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@rainbow-me/rainbowkit": "^2.2.0",
+    "@wagmi/core": "^2.14.5",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "wagmi": "^2.12.31",
+    "mixpanel-browser": "^2.47.0",
+    "znv": "^0.4.0",
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "@types/mixpanel-browser": "^2.47.1",
+    "@eslint/js": "^9.17.0",
+    "@types/react": "^18.3.18",
+    "@types/react-dom": "^18.3.5",
+    "@vitejs/plugin-react": "^4.3.4",
+    "eslint": "^9.17.0",
+    "eslint-plugin-react-hooks": "^5.0.0",
+    "eslint-plugin-react-refresh": "^0.4.16",
+    "globals": "^15.14.0",
+    "typescript": "~5.6.2",
+    "typescript-eslint": "^8.18.2",
+    "vite": "^6.0.5"
+  }
+}
