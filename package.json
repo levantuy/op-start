@@ -12,14 +12,27 @@
   "dependencies": {
     "@rainbow-me/rainbowkit": "^2.2.0",
     "@wagmi/core": "^2.14.5",
+    "@remixicon/react": "^4.1.1",
+    "@radix-ui/react-slot": "^1.0.2",
+    "@radix-ui/react-separator": "^1.0.3",
+    "@radix-ui/react-dialog": "^1.0.5",
+    "@radix-ui/react-avatar": "^1.0.4",
+    "@radix-ui/react-tabs": "^1.0.4",
+    "@storybook/addon-actions": "^8.0.2",
+    "@radix-ui/react-toast": "^1.1.5",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
+    "react-router-dom": "^6.20.1",
     "wagmi": "^2.12.31",
     "mixpanel-browser": "^2.47.0",
     "znv": "^0.4.0",
-    "zod": "^3.23.8"
+    "zod": "^3.23.8",
+    "tailwind-merge": "^2.1.0",
+    "tailwindcss-animate": "^1.0.7",
+    "class-variance-authority": "^0.7.0"    
   },
   "devDependencies": {
+    "@storybook/react": "^8.0.1",
     "@types/mixpanel-browser": "^2.47.1",
     "@eslint/js": "^9.17.0",
     "@types/react": "^18.3.18",
@@ -31,6 +44,8 @@
     "globals": "^15.14.0",
     "typescript": "~5.6.2",
     "typescript-eslint": "^8.18.2",
-    "vite": "^6.0.5"
+    "vite": "^6.0.5",
+    "tailwindcss": "^3.4.1",
+    "autoprefixer": "^10.4.16"
   }
 }

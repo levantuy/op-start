@@ -1,12 +1,12 @@
-import './index.css'
+import './globals.css'
+import '@rainbow-me/rainbowkit/styles.css'
 
 import * as React from 'react'
 import * as ReactDOM from 'react-dom/client'
 import mixpanel from 'mixpanel-browser'
 
 import { envVars } from './envVars'
-import { GlobalProvider } from './global-context/GlobalProvider'
-import App from './App'
+import { App } from './App'
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   (() => {
@@ -14,14 +14,14 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
     mixpanel.register_once({
       app: 'superchain-relayer',
     })
+
     if (envVars.VITE_ENVIRONMENT === 'development') {
       mixpanel.disable()
     }
+
     return (
       <React.StrictMode>
-        <GlobalProvider>
-          <App />
-        </GlobalProvider>
+        <App />
       </React.StrictMode>
     )
   })(),

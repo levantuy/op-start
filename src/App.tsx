@@ -1,110 +1,81 @@
-import './App.css'
-import { ConnectButton } from '@rainbow-me/rainbowkit'
-import { useAccount } from 'wagmi'
-import { useEffect, useState } from 'react'
-import { useMixpanel } from './global-context/mixpanelContext';
-import { parseEther } from 'viem';
-import { optimismSepolia } from 'wagmi/chains';
-import { account, walletClientL1 } from './config'
+import './globals.css'
+import '@rainbow-me/rainbowkit/styles.css'
 
-function App() {
-  const { isConnected, address } = useAccount();
-  const mixpanel = useMixpanel();
-  let didConnect = false;
-  const [tokenAddress, setTokenAddress] = useState('');
-  const [amount, setAmount] = useState('');
-  const [status, setStatus] = useState('');
+import logo from './assets/react.svg'
 
-  useEffect(() => {
-    if (isConnected && !didConnect) {
-      didConnect = true
-      mixpanel.identify(address)
-      mixpanel.track('wallet-connect')
-    }
-  }, [isConnected])
+import { RouterProvider, Outlet, createBrowserRouter } from 'react-router-dom'
+import { queryClient } from './global-context/queryClient'
+import { rainbowKitWagmiConfig } from './global-context/rainbowKitWagmiConfig'
+import { RainbowKitProvider } from '@rainbow-me/rainbowkit'
+import { QueryClientProvider } from '@tanstack/react-query'
+import { WagmiProvider } from 'wagmi'
+import { Layout } from './components/Layout'
+import { HeaderLeft } from './components/header/HeaderLeft'
+import { HeaderRight } from './components/header/HeaderRight'
+import { Home } from './components/routes/Home'
+import { Bridge } from './components/routes/Bridge'
+import { ThemeProvider } from './providers/ThemeProvider'
+import { Toaster } from './components/base/toast/toaster'
+import { MixpanelContextProvider } from './global-context/mixpanelContext'
+import mixpanel from 'mixpanel-browser'
 
-  const handleDeposit = async () => {
-    if (!isConnected) {
-      alert('Please connect your wallet!');
-      return;
-    }
+const classNames = {
+  app: 'app w-full min-h-screen flex flex-col',
+}
 
-    try {
-      setStatus('Fetching deposit data...');
+type ProviderProps = {
+  children: React.ReactNode
+}
 
-      // Initiate the deposit transaction on the L1.
-      const depositTxData = await walletClientL1.depositTransaction({
-        account,
-        request: {
-          gas: 21_000n,
-          mint: parseEther(amount),
-          to: account,
-        },
-        targetChain: optimismSepolia,
-      });
+const Providers = ({ children }: ProviderProps) => (
+  <WagmiProvider reconnectOnMount config={rainbowKitWagmiConfig}>
+    <QueryClientProvider client={queryClient}>
+      <RainbowKitProvider>
+        <MixpanelContextProvider value={mixpanel}>
+          <ThemeProvider>
+            <>
+              {children}
+              <Toaster />
+            </>
+          </ThemeProvider>
+        </MixpanelContextProvider>
+      </RainbowKitProvider>
+    </QueryClientProvider>
+  </WagmiProvider>
+)
 
-      setStatus(`Deposit transaction data ready! Use the following data to execute the deposit.`);
+const bridgeRoutes = [
+  { index: true, element: <Bridge action="deposit" /> },
+  { path: 'deposit', element: <Bridge action="deposit" /> },
+  { path: 'withdraw', element: <Bridge action="withdrawal" /> },
+]
 
-      console.log('Deposit Transaction Data:', depositTxData);
-    } catch (error: any) {
-      setStatus(`Error: ${error.message}`);
-    }
-  };
-
+const AppRoot = () => {
   return (
-    <div style={{ fontFamily: 'Arial', padding: '20px' }}>
-      <h1>Bridge Tokens from L1 to L2</h1>
-      <ConnectButton />
+    <Providers>
+      <div className={classNames.app}>
+        <Layout
+          headerLeft={<HeaderLeft logo={logo} />}
+          headerRight={<HeaderRight />}
+        >
+          <Outlet />
+        </Layout>
+      </div>
+    </Providers>
+  )
+}
 
-      {isConnected && (
-        <>
-          <div>
-            <label>
-              Token Address (L1):
-              <input
-                type="text"
-                value={tokenAddress}
-                onChange={(e) => setTokenAddress(e.target.value)}
-                placeholder="0xTokenAddress"
-                style={{ marginLeft: '10px', width: '300px' }}
-              />
-            </label>
-          </div>
-          <div style={{ marginTop: '10px' }}>
-            <label>
-              Amount (in wei):
-              <input
-                type="text"
-                value={amount}
-                onChange={(e) => setAmount(e.target.value)}
-                placeholder="Amount in wei"
-                style={{ marginLeft: '10px', width: '300px' }}
-              />
-            </label>
-          </div>
-          <button
-            onClick={handleDeposit}
-            style={{
-              marginTop: '20px',
-              padding: '10px 20px',
-              backgroundColor: '#007bff',
-              color: '#fff',
-              border: 'none',
-              borderRadius: '5px',
-              cursor: 'pointer',
-            }}
-          >
-            Deposit Tokens
-          </button>
-          {status && (
-            <div style={{ marginTop: '20px', color: 'blue' }}>
-              <strong>Status:</strong> {status}
-            </div>
-          )}
-        </>
-      )}
-    </div>
-  );
-};
+const router = createBrowserRouter([
+  {
+    path: '/',
+    element: <AppRoot />,
+    children: [
+      { index: true, element: <Home /> },
+      { path: '/bridge', children: bridgeRoutes },
+    ],
+  },
+])
 
-export default App;
+export const App = () => {
+  return <RouterProvider router={router} />
+}
