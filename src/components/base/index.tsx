@@ -5,3 +5,5 @@ export * from './avatar/avatar';
 export * from './card/card';
 export * from './tabs/tabs';
 export * from './toast/toast';
+export * from './input/input';
+export * from './label/label';

@@ -18,6 +18,7 @@ import { ThemeProvider } from './providers/ThemeProvider'
 import { Toaster } from './components/base/toast/toaster'
 import { MixpanelContextProvider } from './global-context/mixpanelContext'
 import mixpanel from 'mixpanel-browser'
+import { Bridge2 } from './components/routes/Bridge2'
 
 const classNames = {
   app: 'app w-full min-h-screen flex flex-col',
@@ -50,6 +51,12 @@ const bridgeRoutes = [
   { path: 'withdraw', element: <Bridge action="withdrawal" /> },
 ]
 
+const playgroundRoutes = [
+  { index: true, element: <Bridge2 action="deposit" /> },
+  { path: 'deposit', element: <Bridge2 action="deposit" /> },
+  { path: 'withdraw', element: <Bridge2 action="withdrawal" /> },
+]
+
 const AppRoot = () => {
   return (
     <Providers>
@@ -72,6 +79,7 @@ const router = createBrowserRouter([
     children: [
       { index: true, element: <Home /> },
       { path: '/bridge', children: bridgeRoutes },
+      { path: '/playground', children: playgroundRoutes },
     ],
   },
 ])
