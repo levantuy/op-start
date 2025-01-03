@@ -1,0 +1,27 @@
+# VIEM
+
+- Public Client
+# A Public client is an interface to "public": block numbers, transactions, reading from smart contracts...
+
+# import viem
+import { http, createPublicClient, stringify } from 'viem'
+# import viem/chains
+import { mainnet, optimism, polygon } from 'viem/chains'
+
+
+# create public client
+const publicClient = createPublicClient({ chain: optimism, transpot: http() });
+
+- Wallet client
+# A Wallet Client is an interface to ethereum account: accounts, excute transactions, sign messages...
+
+# import viem
+import { createWalletClient } from 'viem';
+
+# create wallet client
+const client = createWalletClient({
+  chain: mainnet,
+  transport: custom(window.ethereum!)
+})
+
+
