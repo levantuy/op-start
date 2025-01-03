@@ -144,10 +144,8 @@ export const Bridge = ({ action }: BridgeProps) => {
           </TabsContent>
         </Tabs>
       </CardContent>
-      <CardFooter>
-        <div className="flex justify-end">
-          <Button variant="secondary" onClick={() => navigate('/')}>Back to home</Button>
-        </div>
+      <CardFooter className="flex justify-end">
+        <Button variant="secondary" onClick={() => navigate('/')}>Back to home</Button>
       </CardFooter>
     </Card>
   );
