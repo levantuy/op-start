@@ -12,8 +12,8 @@ import { useAccount } from 'wagmi';
 import { Label } from '@radix-ui/react-label';
 import { ConnectButton } from '@rainbow-me/rainbowkit';
 import { walletClientL1, account } from '../../config';
-import { parseEther } from 'viem';
-import { optimismSepolia } from 'wagmi/chains';
+import { custom, parseEther } from 'viem';
+import { sepolia } from 'wagmi/chains';
 
 export const Transfer = () => {
   const navigate = useNavigate();
@@ -41,18 +41,19 @@ export const Transfer = () => {
 
     try {
       setStatus('Fetching deposit data...');
+      console.log(custom(window.ethereum));
 
       // Initiate the deposit transaction on the L1.
-      const depositTxData = await walletClientL1.sendTransaction({
+      const sendTxData = await walletClientL1.sendTransaction({
         account,
         to: tokenAddress as any,
-        targetChain: optimismSepolia,
+        targetChain: sepolia,
         value: parseEther(amount)
       });
 
-      setStatus(`Deposit transaction data ready! Use the following data to execute the deposit.`);
+      setStatus(`Send transaction data ready! Use the following data to execute the deposit.`);
 
-      console.log('Deposit Transaction Data:', depositTxData);
+      console.log('Sent Transaction Data:', sendTxData);
     } catch (error: any) {
       setStatus(`Error: ${error.message}`);
     }

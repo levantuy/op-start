@@ -25,3 +25,11 @@ const client = createWalletClient({
 })
 
 
+- Transports
+# A function to create a HTTP, WebSocket, Custom, IPC Transport for a Client
+
+# HTTP Transport
+# WebSocket
+# Custom(EIP-1193)
+# IPC
+# Fallback: define list urls, every 10 seconds transport ping each transport in the list. Ranked by responded of transport

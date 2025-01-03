@@ -69,6 +69,34 @@ export const Bridge = ({ action }: BridgeProps) => {
     }
   };
 
+  const handleWithdraw = async () => {
+    if (!isConnected) {
+      alert('Please connect your wallet!');
+      return;
+    }
+
+    try {
+      setStatus('Fetching deposit data...');
+
+      // Initiate the deposit transaction on the L1.
+      const depositTxData = await walletClientL1.depositTransaction({
+        account,
+        request: {
+          gas: 21_000n,
+          mint: parseEther(amount),
+          to: account,
+        },
+        targetChain: optimismSepolia,
+      });
+
+      setStatus(`Deposit transaction data ready! Use the following data to execute the deposit.`);
+
+      console.log('Deposit Transaction Data:', depositTxData);
+    } catch (error: any) {
+      setStatus(`Error: ${error.message}`);
+    }
+  };
+
   return (
     <Card className="pt-6">
       <CardContent>
@@ -140,6 +168,53 @@ export const Bridge = ({ action }: BridgeProps) => {
           </TabsContent>
           <TabsContent value="withdrawal">
             <CardContent className="p-0 pt-3 space-y-2">
+              <h1>Withdraw from L2 to L1</h1>
+              {isConnected && (
+                <>
+                  <div>
+                    <Label>
+                      Token Address (L1):
+                    </Label>
+                    <Input
+                      type="text"
+                      value={tokenAddress}
+                      onChange={(e) => setTokenAddress(e.target.value)}
+                      placeholder="0xTokenAddress"
+                    />
+                  </div>
+                  <div style={{ marginTop: '10px' }}>
+                    <Label>
+                      Amount:
+                    </Label>
+                    <Input
+                      type="text"
+                      value={amount}
+                      onChange={(e) => setAmount(e.target.value)}
+                      placeholder="Amount in wei"
+                    />
+                  </div>
+                  <button
+                    onClick={handleWithdraw}
+                    style={{
+                      marginTop: '20px',
+                      padding: '10px 20px',
+                      backgroundColor: '#007bff',
+                      color: '#fff',
+                      border: 'none',
+                      borderRadius: '5px',
+                      cursor: 'pointer',
+                    }}
+                  >
+                    Withdraw
+                  </button>
+                  {status && (
+                    <div style={{ marginTop: '20px', color: 'blue' }}>
+                      <strong>Status:</strong> {status}
+                    </div>
+                  )}
+                </>
+              )}
+              {!isConnected && (<ConnectButton />)}
             </CardContent>
           </TabsContent>
         </Tabs>

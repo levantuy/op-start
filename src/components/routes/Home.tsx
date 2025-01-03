@@ -13,8 +13,8 @@ export const Home = () => {
     <div className="flex flex-row flex-wrap gap-3">
       <Card className="cursor-pointer" onClick={() => navigate('/playground')}>
         <CardHeader>
-          <CardTitle>Wagmi & Viem Playground</CardTitle>
-          <CardDescription>Playground to test out Wagmi & Viem</CardDescription>
+          <CardTitle>Send</CardTitle>
+          <CardDescription>Test send token use Wagmi & Viem</CardDescription>
         </CardHeader>
       </Card>
 
