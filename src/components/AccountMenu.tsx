@@ -37,7 +37,7 @@ export const AccountMenu = () => {
           <DialogHeader>Account Info</DialogHeader>
           <div className="account-info-wrapper flex flex-col items-center justify-center w-full">
             <AccountAvatar className="h-32 w-32" />
-            <span className="text-lg my-4">{address}</span>            
+            <span className="text-lg my-4">{address}</span>
             <Separator />
             <Button
               variant="ghost"

@@ -1,3 +1,4 @@
+import styles from "./NftMint.module.css";
 import { useNavigate } from 'react-router-dom'
 import {
   Button,
@@ -9,7 +10,7 @@ import {
 import { useMixpanel } from '../../global-context/mixpanelContext';
 import { useEffect, useState } from 'react';
 import { ConnectButton } from '@rainbow-me/rainbowkit';
-import { Address, custom, parseEther } from 'viem';
+import { Address, parseEther } from 'viem';
 import { soneiumMinato } from 'wagmi/chains';
 import {
   useAccount,
@@ -17,10 +18,10 @@ import {
   useChainId,
   usePublicClient,
   useReadContract,
-  useSwitchChain,
   useWalletClient,
 } from "wagmi";
 import NFT_ABI from "../../global-context/abi/DemoNFT";
+import { Separator } from '../base';
 
 export const NftMint = () => {
   const navigate = useNavigate();
@@ -28,14 +29,11 @@ export const NftMint = () => {
   const { isConnected, address } = useAccount();
   const mixpanel = useMixpanel();
   let didConnect = false;
-  const [tokenAddress, setTokenAddress] = useState('');
-  const [amount, setAmount] = useState('');
-  const [status, setStatus] = useState('');
   const [txDetails, setTxDetails] = useState<string>("");
   const [isPending, setIsPending] = useState(false);
   const chainId = soneiumMinato.id;
   const { address: walletAddress } = useAccount();
-  const nftContractAddress = "0xc5c89f294370Be04970B442c872d06e01f78e9b5";  
+  const nftContractAddress = "0xc5c89f294370Be04970B442c872d06e01f78e9b5";
   const connectedId = useChainId();
   const isConnectedToMinato = connectedId === soneiumMinato.id;
 
@@ -131,14 +129,37 @@ export const NftMint = () => {
         <CardContent>
           <h1>Mint Nft</h1>
           <Button
-            // disabled={
-            //   isPending || !walletAddress || isBalanceZero || !isConnectedToMinato
-            // }
-            onClick={mintPublicNft}
+            disabled={
+              isPending || !walletAddress || isBalanceZero || !isConnectedToMinato
+            }
+            onClick={mintWhitelistNft}
             type="button"
           >
             {isPending ? "Confirming..." : "Mint whitelist NFT"}
           </Button>
+          <Separator />
+          <Button
+            disabled={
+              isPending || !walletAddress || isBalanceZero || !isConnectedToMinato
+            }
+            onClick={mintPublicNft}
+            type="button"
+          >
+            {isPending ? "Confirming..." : "Mint public NFT"}
+          </Button>
+          {txDetails && (
+            <div className={styles.txDetails}>
+              <span>🎉 Congrats! Your NFT has been minted 🐣 </span>
+              <a
+                href={txDetails}
+                target="_blank"
+                rel="noreferrer"
+                className={styles.txLink}
+              >
+                View transaction
+              </a>
+            </div>
+          )}
           {!isConnected && (<ConnectButton />)}
         </CardContent>
         <CardFooter className="flex justify-end">
