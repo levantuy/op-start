@@ -30,7 +30,7 @@
     "zod": "^3.23.8",
     "tailwind-merge": "^2.1.0",
     "tailwindcss-animate": "^1.0.7",
-    "class-variance-authority": "^0.7.0"    
+    "class-variance-authority": "^0.7.0"
   },
   "devDependencies": {
     "@storybook/react": "^8.0.1",
@@ -48,5 +48,6 @@
     "vite": "^6.0.5",
     "tailwindcss": "^3.4.1",
     "autoprefixer": "^10.4.16"
-  }
+  },
+  "packageManager": "pnpm@9.15.2+sha1.0ffb02f94047016ec7e088030337455b4c94bb34"
 }

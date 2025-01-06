@@ -11,6 +11,7 @@ import {
   baseSepolia,
   zoraSepolia,
   optimismSepolia,
+  soneiumMinato,
 } from 'wagmi/chains'
 import { envVars } from '../envVars'
 import {
@@ -34,6 +35,7 @@ const transports = {
   [fraxtalSepolia.id]: http(),
   [optimismSepolia.id]: http(),
   [zoraSepolia.id]: http(),
+  [soneiumMinato.id]: http(),
 } as const satisfies Record<ChainIdsToConfigure, Transport>
 
 export const rainbowKitWagmiConfig = getDefaultConfig({

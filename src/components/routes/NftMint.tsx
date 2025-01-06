@@ -20,7 +20,7 @@ import {
   useSwitchChain,
   useWalletClient,
 } from "wagmi";
-import NFT_ABI from "../wagmi/abi/DemoNFT";
+import NFT_ABI from "../../global-context/abi/DemoNFT";
 
 export const NftMint = () => {
   const navigate = useNavigate();
@@ -70,7 +70,7 @@ export const NftMint = () => {
   }, [isConnected])
 
   async function mintWhitelistNft(): Promise<void> {
-    console.log('x');
+    console.log('x:', publicClient, chainId);
     if (!walletClient || !publicClient || !walletAddress) return;
     console.log('x1');
     try {
@@ -134,7 +134,7 @@ export const NftMint = () => {
             // disabled={
             //   isPending || !walletAddress || isBalanceZero || !isConnectedToMinato
             // }
-            onClick={mintWhitelistNft}
+            onClick={mintPublicNft}
             type="button"
           >
             {isPending ? "Confirming..." : "Mint whitelist NFT"}
