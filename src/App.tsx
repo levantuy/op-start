@@ -19,6 +19,7 @@ import { Toaster } from './components/base/toast/toaster'
 import { MixpanelContextProvider } from './global-context/mixpanelContext'
 import mixpanel from 'mixpanel-browser'
 import { Transfer } from './components/routes/Transfer'
+import { NftMint } from './components/routes/NftMint'
 
 const classNames = {
   app: 'app w-full min-h-screen flex flex-col',
@@ -78,6 +79,7 @@ const router = createBrowserRouter([
       { index: true, element: <Home /> },
       { path: '/bridge', children: bridgeRoutes },
       { path: '/playground', children: playgroundRoutes },
+      { path: '/nft-mint', element: <NftMint /> },
     ],
   },
 ])

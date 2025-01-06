@@ -24,6 +24,13 @@ export const Home = () => {
           <CardDescription>Example Bridge Implementation</CardDescription>
         </CardHeader>
       </Card>
+
+      <Card className="cursor-pointer" onClick={() => navigate('/nft-mint')}>
+        <CardHeader>
+          <CardTitle>Nft</CardTitle>
+          <CardDescription>Page mint Nft</CardDescription>
+        </CardHeader>
+      </Card>
     </div>
   )
 }
