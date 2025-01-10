@@ -14,6 +14,7 @@ import {
   zora,
   zoraSepolia,
   soneiumMinato,
+  berachainTestnetbArtio
 } from 'viem/chains'
 
 export const baseChainPair = defineMainnetChainPair(base)
@@ -25,6 +26,7 @@ export const baseSepoliaChainPair = defineSepoliaChainPair(baseSepolia)
 export const fraxtalSepoliaChainPair = defineSepoliaChainPair(fraxtalSepolia)
 export const optimismSepoliaChainPair = defineSepoliaChainPair(optimismSepolia)
 export const zoraSepoliaChainPair = defineSepoliaChainPair(zoraSepolia)
+export const beraChainPair = defineSepoliaChainPair(berachainTestnetbArtio)
 const minato = {
   ...soneiumMinato,
   name: "Soneium Minato",
@@ -45,6 +47,7 @@ export const supportedSepoliaChainPairs = [
   optimismSepoliaChainPair,
   zoraSepoliaChainPair,
   minatoChainPair,
+  beraChainPair,
 ] as const
 
 export const supportedChainPairs = [

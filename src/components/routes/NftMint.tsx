@@ -11,7 +11,7 @@ import { useMixpanel } from '../../global-context/mixpanelContext';
 import { useEffect, useState } from 'react';
 import { ConnectButton } from '@rainbow-me/rainbowkit';
 import { Address, parseEther } from 'viem';
-import { soneiumMinato } from 'wagmi/chains';
+import { soneiumMinato, berachainTestnetbArtio } from 'wagmi/chains';
 import {
   useAccount,
   useBalance,
@@ -21,7 +21,9 @@ import {
   useWalletClient,
 } from "wagmi";
 import NFT_ABI from "../../global-context/abi/DemoNFT";
+import BERA_ABI from "../../global-context/abi/BeraCrocMultiSwap";
 import { Separator } from '../base';
+import { publicProvider } from 'wagmi/providers/public';
 
 export const NftMint = () => {
   const navigate = useNavigate();
@@ -31,7 +33,7 @@ export const NftMint = () => {
   let didConnect = false;
   const [txDetails, setTxDetails] = useState<string>("");
   const [isPending, setIsPending] = useState(false);
-  const chainId = soneiumMinato.id;
+  const chainId = berachainTestnetbArtio.id;
   const { address: walletAddress } = useAccount();
   const nftContractAddress = "0xc5c89f294370Be04970B442c872d06e01f78e9b5";
   const connectedId = useChainId();
@@ -42,7 +44,7 @@ export const NftMint = () => {
     account: walletAddress,
   });
 
-  const publicClient = usePublicClient({
+  const publicClient = publicProvider({
     chainId,
   });
 
@@ -68,7 +70,6 @@ export const NftMint = () => {
   }, [isConnected])
 
   async function mintWhitelistNft(): Promise<void> {
-    console.log('x:', publicClient, chainId);
     if (!walletClient || !publicClient || !walletAddress) return;
     console.log('x1');
     try {
@@ -123,6 +124,44 @@ export const NftMint = () => {
     }
   }
 
+  async function beraSwap(): Promise<void> {    
+    if (!walletClient || !publicClient || !walletAddress) return;
+    alert('xxx 1');
+    try {
+      setIsPending(true);
+      setTxDetails("");
+      // Define the parameters
+      const steps = [
+      {
+        poolIdx: 36000, // Example pool index
+        base: "0x0E4aaF1351de4c0264C5c7056Ef3777b41BD8e03" as Address, // Replace with actual base token address
+        quote: "0x0000000000000000000000000000000000000000" as Address, // Replace with actual quote token address
+        isBuy: false // Example boolean
+      }];
+
+      const tx = {
+        account: walletAddress as Address,
+        address: nftContractAddress as Address,
+        abi: BERA_ABI,
+        value: parseEther((0.001 * 1).toString()),
+        functionName: "multiSwap",
+        args: [steps as any, parseEther("0.001"), parseEther("0.007140140520516135")],
+      } as const;
+      const { request } = await publicClient.simulateContract(tx);
+      const hash = await walletClient.writeContract(request);
+      await publicClient.waitForTransactionReceipt({
+        hash,
+      });
+      setTxDetails(`https://bartio.beratrail.io/tx/${hash}`);
+      await refetch();
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setIsPending(false);
+    }
+    alert('xxx n');
+  }
+
   return (
     <div className="w-[500px]">
       <Card className="p-0 pt-3 space-y-2">
@@ -130,9 +169,9 @@ export const NftMint = () => {
           <h1>Mint Nft</h1>
           <Button
             disabled={
-              isPending || !walletAddress || isBalanceZero || !isConnectedToMinato
+              isPending || !walletAddress || isBalanceZero || !berachainTestnetbArtio
             }
-            onClick={mintWhitelistNft}
+            onClick={beraSwap}
             type="button"
           >
             {isPending ? "Confirming..." : "Mint whitelist NFT"}
