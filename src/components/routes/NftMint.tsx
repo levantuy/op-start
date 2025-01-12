@@ -64,19 +64,19 @@ export const NftMint = () => {
     chainId,
   }))
 
-  const { data: tokenID } = useReadContracts({
-    contracts: newArray.length > 0 ? calls : []
+  const { data: tokenIDs } = useReadContracts({
+    contracts: newArray.length > 0 ? calls : [],
   });
 
-  const callsTokenURI = tokenID?.map((tokenId) => ({
+  const callsTokenURI = tokenIDs?.map((tokenId) => ({
     abi: NFT_ABI,
     functionName: 'tokenURI',
     args: [tokenId],
     chainId,
-  }))
+  }));
 
   const { data: tokenUri } = useReadContracts({
-    contracts: tokenID ? callsTokenURI : [],
+    contracts: tokenIDs ? callsTokenURI : [],
   });
 
   // const fetchTokenURI = async (tokenURI: string[]) => {
@@ -126,8 +126,10 @@ export const NftMint = () => {
   }, [isConnected])
 
   useEffect(() => {    
-    console.log(tokenUri);
     console.log(totalNFT);
+    console.log(newArray);
+    console.log(calls);
+    console.log(tokenIDs);
   }, [totalNFT])
 
   // useEffect(() => {
