@@ -2,15 +2,11 @@ import styles from "./NftMint.module.css";
 import { useNavigate } from 'react-router-dom'
 import {
   Button,
-  Card,
-  CardContent,
-  CardFooter,
   Input,
   Label,
 } from '../base';
 import { useMixpanel } from '../../global-context/mixpanelContext';
 import { useEffect, useState } from 'react';
-import { ConnectButton } from '@rainbow-me/rainbowkit';
 import { Address, parseEther } from 'viem';
 import { soneiumMinato } from 'wagmi/chains';
 import {
@@ -24,10 +20,7 @@ import {
   useWalletClient,
 } from "wagmi";
 import NFT_ABI from "../../global-context/abi/DemoNFT";
-import BERA_ABI from "../../global-context/abi/BeraCrocMultiSwap";
 import axios from 'axios';
-import { cn } from '../../lib/utils';
-import { switchChain } from "viem/actions";
 
 export const NftMint = () => {
   const navigate = useNavigate();
@@ -38,7 +31,7 @@ export const NftMint = () => {
   const [isPending, setIsPending] = useState(false);
   const chainId = soneiumMinato.id;
   const { address: walletAddress } = useAccount();
-  const nftContractAddress = "0xc5c89f294370Be04970B442c872d06e01f78e9b5";
+  const nftContractAddress = "0x6a70B2274e9CF15D4770D8f782F79Ddab33692f5";
   const connectedId = useChainId();
   const isConnectedToMinato = connectedId === soneiumMinato.id;
   const [quantity, setQuantity] = useState(1);
@@ -116,13 +109,6 @@ export const NftMint = () => {
   });
   const isBalanceZero = bal?.value.toString() === "0";
 
-  const { data: tokenURI } = useReadContract({
-    abi: NFT_ABI,
-    address: nftContractAddress,
-    functionName: "tokenURI",
-    args: [parseEther("0")],
-  });
-
   useEffect(() => {
     if (isConnected && !didConnect) {
       didConnect = true
@@ -143,7 +129,7 @@ export const NftMint = () => {
         abi: NFT_ABI,
         value: parseEther((0.01 * quantity).toString()),
         functionName: "whitelistMint",
-        args: [1 as any],
+        args: [quantity as any],
       } as const;
       const { request } = await publicClient.simulateContract(tx);
       const hash = await walletClient.writeContract(request);
@@ -171,7 +157,7 @@ export const NftMint = () => {
         abi: NFT_ABI,
         value: parseEther((0.01 * quantity).toString()),
         functionName: "publicMint",
-        args: [1 as any],
+        args: [quantity as any],
       } as const;
       const { request } = await publicClient.simulateContract(tx);
       const hash = await walletClient.writeContract(request);
@@ -261,6 +247,7 @@ export const NftMint = () => {
                   </a>
                 </div>
               )}
+
               {walletAddress && isBalanceZero && (
                 <div className={styles.rowChecker}>
                   <span className={styles.textError}>
