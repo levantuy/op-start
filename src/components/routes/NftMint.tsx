@@ -20,12 +20,14 @@ import {
   usePublicClient,
   useReadContract,
   useReadContracts,
+  useSwitchChain,
   useWalletClient,
 } from "wagmi";
 import NFT_ABI from "../../global-context/abi/DemoNFT";
 import BERA_ABI from "../../global-context/abi/BeraCrocMultiSwap";
 import axios from 'axios';
 import { cn } from '../../lib/utils';
+import { switchChain } from "viem/actions";
 
 export const NftMint = () => {
   const navigate = useNavigate();
@@ -41,7 +43,7 @@ export const NftMint = () => {
   const isConnectedToMinato = connectedId === soneiumMinato.id;
   const [quantity, setQuantity] = useState(1);
   const [mintedNFTs, setMintedNFTs] = useState([]);
-
+  const { switchChain } = useSwitchChain();
   const { data: walletClient } = useWalletClient({
     chainId,
     account: walletAddress,
@@ -129,16 +131,6 @@ export const NftMint = () => {
     }
   }, [isConnected])
 
-  useEffect(() => {
-    console.log(totalNFT);
-    console.log(newArray);
-    console.log(calls);
-    console.log(tokenIDs);
-    console.log(callsTokenURI);
-    console.log(tokenUri);
-    console.log(mintedNFTs);
-  }, [totalNFT])
-
   async function mintWhitelistNft(): Promise<void> {
     if (!walletClient || !publicClient || !walletAddress) return;
     console.log('x1');
@@ -195,44 +187,6 @@ export const NftMint = () => {
     }
   }
 
-  async function beraSwap(): Promise<void> {
-    if (!walletClient || !publicClient || !walletAddress) return;
-    alert('xxx 1');
-    try {
-      setIsPending(true);
-      setTxDetails("");
-      // Define the parameters
-      const steps = [
-        {
-          poolIdx: 36000, // Example pool index
-          base: "0x0E4aaF1351de4c0264C5c7056Ef3777b41BD8e03" as Address, // Replace with actual base token address
-          quote: "0x0000000000000000000000000000000000000000" as Address, // Replace with actual quote token address
-          isBuy: false // Example boolean
-        }];
-
-      const tx = {
-        account: walletAddress as Address,
-        address: nftContractAddress as Address,
-        abi: BERA_ABI,
-        value: parseEther((0.001 * 1).toString()),
-        functionName: "multiSwap",
-        args: [steps as any, parseEther("0.001"), parseEther("0.007140140520516135")],
-      } as const;
-      const { request } = await publicClient.simulateContract(tx);
-      const hash = await walletClient.writeContract(request);
-      await publicClient.waitForTransactionReceipt({
-        hash,
-      });
-      setTxDetails(`https://bartio.beratrail.io/tx/${hash}`);
-      await refetch();
-    } catch (error) {
-      console.error(error);
-    } finally {
-      setIsPending(false);
-    }
-    alert('xxx n');
-  }
-
   const handleQuantityChange = (e: any) => {
     const value = parseInt(e.target.value, 10);
     if (value > 0) setQuantity(value);
@@ -265,7 +219,7 @@ export const NftMint = () => {
                     className="w-full rounded-lg mb-2"
                   />
                   <Label>NFT #{nft.tokenId}</Label>
-                  <br/>
+                  <br />
                   <Label>{nft.name}</Label>
                 </div>
               ))}
@@ -286,9 +240,9 @@ export const NftMint = () => {
                 className="w-16 border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-500 focus:outline-none"
                 min="1"
               />
-              <Button
+              <Button disabled={isPending || !walletAddress || isBalanceZero || !isConnectedToMinato}
                 onClick={mintPublicNft}
-                className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition"
+                className="w-full bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition"
               >
                 Mint
               </Button>
@@ -305,6 +259,36 @@ export const NftMint = () => {
                   >
                     View transaction
                   </a>
+                </div>
+              )}
+              {walletAddress && isBalanceZero && (
+                <div className={styles.rowChecker}>
+                  <span className={styles.textError}>
+                    You don't have enough ETH balance to mint NFT
+                  </span>
+                  <a
+                    href={"/"}
+                    target="_blank"
+                    rel="noreferrer"
+                    className={styles.txLink}
+                  >
+                    Bridge
+                  </a>
+                </div>
+              )}
+
+              {!isConnectedToMinato && walletAddress && (
+                <div className={styles.rowChecker}>
+                  <span className={styles.textError}>
+                    Please connect to Soneium Minato
+                  </span>
+
+                  <button
+                    className={styles.buttonSwitchChain}
+                    onClick={() => switchChain({ chainId })}
+                  >
+                    Switch to Soneium Minato
+                  </button>
                 </div>
               )}
             </div>
