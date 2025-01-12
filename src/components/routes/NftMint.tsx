@@ -204,15 +204,15 @@ export const NftMint = () => {
   }
 
   return (
-    <div className="min-h-screen w-full p-6 font-sans">
+    <div className="min-h-screen w-full p-6 font-sans bg-transparent">
       <div className="flex flex-row">
-        <div className={cn("basis-3/4 m-2 border border-gray-300 rounded-lg p-4 shadow-sm")}>
+        <div className={"basis-3/4 m-2 border border-gray-300 rounded-lg p-4 bg-transparent"}>
           {/* Minted NFTs List */}
           <h2 className="text-xl font-bold text-left ml-6">Minted NFTs</h2>
-          <div className="p-6 rounded-lg shadow-lg">
+          <div className="p-6 rounded-lg">
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
               {mintedNFTs.map((nft: any) => (
-                <div key={nft.tokenId} className="border border-gray-300 rounded-lg p-4 shadow-sm">
+                <div key={nft.tokenId} className="border border-gray-300 rounded-lg p-4">
                   <img
                     src={nft.image}
                     alt={`NFT ${nft.id}`}
@@ -226,10 +226,10 @@ export const NftMint = () => {
             </div>
           </div>
         </div>
-        <div className="basis-1/4 m-2 border border-gray-300 rounded-lg p-4 shadow-sm">
+        <div className="basis-1/4 m-2 border border-gray-300 rounded-lg p-4 bg-transparent">
           <h2 className="text-xl font-bold text-left mb-6">Mint NFTs</h2>
           {/* Minting Section */}
-          <div className="p-6 rounded-lg shadow-lg mb-6">
+          <div className="p-6 rounded-lg mb-6">
             <div className="flex items-center space-x-4">
               <Label htmlFor="quantity" className="font-medium">Quantity:</Label>
               <Input
