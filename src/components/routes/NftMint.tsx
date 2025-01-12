@@ -264,8 +264,9 @@ export const NftMint = () => {
                     alt={`NFT ${nft.id}`}
                     className="w-full rounded-lg mb-2"
                   />
-                  <p className="text-center text-gray-700 font-medium">NFT #{nft.tokenId}</p>
-                  <p className="text-center text-gray-700 font-medium">{nft.name}</p>
+                  <Label>NFT #{nft.tokenId}</Label>
+                  <br/>
+                  <Label>{nft.name}</Label>
                 </div>
               ))}
             </div>
