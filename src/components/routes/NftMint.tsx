@@ -6,6 +6,7 @@ import {
   CardContent,
   CardFooter,
   Input,
+  Label,
 } from '../base';
 import { useMixpanel } from '../../global-context/mixpanelContext';
 import { useEffect, useState } from 'react';
@@ -23,7 +24,8 @@ import {
 } from "wagmi";
 import NFT_ABI from "../../global-context/abi/DemoNFT";
 import BERA_ABI from "../../global-context/abi/BeraCrocMultiSwap";
-// import axios from 'axios'
+import axios from 'axios';
+import { cn } from '../../lib/utils';
 
 export const NftMint = () => {
   const navigate = useNavigate();
@@ -59,19 +61,21 @@ export const NftMint = () => {
   const newArray = totalNFT ? (Array(Number(totalNFT)).fill(0) as number[]) : []
   const calls = newArray.map((_, index) => ({
     abi: NFT_ABI,
+    address: nftContractAddress,
     functionName: 'tokenOfOwnerByIndex',
-    args: [walletAddress, index],
+    args: [walletAddress as Address, index],
     chainId,
   }))
 
   const { data: tokenIDs } = useReadContracts({
-    contracts: newArray.length > 0 ? calls : [],
+    contracts: newArray.length > 0 ? calls as any : [],
   });
 
   const callsTokenURI = tokenIDs?.map((tokenId) => ({
     abi: NFT_ABI,
+    address: nftContractAddress as Address,
     functionName: 'tokenURI',
-    args: [tokenId],
+    args: [tokenId.result as any],
     chainId,
   }));
 
@@ -79,30 +83,30 @@ export const NftMint = () => {
     contracts: tokenIDs ? callsTokenURI : [],
   });
 
-  // const fetchTokenURI = async (tokenURI: string[]) => {
-  //   const metaData = await Promise.all(
-  //     tokenURI.map(async (item) => {
-  //       try {
-  //         const { data } = await axios.get(item)
+  const fetchTokenURI = async (tokenURI: any) => {
+    const metaData = await Promise.all(
+      tokenURI.map(async (item: any) => {
+        try {
+          const { data } = await axios.get(item.result)
 
-  //         return data
-  //       } catch (error) {
-  //         return ''
-  //       }
-  //     })
-  //   )
-  //   return metaData
-  // }
+          return data
+        } catch (error) {
+          return ''
+        }
+      })
+    )
+    return metaData
+  }
 
-  // useEffect(() => {
-  //   if (tokenUri) {
-  //     fetchTokenURI(tokenUri as any)
-  //       .then((data) => {
-  //         setMintedNFTs(data as any)
-  //       })
-  //       .catch(console.log)
-  //   }
-  // }, [tokenUri])
+  useEffect(() => {
+    if (tokenUri) {
+      fetchTokenURI(tokenUri as any)
+        .then((data) => {
+          setMintedNFTs(data as any)
+        })
+        .catch(console.log)
+    }
+  }, [tokenUri])
 
   const { data: bal } = useBalance({
     address: walletAddress,
@@ -125,27 +129,15 @@ export const NftMint = () => {
     }
   }, [isConnected])
 
-  useEffect(() => {    
+  useEffect(() => {
     console.log(totalNFT);
     console.log(newArray);
     console.log(calls);
     console.log(tokenIDs);
+    console.log(callsTokenURI);
+    console.log(tokenUri);
+    console.log(mintedNFTs);
   }, [totalNFT])
-
-  // useEffect(() => {
-  //   if (data && isFetched) {
-  //     for (let i = 0; i < Number(data); i++) {
-  //       const { data: tokenId } = useReadContract({
-  //         abi: NFT_ABI,
-  //         address: nftContractAddress,
-  //         functionName: "tokenOfOwnerByIndex",
-  //         args: [walletAddress as Address, i as any],
-  //       });
-
-  //       console.log(tokenId);
-  //     }
-  //   }
-  // }, []);
 
   async function mintWhitelistNft(): Promise<void> {
     if (!walletClient || !publicClient || !walletAddress) return;
@@ -258,33 +250,34 @@ export const NftMint = () => {
   }
 
   return (
-    <div className="min-h-screen w-full bg-gray-100 p-6 font-sans">
+    <div className="min-h-screen w-full p-6 font-sans">
       <div className="flex flex-row">
-        <div className="basis-3/4 m-2">
+        <div className={cn("basis-3/4 m-2 border border-gray-300 rounded-lg p-4 shadow-sm")}>
           {/* Minted NFTs List */}
-          <h2 className="text-xl font-bold text-left mb-6">Minted NFTs</h2>
-          <div className="bg-white p-6 rounded-lg shadow-lg">
+          <h2 className="text-xl font-bold text-left ml-6">Minted NFTs</h2>
+          <div className="p-6 rounded-lg shadow-lg">
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-              {mintedNFTs.map((nft) => (<></>
-                // <div key={nft.id} className="border border-gray-300 rounded-lg p-4 shadow-sm">
-                //   <img
-                //     src={nft.imageUrl}
-                //     alt={`NFT ${nft.id}`}
-                //     className="w-full rounded-lg mb-2"
-                //   />
-                //   <p className="text-center text-gray-700 font-medium">NFT #{nft.id}</p>
-                // </div>
+              {mintedNFTs.map((nft: any) => (
+                <div key={nft.tokenId} className="border border-gray-300 rounded-lg p-4 shadow-sm">
+                  <img
+                    src={nft.image}
+                    alt={`NFT ${nft.id}`}
+                    className="w-full rounded-lg mb-2"
+                  />
+                  <p className="text-center text-gray-700 font-medium">NFT #{nft.tokenId}</p>
+                  <p className="text-center text-gray-700 font-medium">{nft.name}</p>
+                </div>
               ))}
             </div>
           </div>
         </div>
-        <div className="basis-1/4 m-2">
+        <div className="basis-1/4 m-2 border border-gray-300 rounded-lg p-4 shadow-sm">
           <h2 className="text-xl font-bold text-left mb-6">Mint NFTs</h2>
           {/* Minting Section */}
-          <div className="bg-white p-6 rounded-lg shadow-lg mb-6">
+          <div className="p-6 rounded-lg shadow-lg mb-6">
             <div className="flex items-center space-x-4">
-              <label htmlFor="quantity" className="font-medium">Quantity:</label>
-              <input
+              <Label htmlFor="quantity" className="font-medium">Quantity:</Label>
+              <Input
                 id="quantity"
                 type="number"
                 value={quantity}
@@ -292,17 +285,42 @@ export const NftMint = () => {
                 className="w-16 border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-500 focus:outline-none"
                 min="1"
               />
-              <button
+              <Button
                 onClick={mintPublicNft}
                 className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition"
               >
                 Mint
-              </button>
+              </Button>
             </div>
             <div className="flex items-center space-x-4 mt-6">
-              <p className="text-gray-700">Total Minted: <span className="font-bold">{walletAddress && (
+              {txDetails && (
+                <div className={styles.txDetails}>
+                  <span>🎉 Congrats! Your NFT has been minted 🐣 </span>
+                  <a
+                    href={txDetails}
+                    target="_blank"
+                    rel="noreferrer"
+                    className={styles.txLink}
+                  >
+                    View transaction
+                  </a>
+                </div>
+              )}
+            </div>
+            <div className="flex items-center space-x-4 mt-6">
+              <Label>Total Minted: <span className="font-bold">{walletAddress && (
                 <span>{textNftBalances(totalNFT?.toString() || "0")}</span>
-              )}</span></p>
+              )}</span></Label>
+            </div>
+            <div className="flex items-center space-x-4 mt-6">
+              <img
+                src="https://gateway.pinata.cloud/ipfs/QmaHGo7pQ9x7B1rNvPbkzTnrZNuHA4mx53t8ZnAA8JFUG2/0.gif"
+                alt='Image preview'
+                className="w-full rounded-lg mb-2"
+              />
+            </div>
+            <div className="flex items-center space-x-4 mt-6">
+              <Label>Description: </Label>
             </div>
           </div>
         </div>
