@@ -31,13 +31,14 @@ export const NftMint = () => {
   const [isPending, setIsPending] = useState(false);
   const chainId = soneiumMinato.id;
   const { address: walletAddress } = useAccount();
-  const nftContractAddress = "0x6a70B2274e9CF15D4770D8f782F79Ddab33692f5";
+  const nftContractAddress = "0x42dCA0BdFb50d950E705B1A2Dc3fF5bf0390C78A";
   const connectedId = useChainId();
   const isConnectedToMinato = connectedId === soneiumMinato.id;
   const [quantity, setQuantity] = useState(1);
   const [mintedNFTs, setMintedNFTs] = useState([]);
   const [timeLeft, setTimeLeft] = useState(''); // Countdown for whitelist
-  const [isWhitelistOpen, setIsWhitelistOpen] = useState(true); // Toggle whitelist period
+  const [isWhitelistOpen, setIsWhitelistOpen] = useState(false); // Toggle whitelist period
+  const [isPublicOpen, setIsPublicOpen] = useState(false); // Toggle whitelist period
   const { switchChain } = useSwitchChain();
   const { data: walletClient } = useWalletClient({
     chainId,
@@ -69,6 +70,20 @@ export const NftMint = () => {
     args: [],
   });
 
+  const { data: publicMintStartTime } = useReadContract({
+    abi: NFT_ABI,
+    address: nftContractAddress,
+    functionName: "publicMintStartTime",
+    args: [],
+  });
+
+  const { data: publicDuration } = useReadContract({
+    abi: NFT_ABI,
+    address: nftContractAddress,
+    functionName: "publicDuration",
+    args: [],
+  });
+
   const newArray = totalNFT ? (Array(Number(totalNFT)).fill(0) as number[]) : []
   const calls = newArray.map((_, index) => ({
     abi: NFT_ABI,
@@ -94,6 +109,12 @@ export const NftMint = () => {
     contracts: tokenIDs ? callsTokenURI : [],
   });
 
+  const { data: bal } = useBalance({
+    address: walletAddress,
+    chainId,
+  });
+  const isBalanceZero = bal?.value.toString() === "0";
+
   const fetchTokenURI = async (tokenURI: any) => {
     const metaData = await Promise.all(
       tokenURI.map(async (item: any) => {
@@ -118,12 +139,6 @@ export const NftMint = () => {
         .catch(console.log)
     }
   }, [tokenUri])
-
-  const { data: bal } = useBalance({
-    address: walletAddress,
-    chainId,
-  });
-  const isBalanceZero = bal?.value.toString() === "0";
 
   useEffect(() => {
     if (isConnected && !didConnect) {
@@ -207,13 +222,14 @@ export const NftMint = () => {
   useEffect(() => {
     const interval = setInterval(() => {
       const now = new Date();
-      const difference = (Number(whitelistStartTime) + Number(whitelistDuration))*1000 - now.getTime();
+      const difference = (Number(whitelistStartTime) + Number(whitelistDuration)) * 1000 - now.getTime();
 
       if (difference <= 0) {
         setIsWhitelistOpen(false);
         setTimeLeft('');
         clearInterval(interval);
       } else {
+        setIsWhitelistOpen(true);
         const hours = Math.floor(difference / (1000 * 60 * 60));
         const minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
         const seconds = Math.floor((difference % (1000 * 60)) / 1000);
@@ -223,6 +239,27 @@ export const NftMint = () => {
 
     return () => clearInterval(interval);
   }, [whitelistStartTime]);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      const now = new Date();
+      const difference = (Number(publicMintStartTime) + Number(publicDuration)) * 1000 - now.getTime();
+
+      if (difference <= 0 || isWhitelistOpen) {
+        setIsPublicOpen(false);
+        setTimeLeft('');
+        clearInterval(interval);
+      } else {
+        setIsPublicOpen(true);
+        const hours = Math.floor(difference / (1000 * 60 * 60));
+        const minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
+        const seconds = Math.floor((difference % (1000 * 60)) / 1000);
+        setTimeLeft(`${hours}h ${minutes}m ${seconds}s`);
+      }
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, [publicMintStartTime]);
 
   return (
     <div className="min-h-screen w-full p-6 font-sans bg-transparent">
@@ -252,13 +289,13 @@ export const NftMint = () => {
             <div className="col-span-4">
               <h2 className="text-xl font-bold">Mint NFTs</h2>
             </div>
-            <div className="col-span-4">
-              <h5 className="text-xm font-bold">Whitelist Mint</h5>
-            </div>
-            <div className="col-span-4">
-              <Label>Whitelist closes in: {timeLeft}</Label>
-            </div>
-            {isWhitelistOpen ?
+            {isWhitelistOpen ? <>
+              <div className="col-span-4">
+                <h4>Whitelist Mint</h4>
+              </div>
+              <div className="col-span-4">
+                <Label>Whitelist closes in: {timeLeft}</Label>
+              </div>
               <div className="col-span-4">
                 <div className="flex items-center space-x-4">
                   <Label htmlFor="quantity">Quantity:</Label>
@@ -277,14 +314,18 @@ export const NftMint = () => {
                     Whitelist Mint
                   </Button>
                 </div>
-              </div> :
+              </div>
+            </> :
               <div className="col-span-4">
                 <h4>Whitelist Mint Closed</h4>
               </div>}
 
-            {!isWhitelistOpen ? <>
+            {isPublicOpen ? <>
               <div className="col-span-4">
                 <h4 className="text-xm font-bold">Public Mint</h4>
+              </div>
+              <div className="col-span-4">
+                <Label>Public closes in: {timeLeft}</Label>
               </div>
               <div className="col-span-4">
                 <div className="flex items-center space-x-4">
@@ -304,7 +345,9 @@ export const NftMint = () => {
                     Public Mint
                   </Button>
                 </div></div>
-            </> : <></>}
+            </> : <div hidden={isWhitelistOpen} className="col-span-4">
+              <h4>Public Mint Closed</h4>
+            </div>}
 
             <div className="col-span-4">
               {txDetails && (

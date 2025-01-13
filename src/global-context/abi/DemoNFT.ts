@@ -408,6 +408,20 @@ export default [
     type: "function",
   },
   {
+    inputs: [],
+    name: "publicMintStartTime",
+    outputs: [{ "internalType": "uint256", "name": "publicMintStartTime", "type": "uint256" }],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "publicDuration",
+    outputs: [{ "internalType": "uint256", "name": "publicDuration", "type": "uint256" }],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
     inputs: [{
       internalType: "uint256",
       name: "quantity",
