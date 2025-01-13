@@ -394,6 +394,20 @@ export default [
     type: "function",
   },
   {
+    inputs: [],
+    name: "whitelistStartTime",
+    outputs: [{ "internalType": "uint256", "name": "whitelistStartTime", "type": "uint256" }],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "whitelistDuration",
+    outputs: [{ "internalType": "uint256", "name": "whitelistStartTime", "type": "uint256" }],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
     inputs: [{
       internalType: "uint256",
       name: "quantity",

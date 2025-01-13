@@ -36,7 +36,7 @@ export const NftMint = () => {
   const isConnectedToMinato = connectedId === soneiumMinato.id;
   const [quantity, setQuantity] = useState(1);
   const [mintedNFTs, setMintedNFTs] = useState([]);
-  const [timeLeft, setTimeLeft] = useState(null); // Countdown for whitelist
+  const [timeLeft, setTimeLeft] = useState(''); // Countdown for whitelist
   const [isWhitelistOpen, setIsWhitelistOpen] = useState(true); // Toggle whitelist period
   const { switchChain } = useSwitchChain();
   const { data: walletClient } = useWalletClient({
@@ -48,11 +48,25 @@ export const NftMint = () => {
     chainId,
   });
 
-  const { data: totalNFT, isFetched, refetch } = useReadContract({
+  const { data: totalNFT, refetch } = useReadContract({
     abi: NFT_ABI,
     address: nftContractAddress,
     functionName: "balanceOf",
     args: [walletAddress as Address],
+  });
+
+  const { data: whitelistStartTime } = useReadContract({
+    abi: NFT_ABI,
+    address: nftContractAddress,
+    functionName: "whitelistStartTime",
+    args: [],
+  });
+
+  const { data: whitelistDuration } = useReadContract({
+    abi: NFT_ABI,
+    address: nftContractAddress,
+    functionName: "whitelistDuration",
+    args: [],
   });
 
   const newArray = totalNFT ? (Array(Number(totalNFT)).fill(0) as number[]) : []
@@ -121,10 +135,9 @@ export const NftMint = () => {
 
   async function mintWhitelistNft(): Promise<void> {
     if (!walletClient || !publicClient || !walletAddress) return;
-    console.log('x1');
     try {
       setIsPending(true);
-      setTxDetails("begin...");
+      setTxDetails("");
       const tx = {
         account: walletAddress as Address,
         address: nftContractAddress as Address,
@@ -191,6 +204,26 @@ export const NftMint = () => {
     }
   }
 
+  useEffect(() => {
+    const interval = setInterval(() => {
+      const now = new Date();
+      const difference = (Number(whitelistStartTime) + Number(whitelistDuration))*1000 - now.getTime();
+
+      if (difference <= 0) {
+        setIsWhitelistOpen(false);
+        setTimeLeft('');
+        clearInterval(interval);
+      } else {
+        const hours = Math.floor(difference / (1000 * 60 * 60));
+        const minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
+        const seconds = Math.floor((difference % (1000 * 60)) / 1000);
+        setTimeLeft(`${hours}h ${minutes}m ${seconds}s`);
+      }
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, [whitelistStartTime]);
+
   return (
     <div className="min-h-screen w-full p-6 font-sans bg-transparent">
       <div className="flex flex-row">
@@ -199,8 +232,8 @@ export const NftMint = () => {
           <h2 className="text-xl font-bold text-left ml-6">Minted NFTs</h2>
           <div className="p-6 rounded-lg">
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-              {mintedNFTs.map((nft: any) => (
-                <div key={nft.tokenId} className="border border-gray-300 rounded-lg p-4">
+              {mintedNFTs.map((nft: any, index) => (
+                <div key={index} className="border border-gray-300 rounded-lg p-4">
                   <img
                     src={nft.image}
                     alt={`NFT ${nft.id}`}
@@ -215,18 +248,18 @@ export const NftMint = () => {
           </div>
         </div>
         <div className="basis-1/4 m-2 border border-gray-300 rounded-lg p-4 bg-transparent">
-          <div className="grid grid-flow-row">
-            <div className="">
-              <h2 className="text-xl font-bold text-left">Mint NFTs</h2>
+          <div className="grid grid-flow-row grid-cols-4 gap-4">
+            <div className="col-span-4">
+              <h2 className="text-xl font-bold">Mint NFTs</h2>
             </div>
-            <div className="mt-3">
-              <h4 className="text-xl font-bold text-left">Whitelist Mint</h4>
+            <div className="col-span-4">
+              <h5 className="text-xm font-bold">Whitelist Mint</h5>
             </div>
-            <div className="mt-3">
+            <div className="col-span-4">
               <Label>Whitelist closes in: {timeLeft}</Label>
             </div>
-            <div className="mt-3">
-              {isWhitelistOpen ? <>
+            {isWhitelistOpen ?
+              <div className="col-span-4">
                 <div className="flex items-center space-x-4">
                   <Label htmlFor="quantity">Quantity:</Label>
                   <Input
@@ -238,23 +271,22 @@ export const NftMint = () => {
                     min="1"
                   />
                   <Button disabled={isPending || !walletAddress || isBalanceZero || !isConnectedToMinato}
-                    onClick={mintPublicNft}
+                    onClick={mintWhitelistNft}
                     className="w-full bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition"
                   >
-                    Mint
+                    Whitelist Mint
                   </Button>
-                </div></> : (
-                <div style={{ marginBottom: "20px" }}>
-                  <h4>Whitelist Mint Closed</h4>
                 </div>
-              )}
-            </div>
+              </div> :
+              <div className="col-span-4">
+                <h4>Whitelist Mint Closed</h4>
+              </div>}
 
             {!isWhitelistOpen ? <>
-              <div className="col-span-3">
-                <h4 className="text-xl font-bold text-left">Public Mint</h4>
+              <div className="col-span-4">
+                <h4 className="text-xm font-bold">Public Mint</h4>
               </div>
-              <div className="col-span-3">
+              <div className="col-span-4">
                 <div className="flex items-center space-x-4">
                   <Label htmlFor="quantity">Quantity:</Label>
                   <Input
@@ -269,12 +301,12 @@ export const NftMint = () => {
                     onClick={mintPublicNft}
                     className="w-full bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition"
                   >
-                    Mint
+                    Public Mint
                   </Button>
                 </div></div>
             </> : <></>}
 
-            <div className="mt-3">
+            <div className="col-span-4">
               {txDetails && (
                 <div className={styles.txDetails}>
                   <span>🎉 Congrats! Your NFT has been minted 🐣 </span>
@@ -321,7 +353,7 @@ export const NftMint = () => {
               )}
             </div>
 
-            <div className="mt-3">
+            <div className="col-span-4">
               <Label>Total Minted:
                 <span className="font-bold">{walletAddress && (
                   <span>{textNftBalances(totalNFT?.toString() || "0")}</span>
@@ -329,7 +361,7 @@ export const NftMint = () => {
               </Label>
             </div>
 
-            <div className="mt-3">
+            <div className="col-span-4">
               <img
                 src="https://gateway.pinata.cloud/ipfs/QmaHGo7pQ9x7B1rNvPbkzTnrZNuHA4mx53t8ZnAA8JFUG2/0.gif"
                 alt='Image preview'
@@ -337,8 +369,16 @@ export const NftMint = () => {
               />
             </div>
 
-            <div className="mt-3">
-              <Label>Description: </Label>
+            <div className="col-span-4">
+              <Label>Description: Heralding the dawn of NFT power users, OpenSea Pro unlocks a new level
+                of optionality, selection, and control for pro NFT collectors.
+                Previously known as Gem, OpenSea Pro has been months in the making,
+                culminating in the platform’s rebirth as the most powerful NFT
+                marketplace aggregator. Commemorating our community’s journey, we are
+                releasing Gemesis, a thank you to Gem community members who have steered
+                the ship with us. This limited-edition collection encapsulates our
+                evolution, celebrates our community, and embodies the exciting road
+                ahead. [OpenSea Pro](<a target="_blank" className="text-blue-600 visited:text-purple-600 hover:underline" href="https://pro.opensea.io">https://pro.opensea.io</a>)</Label>
             </div>
           </div>
         </div>
