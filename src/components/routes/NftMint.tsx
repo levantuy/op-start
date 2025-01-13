@@ -36,6 +36,8 @@ export const NftMint = () => {
   const isConnectedToMinato = connectedId === soneiumMinato.id;
   const [quantity, setQuantity] = useState(1);
   const [mintedNFTs, setMintedNFTs] = useState([]);
+  const [timeLeft, setTimeLeft] = useState(null); // Countdown for whitelist
+  const [isWhitelistOpen, setIsWhitelistOpen] = useState(true); // Toggle whitelist period
   const { switchChain } = useSwitchChain();
   const { data: walletClient } = useWalletClient({
     chainId,
@@ -213,27 +215,66 @@ export const NftMint = () => {
           </div>
         </div>
         <div className="basis-1/4 m-2 border border-gray-300 rounded-lg p-4 bg-transparent">
-          <h2 className="text-xl font-bold text-left mb-6">Mint NFTs</h2>
-          {/* Minting Section */}
-          <div className="p-6 rounded-lg mb-6">
-            <div className="flex items-center space-x-4">
-              <Label htmlFor="quantity" className="font-medium">Quantity:</Label>
-              <Input
-                id="quantity"
-                type="number"
-                value={quantity}
-                onChange={handleQuantityChange}
-                className="w-16 border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-500 focus:outline-none"
-                min="1"
-              />
-              <Button disabled={isPending || !walletAddress || isBalanceZero || !isConnectedToMinato}
-                onClick={mintPublicNft}
-                className="w-full bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition"
-              >
-                Mint
-              </Button>
+          <div className="grid grid-flow-row">
+            <div className="">
+              <h2 className="text-xl font-bold text-left">Mint NFTs</h2>
             </div>
-            <div className="flex items-center space-x-4 mt-6">
+            <div className="mt-3">
+              <h4 className="text-xl font-bold text-left">Whitelist Mint</h4>
+            </div>
+            <div className="mt-3">
+              <Label>Whitelist closes in: {timeLeft}</Label>
+            </div>
+            <div className="mt-3">
+              {isWhitelistOpen ? <>
+                <div className="flex items-center space-x-4">
+                  <Label htmlFor="quantity">Quantity:</Label>
+                  <Input
+                    id="quantity"
+                    type="number"
+                    value={quantity}
+                    onChange={handleQuantityChange}
+                    className="w-16 border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                    min="1"
+                  />
+                  <Button disabled={isPending || !walletAddress || isBalanceZero || !isConnectedToMinato}
+                    onClick={mintPublicNft}
+                    className="w-full bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition"
+                  >
+                    Mint
+                  </Button>
+                </div></> : (
+                <div style={{ marginBottom: "20px" }}>
+                  <h4>Whitelist Mint Closed</h4>
+                </div>
+              )}
+            </div>
+
+            {!isWhitelistOpen ? <>
+              <div className="col-span-3">
+                <h4 className="text-xl font-bold text-left">Public Mint</h4>
+              </div>
+              <div className="col-span-3">
+                <div className="flex items-center space-x-4">
+                  <Label htmlFor="quantity">Quantity:</Label>
+                  <Input
+                    id="quantity"
+                    type="number"
+                    value={quantity}
+                    onChange={handleQuantityChange}
+                    className="w-16 border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                    min="1"
+                  />
+                  <Button disabled={isPending || !walletAddress || isBalanceZero || !isConnectedToMinato}
+                    onClick={mintPublicNft}
+                    className="w-full bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition"
+                  >
+                    Mint
+                  </Button>
+                </div></div>
+            </> : <></>}
+
+            <div className="mt-3">
               {txDetails && (
                 <div className={styles.txDetails}>
                   <span>🎉 Congrats! Your NFT has been minted 🐣 </span>
@@ -279,19 +320,24 @@ export const NftMint = () => {
                 </div>
               )}
             </div>
-            <div className="flex items-center space-x-4 mt-6">
-              <Label>Total Minted: <span className="font-bold">{walletAddress && (
-                <span>{textNftBalances(totalNFT?.toString() || "0")}</span>
-              )}</span></Label>
+
+            <div className="mt-3">
+              <Label>Total Minted:
+                <span className="font-bold">{walletAddress && (
+                  <span>{textNftBalances(totalNFT?.toString() || "0")}</span>
+                )}</span>
+              </Label>
             </div>
-            <div className="flex items-center space-x-4 mt-6">
+
+            <div className="mt-3">
               <img
                 src="https://gateway.pinata.cloud/ipfs/QmaHGo7pQ9x7B1rNvPbkzTnrZNuHA4mx53t8ZnAA8JFUG2/0.gif"
                 alt='Image preview'
                 className="w-full rounded-lg mb-2"
               />
             </div>
-            <div className="flex items-center space-x-4 mt-6">
+
+            <div className="mt-3">
               <Label>Description: </Label>
             </div>
           </div>
