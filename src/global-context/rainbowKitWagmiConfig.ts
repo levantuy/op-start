@@ -10,8 +10,7 @@ import {
   base,
   baseSepolia,
   zoraSepolia,
-  optimismSepolia,
-  soneiumMinato,
+  optimismSepolia
 } from 'wagmi/chains'
 import { envVars } from '../envVars'
 import {
@@ -20,6 +19,7 @@ import {
 } from '../chain-pairs/supportedChainPairs'
 import { Transport } from 'viem'
 import { fraxtalSepolia } from '../chain-pairs/chains/fraxtalSepolia'
+import soneiumMainnet from './/../global-context/soneiumMainnet';
 
 const transports = {
   // Mainnet chains
@@ -35,7 +35,7 @@ const transports = {
   [fraxtalSepolia.id]: http(),
   [optimismSepolia.id]: http(),
   [zoraSepolia.id]: http(),
-  [soneiumMinato.id]: http(),
+  [soneiumMainnet.id]: http(),
 } as const satisfies Record<ChainIdsToConfigure, Transport>
 
 export const rainbowKitWagmiConfig = getDefaultConfig({

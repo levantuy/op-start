@@ -8,7 +8,7 @@ import {
 import { useMixpanel } from '../../global-context/mixpanelContext';
 import { useEffect, useState } from 'react';
 import { Address, parseEther } from 'viem';
-import { soneiumMinato } from 'wagmi/chains';
+import soneiumMainnet from '../../global-context/soneiumMainnet';
 import {
   useAccount,
   useBalance,
@@ -29,11 +29,11 @@ export const NftMint = () => {
   let didConnect = false;
   const [txDetails, setTxDetails] = useState<string>("");
   const [isPending, setIsPending] = useState(false);
-  const chainId = soneiumMinato.id;
+  const chainId = soneiumMainnet.id;
   const { address: walletAddress } = useAccount();
-  const nftContractAddress = "0x42dCA0BdFb50d950E705B1A2Dc3fF5bf0390C78A";
+  const nftContractAddress = "0xc2c84FBdF873468Fd6ae84A01B09F5DF39b5366b";
   const connectedId = useChainId();
-  const isConnectedToMinato = connectedId === soneiumMinato.id;
+  const isConnectedToMinato = connectedId === soneiumMainnet.id;
   const [quantity, setQuantity] = useState(1);
   const [mintedNFTs, setMintedNFTs] = useState([]);
   const [timeLeft, setTimeLeft] = useState(''); // Countdown for whitelist
@@ -157,7 +157,7 @@ export const NftMint = () => {
         account: walletAddress as Address,
         address: nftContractAddress as Address,
         abi: NFT_ABI,
-        value: parseEther((0.01 * quantity).toString()),
+        value: parseEther((0.0001 * quantity).toString()),
         functionName: "whitelistMint",
         args: [quantity as any],
       } as const;
@@ -185,7 +185,7 @@ export const NftMint = () => {
         account: walletAddress as Address,
         address: nftContractAddress as Address,
         abi: NFT_ABI,
-        value: parseEther((0.01 * quantity).toString()),
+        value: parseEther((0.0001 * quantity).toString()),
         functionName: "publicMint",
         args: [quantity as any],
       } as const;
@@ -245,7 +245,7 @@ export const NftMint = () => {
       const now = new Date();
       const difference = (Number(publicMintStartTime) + Number(publicDuration)) * 1000 - now.getTime();
 
-      if (difference <= 0 || isWhitelistOpen) {
+      if (difference <= 0) {
         setIsPublicOpen(false);
         setTimeLeft('');
         clearInterval(interval);
