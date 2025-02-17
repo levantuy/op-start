@@ -23,7 +23,7 @@ import NFT_ABI from "../../global-context/abi/DemoNFT";
 import axios from 'axios';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../base/select/select";
 import * as Radix from "@radix-ui/react-select";
-import { IItemContract, nftContracts } from "./data";
+import { IItemContract, nftContracts } from "./Data.ts";
 
 export const NftMint = () => {
   const navigate = useNavigate();
@@ -142,7 +142,7 @@ export const NftMint = () => {
         })
         .catch(console.log)
     }
-  }, [tokenUri])
+  }, [tokenUri]);
 
   useEffect(() => {
     if (isConnected && !didConnect) {
@@ -150,7 +150,7 @@ export const NftMint = () => {
       mixpanel.identify(address)
       mixpanel.track('wallet-connect')
     }
-  }, [isConnected])
+  }, [isConnected]);
 
   async function mintWhitelistNft(): Promise<void> {
     if (!walletClient || !publicClient || !walletAddress) return;
@@ -226,7 +226,7 @@ export const NftMint = () => {
   useEffect(() => {
     const interval = setInterval(() => {
       const now = new Date();
-      const difference = (Number(whitelistStartTime) + Number(whitelistDuration)) * 1000 - now.getTime();
+      const difference = whitelistStartTime && whitelistDuration ? (Number(whitelistStartTime) + Number(whitelistDuration)) * 1000 - now.getTime() : 0;
 
       if (difference <= 0) {
         setIsWhitelistOpen(false);
@@ -247,7 +247,7 @@ export const NftMint = () => {
   useEffect(() => {
     const interval = setInterval(() => {
       const now = new Date();
-      const difference = (Number(publicMintStartTime) + Number(publicDuration)) * 1000 - now.getTime();
+      const difference = publicMintStartTime && publicDuration ? (Number(publicMintStartTime) + Number(publicDuration)) * 1000 - now.getTime() : 0;
 
       if (difference <= 0) {
         setIsPublicOpen(false);
@@ -263,7 +263,7 @@ export const NftMint = () => {
     }, 1000);
 
     return () => clearInterval(interval);
-  }, [publicMintStartTime]);
+  }, [publicMintStartTime, publicDuration]);
 
   const handlechangeContract = (address: Address) => {
     setNftContractAddress(address);
