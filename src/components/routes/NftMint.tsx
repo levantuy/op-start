@@ -21,6 +21,9 @@ import {
 } from "wagmi";
 import NFT_ABI from "../../global-context/abi/DemoNFT";
 import axios from 'axios';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../base/select/select";
+import * as Radix from "@radix-ui/react-select";
+import { IItemContract, nftContracts } from "./data";
 
 export const NftMint = () => {
   const navigate = useNavigate();
@@ -31,7 +34,8 @@ export const NftMint = () => {
   const [isPending, setIsPending] = useState(false);
   const chainId = soneiumMainnet.id;
   const { address: walletAddress } = useAccount();
-  const nftContractAddress = "0xc2c84FBdF873468Fd6ae84A01B09F5DF39b5366b";
+  const [nftContractAddress, setNftContractAddress] = useState<Address>('0xc2c84FBdF873468Fd6ae84A01B09F5DF39b5366b');
+  const [contracts] = useState<Array<IItemContract>>(nftContracts);
   const connectedId = useChainId();
   const isConnectedToMinato = connectedId === soneiumMainnet.id;
   const [quantity, setQuantity] = useState(1);
@@ -261,15 +265,36 @@ export const NftMint = () => {
     return () => clearInterval(interval);
   }, [publicMintStartTime]);
 
+  const handlechangeContract = (address: Address) => {
+    setNftContractAddress(address);
+    refetch();
+  }
+
   return (
     <div className="min-h-screen w-full p-6 font-sans bg-transparent">
+      <div className="flex flex-row">
+        <div className={"basis-4/4 bg-transparent"}>
+          <Select onValueChange={item => handlechangeContract(item as any)}>
+            <SelectTrigger className="w-96">
+              <SelectValue placeholder="Select a contract" />
+            </SelectTrigger>
+            <SelectContent className="w-96 border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-500 focus:outline-none">
+              {contracts.map((item, i) =>
+                <SelectItem key={i} value={item.value}>
+                  <Radix.SelectItemText> {item.key} </Radix.SelectItemText>
+                </SelectItem>
+              )}
+            </SelectContent>
+          </Select>
+        </div>
+      </div>
       <div className="flex flex-row">
         <div className={"basis-3/4 m-2 border border-gray-300 rounded-lg p-4 bg-transparent"}>
           {/* Minted NFTs List */}
           <h2 className="text-xl font-bold text-left ml-6">Minted NFTs</h2>
           <div className="p-6 rounded-lg">
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-              {mintedNFTs.map((nft: any, index) => (
+              {newArray.length > 0 && mintedNFTs.map((nft: any, index) => (
                 <div key={index} className="border border-gray-300 rounded-lg p-4">
                   <img
                     src={nft.image}
