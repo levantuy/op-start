@@ -298,14 +298,24 @@ export const NftMint = () => {
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
               {newArray.length > 0 && mintedNFTs.map((nft: any, index) => (
                 <div key={index} className="border border-gray-300 rounded-lg p-4">
-                  <img
-                    src={nft.image}
-                    alt={`NFT ${nft.id}`}
-                    className="w-full rounded-lg mb-2"
-                  />
-                  <Label>NFT #{nft.tokenId}</Label>
-                  <br />
-                  <Label>{nft.name}</Label>
+                  <div className="flex flex-row" style={{
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                  }}>
+                    <img
+                      src={nft.image}
+                      alt={`NFT ${nft.id}`}
+                      className="rounded-sm mb-2" style={{
+                        height: '20vh', maxWidth: '100%', objectFit: 'cover'
+                      }}
+                    /></div>
+                  <div className="flex flex-row">
+                    <Label>NFT #{nft.tokenId}</Label>
+                  </div>
+                  <div className="flex flex-row">
+                    <Label>{nft.name}</Label>
+                  </div>
                 </div>
               ))}
             </div>
