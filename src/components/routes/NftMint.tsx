@@ -60,7 +60,7 @@ export const NftMint = () => {
     args: [walletAddress as Address],
   });
 
-  const { data: whitelistStartTime } = useReadContract({
+  const { data: whitelistStartTime, refetch: refetchWL } = useReadContract({
     abi: NFT_ABI,
     address: nftContractAddress,
     functionName: "whitelistStartTime",
@@ -74,7 +74,7 @@ export const NftMint = () => {
     args: [],
   });
 
-  const { data: publicMintStartTime } = useReadContract({
+  const { data: publicMintStartTime, refetch: refetchPL } = useReadContract({
     abi: NFT_ABI,
     address: nftContractAddress,
     functionName: "publicMintStartTime",
@@ -268,6 +268,8 @@ export const NftMint = () => {
   const handlechangeContract = (address: Address) => {
     setNftContractAddress(address);
     refetch();
+    refetchPL();
+    refetchWL();
   }
 
   return (
@@ -345,7 +347,7 @@ export const NftMint = () => {
                 <h4>Whitelist Mint Closed</h4>
               </div>}
 
-            {isPublicOpen ? <>
+            {!isWhitelistOpen && isPublicOpen ? <>
               <div className="col-span-4">
                 <h4 className="text-xm font-bold">Public Mint</h4>
               </div>
