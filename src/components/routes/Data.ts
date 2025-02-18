@@ -8,6 +8,8 @@ const nftContracts: Array<IItemContract> =
     { key: 'Mug Token', value: '0x17018B76BB88C62Ef468a5323aE4Ffd775C1f9C3' },
     { key: 'Smart Contract Token', value: '0x2FE4E18eA571EA3b8bd9d1dAC6F3779a549A0f9F' },
     { key: 'Just Like It', value: '0x2073C3260A5537CE9f3bb0292E49E6146d1405A9' },
+	{ key: 'Keep Building', value: '0x984F27D333F066bbe1e08791D0f053ae9EA76392' },
+	{ key: 'Cz Token', value: '0xEB117ffe3d71987550ebAEA2D9af2650310A1286' },
     ];
 
 

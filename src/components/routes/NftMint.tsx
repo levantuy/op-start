@@ -1,5 +1,4 @@
 import styles from "./NftMint.module.css";
-import { useNavigate } from 'react-router-dom'
 import {
   Button,
   Input,
@@ -21,12 +20,11 @@ import {
 } from "wagmi";
 import NFT_ABI from "../../global-context/abi/DemoNFT";
 import axios from 'axios';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../base/select/select";
+import { Select, SelectContent, SelectItem, SelectItemText, SelectTrigger, SelectValue, SelectViewport } from "../base/select/select";
 import * as Radix from "@radix-ui/react-select";
 import { IItemContract, nftContracts } from "./Data.ts";
 
 export const NftMint = () => {
-  const navigate = useNavigate();
   const { isConnected, address } = useAccount();
   const mixpanel = useMixpanel();
   let didConnect = false;
@@ -136,11 +134,13 @@ export const NftMint = () => {
 
   useEffect(() => {
     if (tokenUri) {
+      setIsPending(true);
       fetchTokenURI(tokenUri as any)
         .then((data) => {
           setMintedNFTs(data as any)
         })
         .catch(console.log)
+        .finally(() => setIsPending(false));
     }
   }, [tokenUri]);
 
@@ -170,7 +170,7 @@ export const NftMint = () => {
       await publicClient.waitForTransactionReceipt({
         hash,
       });
-      setTxDetails(`https://explorer-testnet.soneium.org/tx/${hash}`);
+      setTxDetails(`https://soneium.blockscout.com/tx/${hash}`);
       await refetch();
     } catch (error) {
       console.error(error);
@@ -198,7 +198,7 @@ export const NftMint = () => {
       await publicClient.waitForTransactionReceipt({
         hash,
       });
-      setTxDetails(`https://explorer-testnet.soneium.org/tx/${hash}`);
+      setTxDetails(`https://soneium.blockscout.com/tx/${hash}`);
       await refetch();
     } catch (error) {
       console.error(error);
@@ -282,9 +282,7 @@ export const NftMint = () => {
             </SelectTrigger>
             <SelectContent className="w-96 border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-500 focus:outline-none">
               {contracts.map((item, i) =>
-                <SelectItem key={i} value={item.value}>
-                  <Radix.SelectItemText> {item.key} </Radix.SelectItemText>
-                </SelectItem>
+                <SelectItem key={i} value={item.value}>{item.key}</SelectItem>
               )}
             </SelectContent>
           </Select>
@@ -294,7 +292,7 @@ export const NftMint = () => {
         <div className={"basis-3/4 m-2 border border-gray-300 rounded-lg p-4 bg-transparent"}>
           {/* Minted NFTs List */}
           <h2 className="text-xl font-bold text-left ml-6">Minted NFTs</h2>
-          <div className="p-6 rounded-lg">
+          <div className="p-6 rounded-lg"> {isPending ? <>Loading...</> :
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
               {newArray.length > 0 && mintedNFTs.map((nft: any, index) => (
                 <div key={index} className="border border-gray-300 rounded-lg p-4">
@@ -318,7 +316,7 @@ export const NftMint = () => {
                   </div>
                 </div>
               ))}
-            </div>
+            </div>}
           </div>
         </div>
         <div className="basis-1/4 m-2 border border-gray-300 rounded-lg p-4 bg-transparent">
