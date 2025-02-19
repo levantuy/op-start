@@ -273,7 +273,7 @@ export const NftMint = () => {
   }
 
   return (
-    <div className="min-h-screen w-full p-6 font-sans bg-transparent">
+    <div className="min-h-screen w-full font-sans bg-transparent">
       <div className="flex flex-row">
         <div className={"basis-4/4 bg-transparent"}>
           <Select onValueChange={item => handlechangeContract(item as any)}>
