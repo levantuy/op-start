@@ -20,6 +20,7 @@ import { MixpanelContextProvider } from './global-context/mixpanelContext'
 import mixpanel from 'mixpanel-browser'
 import { Transfer } from './components/routes/Transfer'
 import { NftMint } from './components/routes/NftMint'
+import { Monad } from './components/routes/Monad'
 
 const classNames = {
   app: 'app w-full min-h-screen flex flex-col',
@@ -80,6 +81,7 @@ const router = createBrowserRouter([
       { path: '/bridge', children: bridgeRoutes },
       { path: '/playground', children: playgroundRoutes },
       { path: '/nft-mint', element: <NftMint /> },
+      { path: '/monad', element: <Monad /> },
     ],
   },
 ])

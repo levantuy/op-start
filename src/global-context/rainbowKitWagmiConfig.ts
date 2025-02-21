@@ -19,7 +19,7 @@ import {
 } from '../chain-pairs/supportedChainPairs'
 import { Transport } from 'viem'
 import { fraxtalSepolia } from '../chain-pairs/chains/fraxtalSepolia'
-import soneiumMainnet from './/../global-context/soneiumMainnet';
+import { soneiumMainnet, Monad } from './/../global-context/soneiumMainnet';
 
 const transports = {
   // Mainnet chains
@@ -36,6 +36,7 @@ const transports = {
   [optimismSepolia.id]: http(),
   [zoraSepolia.id]: http(),
   [soneiumMainnet.id]: http(),
+  [Monad.id]: http(),
 } as const satisfies Record<ChainIdsToConfigure, Transport>
 
 export const rainbowKitWagmiConfig = getDefaultConfig({

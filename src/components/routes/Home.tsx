@@ -31,6 +31,12 @@ export const Home = () => {
           <CardDescription>Page mint Nft</CardDescription>
         </CardHeader>
       </Card>
+      <Card className="cursor-pointer" onClick={() => navigate('/monad')}>
+        <CardHeader>
+          <CardTitle>Monad</CardTitle>
+          <CardDescription>Monad</CardDescription>
+        </CardHeader>
+      </Card>
     </div>
   )
 }

@@ -15,7 +15,7 @@ import {
   zoraSepolia,
   berachainTestnetbArtio
 } from 'viem/chains';
-import soneiumMainnet from './/../global-context/soneiumMainnet';
+import { soneiumMainnet, Monad } from './/../global-context/soneiumMainnet';
 
 export const baseChainPair = defineMainnetChainPair(base)
 export const fraxtalChainPair = defineMainnetChainPair(fraxtal)
@@ -35,6 +35,13 @@ const minato = {
 };
 export const minatoChainPair = defineSepoliaChainPair(minato)
 
+const monad = {
+  ...Monad,
+  name: "Monad Testnet",
+  iconUrl: "/symbol-full-color.svg",
+};
+export const monadChainPair = defineSepoliaChainPair(monad)
+
 export const supportedMainnetChainPairs = [
   baseChainPair,
   fraxtalChainPair,
@@ -48,6 +55,7 @@ export const supportedSepoliaChainPairs = [
   optimismSepoliaChainPair,
   zoraSepoliaChainPair,
   minatoChainPair,
+  monadChainPair,
   beraChainPair,
 ] as const
 

@@ -1,5 +1,3 @@
-import { createPublicClient, http } from 'viem';
-
 const soneiumMainnet = {
   id: 1868,
   name: 'Soneium Mainnet',
@@ -22,10 +20,26 @@ const soneiumMainnet = {
   },
 };
 
-const publicClient = createPublicClient({
-  chain: soneiumMainnet,
-  transport: http(),
-});
+const Monad = {
+  id: 10143,
+  name: 'Monad Testnet',
+  network: 'monad',
+  nativeCurrency: {
+    decimals: 18,
+    name: 'Monad',
+    symbol: 'MON',
+  },
+  rpcUrls: {
+    default: {
+      http: ['https://testnet-rpc.monad.xyz/'],
+    },
+    public: {
+      http: ['https://testnet-rpc.monad.xyz/'],
+    },
+  },
+  blockExplorers: {
+    default: { name: 'Monad Explorer', url: 'https://testnet.monadexplorer.com' },
+  },
+};
 
-
-export default soneiumMainnet;
+export { soneiumMainnet, Monad };

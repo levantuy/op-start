@@ -3,11 +3,11 @@ import {
   Button,
   Input,
   Label,
-} from '../base';
-import { useMixpanel } from '../../global-context/mixpanelContext';
+} from '../base/index.tsx';
+import { useMixpanel } from '../../global-context/mixpanelContext.tsx';
 import { useEffect, useState } from 'react';
 import { Address, parseEther } from 'viem';
-import { soneiumMainnet } from '../../global-context/soneiumMainnet';
+import { Monad as monadTestnet } from '../../global-context/soneiumMainnet.ts';
 import {
   useAccount,
   useBalance,
@@ -18,23 +18,23 @@ import {
   useSwitchChain,
   useWalletClient,
 } from "wagmi";
-import NFT_ABI from "../../global-context/abi/DemoNFT";
+import NFT_ABI from "../../global-context/abi/DemoNFT.ts";
 import axios from 'axios';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../base/select/select";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../base/select/select.tsx";
 import { IItemContract, nftContracts } from "./Data.ts";
 
-export const NftMint = () => {
+export const Monad = () => {
   const { isConnected, address } = useAccount();
   const mixpanel = useMixpanel();
   let didConnect = false;
   const [txDetails, setTxDetails] = useState<string>("");
   const [isPending, setIsPending] = useState(false);
-  const chainId = soneiumMainnet.id;
+  const chainId = monadTestnet.id;
   const { address: walletAddress } = useAccount();
-  const [nftContractAddress, setNftContractAddress] = useState<Address>('0xc2c84FBdF873468Fd6ae84A01B09F5DF39b5366b');
+  const [nftContractAddress, setNftContractAddress] = useState<Address>('0xe27Ee4CdDF7794cE36AEAb0Ebff3eDb73A892410');
   const [contracts] = useState<Array<IItemContract>>(nftContracts);
   const connectedId = useChainId();
-  const isConnectedToMinato = connectedId === soneiumMainnet.id;
+  const isConnectedToMinato = connectedId === monadTestnet.id;
   const [quantity, setQuantity] = useState(1);
   const [mintedNFTs, setMintedNFTs] = useState([]);
   const [timeLeft, setTimeLeft] = useState(''); // Countdown for whitelist
@@ -169,7 +169,7 @@ export const NftMint = () => {
       await publicClient.waitForTransactionReceipt({
         hash,
       });
-      setTxDetails(`https://soneium.blockscout.com/tx/${hash}`);
+      setTxDetails(`https://testnet.monadexplorer.com/tx/${hash}`);
       await refetch();
     } catch (error) {
       console.error(error);
@@ -188,7 +188,7 @@ export const NftMint = () => {
         account: walletAddress as Address,
         address: nftContractAddress as Address,
         abi: NFT_ABI,
-        value: parseEther((0.0001 * quantity).toString()),
+        value: parseEther((0.1 * quantity).toString()),
         functionName: "publicMint",
         args: [quantity as any],
       } as const;
@@ -197,7 +197,7 @@ export const NftMint = () => {
       await publicClient.waitForTransactionReceipt({
         hash,
       });
-      setTxDetails(`https://soneium.blockscout.com/tx/${hash}`);
+      setTxDetails(`https://testnet.monadexplorer.com/tx/${hash}`);
       await refetch();
     } catch (error) {
       console.error(error);
@@ -271,12 +271,39 @@ export const NftMint = () => {
     refetchWL();
   }
 
+  async function withdraw(): Promise<void> {
+    console.log(walletClient, publicClient, walletAddress);
+    if (!walletClient || !publicClient || !walletAddress) return;
+    try {
+      setIsPending(true);
+      setTxDetails("");
+      const tx = {
+        account: walletAddress as Address,
+        address: nftContractAddress as Address,
+        abi: NFT_ABI,
+        functionName: "withdraw",
+        args: [],
+      } as const;
+      const { request } = await publicClient.simulateContract(tx);
+      const hash = await walletClient.writeContract(request);
+      await publicClient.waitForTransactionReceipt({
+        hash,
+      });
+      setTxDetails(`https://testnet.monadexplorer.com/tx/${hash}`);
+      await refetch();
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setIsPending(false);
+    }
+  }
+
   return (
     <div className="min-h-screen w-full font-sans bg-transparent">
       <div className="flex flex-row">
-        <div className={"basis-4/4 bg-transparent"}>
+        <div className={"basis-2/4 bg-transparent"}>
           <Select onValueChange={item => handlechangeContract(item as any)}>
-            <SelectTrigger className="w-96">
+            <SelectTrigger className="w-96 w-full">
               <SelectValue placeholder="Select a contract" />
             </SelectTrigger>
             <SelectContent className="w-96 border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-500 focus:outline-none">
@@ -285,6 +312,14 @@ export const NftMint = () => {
               )}
             </SelectContent>
           </Select>
+        </div>
+        <div className={"basis-2/4 bg-transparent"}>
+          <Button disabled={isPending || !walletAddress || isBalanceZero || !isConnectedToMinato}
+            onClick={withdraw}
+            className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition"
+          >
+            Withdraw
+          </Button>
         </div>
       </div>
       <div className="flex flex-row">
@@ -417,14 +452,14 @@ export const NftMint = () => {
               {!isConnectedToMinato && walletAddress && (
                 <div className={styles.rowChecker}>
                   <span className={styles.textError}>
-                    Please connect to Soneium Minato
+                    Please connect to Monad Testnet
                   </span>
 
                   <button
                     className={styles.buttonSwitchChain}
                     onClick={() => switchChain({ chainId })}
                   >
-                    Switch to Soneium Minato
+                    Switch to Monad Testnet
                   </button>
                 </div>
               )}
