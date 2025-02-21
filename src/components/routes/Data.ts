@@ -9,12 +9,14 @@ const nftContracts: Array<IItemContract> =
     { key: 'Smart Contract Token', value: '0x2FE4E18eA571EA3b8bd9d1dAC6F3779a549A0f9F' },
     { key: 'Just Like It', value: '0x2073C3260A5537CE9f3bb0292E49E6146d1405A9' },
 	{ key: 'Keep Building', value: '0x984F27D333F066bbe1e08791D0f053ae9EA76392' },
-	{ key: 'Cz Token', value: '0xEB117ffe3d71987550ebAEA2D9af2650310A1286' },
-    { key: 'Monad Nft', value: '0xe27Ee4CdDF7794cE36AEAb0Ebff3eDb73A892410' },
+	{ key: 'Cz Token', value: '0xEB117ffe3d71987550ebAEA2D9af2650310A1286' }];
+
+const nftMonaContracts: Array<IItemContract> =
+    [{ key: 'Monad Nft', value: '0xe27Ee4CdDF7794cE36AEAb0Ebff3eDb73A892410' },
     { key: 'Monad Nft1', value: '0xA792a454C5a36af8Cf2b517E3a65b06fd742e662' }];
 
 export {
-    nftContracts
+    nftContracts, nftMonaContracts
 }
 
 export type { IItemContract };

@@ -21,7 +21,7 @@ import {
 import NFT_ABI from "../../global-context/abi/DemoNFT.ts";
 import axios from 'axios';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../base/select/select.tsx";
-import { IItemContract, nftContracts } from "./Data.ts";
+import { IItemContract, nftMonaContracts as nftContracts } from "./Data.ts";
 
 export const Monad = () => {
   const { isConnected, address } = useAccount();
@@ -188,7 +188,7 @@ export const Monad = () => {
         account: walletAddress as Address,
         address: nftContractAddress as Address,
         abi: NFT_ABI,
-        value: parseEther((0.1 * quantity).toString()),
+        value: parseEther((0.0001 * quantity).toString()),
         functionName: "publicMint",
         args: [quantity as any],
       } as const;
@@ -304,7 +304,7 @@ export const Monad = () => {
         <div className={"basis-2/4 bg-transparent"}>
           <Select onValueChange={item => handlechangeContract(item as any)}>
             <SelectTrigger className="w-96 w-full">
-              <SelectValue placeholder="Select a contract" />
+              <SelectValue placeholder="Select a contract" defaultValue={nftContractAddress} />
             </SelectTrigger>
             <SelectContent className="w-96 border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-500 focus:outline-none">
               {contracts.map((item, i) =>
@@ -330,7 +330,7 @@ export const Monad = () => {
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
               {newArray.length > 0 && mintedNFTs.map((nft: any, index) => (
                 <div key={index} className="border border-gray-300 rounded-lg p-4">
-                  <div className="flex flex-row" style={{
+                  {/* <div className="flex flex-row" style={{
                     display: 'flex',
                     justifyContent: 'center',
                     alignItems: 'center',
@@ -341,7 +341,7 @@ export const Monad = () => {
                       className="rounded-sm mb-2" style={{
                         height: '20vh', maxWidth: '100%', objectFit: 'cover'
                       }}
-                    /></div>
+                    /></div> */}
                   <div className="flex flex-row">
                     <Label>NFT #{nft.tokenId}</Label>
                   </div>
@@ -474,11 +474,11 @@ export const Monad = () => {
             </div>
 
             <div className="col-span-4">
-              <img
+              {/* <img
                 src="https://gateway.pinata.cloud/ipfs/QmaHGo7pQ9x7B1rNvPbkzTnrZNuHA4mx53t8ZnAA8JFUG2/0.gif"
                 alt='Image preview'
                 className="w-full rounded-lg mb-2"
-              />
+              /> */}
             </div>
 
             <div className="col-span-4">
