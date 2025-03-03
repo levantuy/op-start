@@ -37,6 +37,12 @@ export const Home = () => {
           <CardDescription>Monad</CardDescription>
         </CardHeader>
       </Card>
+      <Card className="cursor-pointer" onClick={() => navigate('/marketplace')}>
+        <CardHeader>
+          <CardTitle>Marketplace</CardTitle>
+          <CardDescription>Marketplace</CardDescription>
+        </CardHeader>
+      </Card>
     </div>
   )
 }
