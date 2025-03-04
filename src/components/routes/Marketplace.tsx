@@ -1,3 +1,4 @@
+import styles from "./NftMint.module.css";
 import { useEffect, useState } from 'react';
 import { Address, parseEther } from 'viem';
 import { Monad as monadTestnet } from '../../global-context/soneiumMainnet.ts';
@@ -11,15 +12,16 @@ import contractABI from "../../global-context/abi/Marketplace.ts";
 import { Button, Input } from '../base/index.tsx';
 
 export const Marketplace = () => {
-  const [nftAddress, setNftAddress] = useState<Address>('0xaa1059a2475b547F6A6A3612e2889281a5a496f8');
+  const [nftAddress, setNftAddress] = useState<Address>('0xe1a42c333ad20845546e402f5f4256cf2b8b62ab');
   const [nfts, setNfts] = useState([]);
   const [selectedNFT, setSelectedNFT] = useState(null);
   const [price, setPrice] = useState("");
-  const [marketplaceContract] = useState<Address>('0xB99B1df1F52E9E304C155ed0514C8329F03774C9');
+  const [marketplaceContract] = useState<Address>('0xBbf82Eb6a116335cb5e87F3148916f65656BBe15');
   const chainId = monadTestnet.id;
   const { address: walletAddress } = useAccount();
   const [isPending, setIsPending] = useState(false);
-
+  const [isApproved, setIsApproved] = useState<boolean | null>(null);
+  const [txDetails, setTxDetails] = useState<string>("");
   const { data: walletClient } = useWalletClient({
     chainId,
     account: walletAddress,
@@ -29,8 +31,53 @@ export const Marketplace = () => {
     chainId,
   });
 
+  // 🟢 Check if Approved For All
+  const { data: approvedForAll, refetch } = useReadContract({
+    account: walletAddress,
+    address: marketplaceContract,
+    abi: contractABI,
+    functionName: "isApprovedForAll",
+    args: [nftAddress, walletAddress as any],
+  });
+
+  useEffect(() => {
+    if (approvedForAll !== undefined) {
+      setIsApproved(approvedForAll);
+    }
+  }, [approvedForAll]);
+
+  // 🔵 Request Approval
+  const approveMarketplaceForAll = async () => {
+    if (!walletClient || !publicClient || !walletAddress) return alert("Wallet not connected");
+    setIsPending(true);
+    setTxDetails('');
+
+    try {
+      const tx = {
+        account: walletAddress,
+        address: marketplaceContract,
+        abi: contractABI,
+        functionName: "approveNFT",
+        args: [nftAddress, selectedNFT],
+      } as const;
+
+      const { request } = await publicClient.simulateContract(tx as any);
+      const hash = await walletClient.writeContract(request);
+      await publicClient.waitForTransactionReceipt({
+        hash,
+      });
+
+      setTxDetails(`https://testnet.monadexplorer.com/tx/${hash}`);
+      refetch();
+    } catch (error) {
+      console.error("Approval Failed:", error);
+    } finally {
+      setIsPending(false);
+    }
+  };
+
   // Fetch all NFTs owned by the user
-  const { data: nftList, refetch } = useReadContract({
+  const { data: nftList, refetch: refetchNfts } = useReadContract({
     account: walletAddress,
     address: marketplaceContract,
     abi: contractABI,
@@ -48,28 +95,6 @@ export const Marketplace = () => {
   async function listNFT(): Promise<void> {
     if (!walletClient || !publicClient || !walletAddress) return;
     setIsPending(true);
-
-    try {
-      const tx = {
-        account: walletAddress,
-        address: marketplaceContract,
-        abi: contractABI,
-        functionName: "isNFTApproved",
-        args: selectedNFT ? [nftAddress, selectedNFT] : undefined,
-      } as const;
-
-      const { request } = await publicClient.simulateContract(tx as any);
-      const hash = await walletClient.writeContract(request);
-      await publicClient.waitForTransactionReceipt({
-        hash,
-      }).then(item => {
-        console.log(item);
-      });
-    } catch (error) {
-      console.error(error);
-    } finally {
-      setIsPending(false);
-    }
 
     try {
       const tx = {
@@ -95,6 +120,31 @@ export const Marketplace = () => {
   return (
     <div className="w-full">
       <h1>NFT Marketplace</h1>
+      <div>
+        {isApproved === null ? (
+          <p>Checking approval status...</p>
+        ) : isApproved ? (
+          <p>✅ Approved for all NFTs</p>
+        ) : (
+          <Button onClick={approveMarketplaceForAll} disabled={isPending} className="w-full bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition">
+            {isPending ? "Approving..." : "Approve Marketplace for All"}
+          </Button>
+        )}
+      </div>
+      {txDetails && (
+        <div className={styles.txDetails}>
+          <span>🎉 Congrats! Your NFT has been minted 🐣 </span>
+          <a
+            href={txDetails}
+            target="_blank"
+            rel="noreferrer"
+            className={styles.txLink}
+          >
+            View transaction
+          </a>
+        </div>
+      )}
+
       <Input
         id="quantity"
         type="text"
@@ -104,7 +154,7 @@ export const Marketplace = () => {
         min="1"
       />
       <Button disabled={isPending || !walletAddress}
-        onClick={() => refetch()}
+        onClick={() => refetchNfts()}
         className="w-full bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition"
       >
         Get My Nft of Contract
@@ -124,13 +174,14 @@ export const Marketplace = () => {
       {selectedNFT !== null && (
         <div>
           <h2>List NFT #{selectedNFT}</h2>
-          <input
+          <Input
             type="text"
             placeholder="Enter price in ETH"
             value={price}
             onChange={(e) => setPrice(e.target.value)}
+            className="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-500 focus:outline-none"
           />
-          <button onClick={listNFT}>List NFT</button>
+          <Button onClick={listNFT} className="w-full bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition">List NFT</Button>
         </div>
       )}
     </div>
