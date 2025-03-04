@@ -16,6 +16,7 @@ const nftMonaContracts: Array<IItemContract> =
     { key: 'Monad Nft1', value: '0xA792a454C5a36af8Cf2b517E3a65b06fd742e662' },
     { key: 'Monad Nft V1', value: '0x385cd0F8fb6A0C25685066D9f2Afe3aEBFc3F8c7' },
     { key: 'Girl Nft', value: '0xaa1059a2475b547F6A6A3612e2889281a5a496f8' },
+    { key: 'X', value: '0xe1a42c333ad20845546e402f5f4256cf2b8b62ab' },
     ];
 
 export {

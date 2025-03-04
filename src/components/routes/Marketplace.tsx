@@ -5,7 +5,7 @@ import {
   useAccount,
   usePublicClient,
   useReadContract,
-  useWalletClient,
+  useWalletClient
 } from "wagmi";
 import contractABI from "../../global-context/abi/Marketplace.ts";
 import { Button, Input } from '../base/index.tsx';
@@ -15,7 +15,7 @@ export const Marketplace = () => {
   const [nfts, setNfts] = useState([]);
   const [selectedNFT, setSelectedNFT] = useState(null);
   const [price, setPrice] = useState("");
-  const [marketplaceContract, setMarketplaceContract] = useState<Address>('0x29aba5F2f58bb6017Aa78276Aa21eCb82928e887');
+  const [marketplaceContract] = useState<Address>('0xB99B1df1F52E9E304C155ed0514C8329F03774C9');
   const chainId = monadTestnet.id;
   const { address: walletAddress } = useAccount();
   const [isPending, setIsPending] = useState(false);
@@ -31,25 +31,49 @@ export const Marketplace = () => {
 
   // Fetch all NFTs owned by the user
   const { data: nftList, refetch } = useReadContract({
+    account: walletAddress,
     address: marketplaceContract,
     abi: contractABI,
     functionName: "getAllNFTsAccount",
-    args: [nftAddress]
+    args: [nftAddress, walletAddress as any]
   });
 
   useEffect(() => {
     if (nftList) {
-      setNfts(nftList as any);
+      const newArray = nftList ? nftList.map(id => Number(id)) : []
+      setNfts(newArray as any);
     }
   }, [nftList]);
 
   async function listNFT(): Promise<void> {
     if (!walletClient || !publicClient || !walletAddress) return;
-    try {
-      const [txDetails, setTxDetails] = useState<string>("");
-      const [isPending, setIsPending] = useState(false);
+    setIsPending(true);
 
+    try {
       const tx = {
+        account: walletAddress,
+        address: marketplaceContract,
+        abi: contractABI,
+        functionName: "isNFTApproved",
+        args: selectedNFT ? [nftAddress, selectedNFT] : undefined,
+      } as const;
+
+      const { request } = await publicClient.simulateContract(tx as any);
+      const hash = await walletClient.writeContract(request);
+      await publicClient.waitForTransactionReceipt({
+        hash,
+      }).then(item => {
+        console.log(item);
+      });
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setIsPending(false);
+    }
+
+    try {
+      const tx = {
+        account: walletAddress,
         address: marketplaceContract,
         abi: contractABI,
         functionName: "listNFT",
@@ -61,8 +85,6 @@ export const Marketplace = () => {
       await publicClient.waitForTransactionReceipt({
         hash,
       });
-
-      setTxDetails(`https://testnet.monadexplorer.com/tx/${hash}`);
     } catch (error) {
       console.error(error);
     } finally {
