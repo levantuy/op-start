@@ -10,9 +10,11 @@ import {
 } from "wagmi";
 import contractABI from "../../global-context/abi/Marketplace.ts";
 import { Button, Input } from '../base/index.tsx';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../base/select/select.tsx";
+import { IItemContract, nftMonaContracts } from "./Data.ts";
 
 export const Marketplace = () => {
-  const [nftAddress, setNftAddress] = useState<Address>('0xe1a42c333ad20845546e402f5f4256cf2b8b62ab');
+  const [nftAddress, setNftAddress] = useState<Address>('0xaa1059a2475b547F6A6A3612e2889281a5a496f8');
   const [nfts, setNfts] = useState([]);
   const [selectedNFT, setSelectedNFT] = useState(null);
   const [price, setPrice] = useState("");
@@ -22,6 +24,7 @@ export const Marketplace = () => {
   const [isPending, setIsPending] = useState(false);
   const [isApproved, setIsApproved] = useState<boolean | null>(null);
   const [txDetails, setTxDetails] = useState<string>("");
+  const [contracts] = useState<Array<IItemContract>>(nftMonaContracts);
   const { data: walletClient } = useWalletClient({
     chainId,
     account: walletAddress,
@@ -96,6 +99,8 @@ export const Marketplace = () => {
     if (!walletClient || !publicClient || !walletAddress) return;
     setIsPending(true);
 
+    if (!isApproved) await approveMarketplaceForAll();
+
     try {
       const tx = {
         account: walletAddress,
@@ -115,6 +120,11 @@ export const Marketplace = () => {
     } finally {
       setIsPending(false);
     }
+  }
+
+  const handlechangeContract = (address: Address) => {
+    setNftAddress(address);
+    refetch();
   }
 
   return (
@@ -144,22 +154,22 @@ export const Marketplace = () => {
           </a>
         </div>
       )}
-
-      <Input
-        id="quantity"
-        type="text"
-        value={nftAddress}
-        onChange={(e) => setNftAddress(e.target.value as any)}
-        className="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-500 focus:outline-none"
-        min="1"
-      />
+      <Select onValueChange={item => handlechangeContract(item as any)}>
+        <SelectTrigger className="w-96 w-full">
+          <SelectValue placeholder="Select a contract" defaultValue={nftAddress} />
+        </SelectTrigger>
+        <SelectContent className="w-96 border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-500 focus:outline-none">
+          {contracts.map((item, i) =>
+            <SelectItem key={i} value={item.value}>{item.key}</SelectItem>
+          )}
+        </SelectContent>
+      </Select>
       <Button disabled={isPending || !walletAddress}
         onClick={() => refetchNfts()}
         className="w-full bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition"
       >
         Get My Nft of Contract
       </Button>
-
       <div>
         <h2>My NFTs</h2>
         <ul>
