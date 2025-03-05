@@ -16,7 +16,7 @@ export const Marketplace = () => {
   const [nfts, setNfts] = useState([]);
   const [selectedNFT, setSelectedNFT] = useState(null);
   const [price, setPrice] = useState("");
-  const [marketplaceContract] = useState<Address>('0xBbf82Eb6a116335cb5e87F3148916f65656BBe15');
+  const [marketplaceContract] = useState<Address>('0xFE2Ea8634f304d3eb4f7283eC63C623a2D974F26');
   const chainId = monadTestnet.id;
   const { address: walletAddress } = useAccount();
   const [isPending, setIsPending] = useState(false);
@@ -55,10 +55,10 @@ export const Marketplace = () => {
     try {
       const tx = {
         account: walletAddress,
-        address: marketplaceContract,
+        address: nftAddress,
         abi: contractABI,
-        functionName: "approveNFT",
-        args: [nftAddress, selectedNFT],
+        functionName: "setApprovalForAll",
+        args: [marketplaceContract, true],
       } as const;
 
       const { request } = await publicClient.simulateContract(tx as any);

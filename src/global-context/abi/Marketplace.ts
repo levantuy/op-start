@@ -161,24 +161,6 @@ export default [
         "inputs": [
             {
                 "internalType": "address",
-                "name": "operator",
-                "type": "address"
-            },
-            {
-                "internalType": "bool",
-                "name": "approved",
-                "type": "bool"
-            }
-        ],
-        "name": "approveMarketplaceForAll",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "address",
                 "name": "owner",
                 "type": "address"
             },
@@ -202,24 +184,6 @@ export default [
     {
         "inputs": [
             {
-                "internalType": "address",
-                "name": "to",
-                "type": "address"
-            },
-            {
-                "internalType": "uint256",
-                "name": "tokenId",
-                "type": "uint256"
-            }
-        ],
-        "name": "approveNFT",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
                 "internalType": "uint256",
                 "name": "tokenId",
                 "type": "uint256"
@@ -237,21 +201,23 @@ export default [
         "type": "function"
     },
     {
-        "inputs": [
-            {
-                "internalType": "address",
-                "name": "operator",
-                "type": "address"
-            },
-            {
-                "internalType": "bool",
-                "name": "approved",
-                "type": "bool"
-            }
-        ],
-        "name": "approveMarketplaceNft",
-        "outputs": [],
+        "name": "approve",
+        "type": "function",
         "stateMutability": "nonpayable",
-        "type": "function"
+        "inputs": [
+            { "name": "to", "type": "address" },
+            { "name": "tokenId", "type": "uint256" }
+        ],
+        "outputs": []
     },
+    {
+        "name": "setApprovalForAll",
+        "type": "function",
+        "stateMutability": "nonpayable",
+        "inputs": [
+            { "name": "operator", "type": "address" },
+            { "name": "approved", "type": "bool" }
+        ],
+        "outputs": []
+    }
 ] as const;
