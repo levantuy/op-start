@@ -12,6 +12,7 @@ import contractABI from "../../global-context/abi/Marketplace.ts";
 import { Button, Input } from '../base/index.tsx';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../base/select/select.tsx";
 import { IItemContract, nftMonaContracts } from "./Data.ts";
+import { Label } from "@radix-ui/react-label";
 
 export const Marketplace = () => {
   const [nftAddress, setNftAddress] = useState<Address>('0xaa1059a2475b547F6A6A3612e2889281a5a496f8');
@@ -107,7 +108,7 @@ export const Marketplace = () => {
         address: marketplaceContract,
         abi: contractABI,
         functionName: "listNFT",
-        args: selectedNFT ? [nftAddress, selectedNFT, parseEther(price)] : undefined,
+        args: [nftAddress, selectedNFT, parseEther(price)],
       } as const;
 
       const { request } = await publicClient.simulateContract(tx as any);
@@ -115,6 +116,7 @@ export const Marketplace = () => {
       await publicClient.waitForTransactionReceipt({
         hash,
       });
+      setSelectedNFT(null);
     } catch (error) {
       console.error(error);
     } finally {
@@ -125,75 +127,98 @@ export const Marketplace = () => {
   const handlechangeContract = (address: Address) => {
     setNftAddress(address);
     refetch();
+    refetchNfts();
   }
 
   return (
     <div className="w-full">
-      <h1>NFT Marketplace</h1>
-      <div>
-        {isApproved === null ? (
-          <p>Checking approval status...</p>
-        ) : isApproved ? (
-          <p>✅ Approved for all NFTs</p>
-        ) : (
-          <Button onClick={approveMarketplaceForAll} disabled={isPending} className="w-full bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition">
-            {isPending ? "Approving..." : "Approve Marketplace for All"}
-          </Button>
-        )}
-      </div>
-      {txDetails && (
-        <div className={styles.txDetails}>
-          <span>🎉 Congrats! Your NFT has been minted 🐣 </span>
-          <a
-            href={txDetails}
-            target="_blank"
-            rel="noreferrer"
-            className={styles.txLink}
-          >
-            View transaction
-          </a>
+      <div className="flex flex-row">
+        <div className={"basis-1/2 bg-transparent"}>
+          <Select onValueChange={item => handlechangeContract(item as any)}>
+            <SelectTrigger className="w-96 w-full">
+              <SelectValue placeholder="Select a contract" defaultValue={nftAddress} />
+            </SelectTrigger>
+            <SelectContent className="w-96 border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-500 focus:outline-none">
+              {contracts.map((item, i) =>
+                <SelectItem key={i} value={item.value}>{item.key}</SelectItem>
+              )}
+            </SelectContent>
+          </Select>
         </div>
-      )}
-      <Select onValueChange={item => handlechangeContract(item as any)}>
-        <SelectTrigger className="w-96 w-full">
-          <SelectValue placeholder="Select a contract" defaultValue={nftAddress} />
-        </SelectTrigger>
-        <SelectContent className="w-96 border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-500 focus:outline-none">
-          {contracts.map((item, i) =>
-            <SelectItem key={i} value={item.value}>{item.key}</SelectItem>
+        <div className={"basis-1/4 bg-transparent"}>
+          {isApproved === null ? (
+            <p>Checking approval
+              status...</p>
+          ) : isApproved ? (
+            <p>✅ Approved for all NFTs</p>
+          ) : (
+            <Button onClick={approveMarketplaceForAll} disabled={isPending} className="w-full bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition">
+              {isPending ? "Approving..." : "Approve Marketplace for All"}
+            </Button>
           )}
-        </SelectContent>
-      </Select>
-      <Button disabled={isPending || !walletAddress}
-        onClick={() => refetchNfts()}
-        className="w-full bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition"
-      >
-        Get My Nft of Contract
-      </Button>
-      <div>
-        <h2>My NFTs</h2>
-        <ul>
-          {nfts.map((tokenId) => (
-            <li key={tokenId} onClick={() => setSelectedNFT(tokenId)}>
-              NFT #{tokenId}
-            </li>
-          ))}
-        </ul>
-      </div>
-
-      {selectedNFT !== null && (
-        <div>
-          <h2>List NFT #{selectedNFT}</h2>
-          <Input
-            type="text"
-            placeholder="Enter price in ETH"
-            value={price}
-            onChange={(e) => setPrice(e.target.value)}
-            className="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-500 focus:outline-none"
-          />
-          <Button onClick={listNFT} className="w-full bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition">List NFT</Button>
         </div>
-      )}
+        <div className={"basis-1/4 bg-transparent"}>
+          {txDetails && (
+            <div className={styles.txDetails}>
+              <span>🎉 Congrats! 🐣<a
+                href={txDetails}
+                target="_blank"
+                rel="noreferrer"
+                className={styles.txLink}
+              >
+                View transaction
+              </a> </span>
+            </div>
+          )}
+        </div>
+      </div>
+      <div className="flex flex-row">
+        <div className={"basis-4/4 w-full bg-transparent"}>
+          <div className={"m-2 border border-gray-300 rounded-lg p-4 bg-transparent"}>
+            {/* Minted NFTs List */}
+            <div className="p-6 rounded-lg"> {isPending ? <>Loading...</> :
+              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                {nfts.length > 0 && nfts.map((nft: any, index) => (
+                  <div key={index} className="border border-gray-300 rounded-lg p-4">
+                    {/* <div className="flex flex-row" style={{
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                  }}>
+                    <img
+                      src={nft.image}
+                      alt={`NFT ${nft.id}`}
+                      className="rounded-sm mb-2" style={{
+                        height: '20vh', maxWidth: '100%', objectFit: 'cover'
+                      }}
+                    /></div> */}
+                    <div className="flex flex-row">
+                      <Label>NFT #{nft}</Label>
+                    </div>
+                    <div className="flex flex-row">
+                      <Label>Name of tokenId</Label>
+                    </div>
+                    <div>
+                      {selectedNFT && selectedNFT === nft ? <>
+                        <Input
+                          type="text"
+                          placeholder="Enter price in MON"
+                          value={price}
+                          onChange={(e) => setPrice(e.target.value)}
+                          className="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                        />
+                        <Button onClick={listNFT} className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition">List NFT</Button>
+                      </> : <>
+                        <Button onClick={() => setSelectedNFT(nft)} className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition">List NFT</Button>
+                      </>}
+                    </div>
+                  </div>
+                ))}
+              </div>}
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   );
 };
