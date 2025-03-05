@@ -19,7 +19,7 @@ export const Marketplace = () => {
   const [nfts, setNfts] = useState([]);
   const [selectedNFT, setSelectedNFT] = useState(null);
   const [price, setPrice] = useState("");
-  const [marketplaceContract] = useState<Address>('0xFE2Ea8634f304d3eb4f7283eC63C623a2D974F26');
+  const [marketplaceContract] = useState<Address>('0x0b65b241B7D91f8f41Ae31784288bcC5636431DB');
   const chainId = monadTestnet.id;
   const { address: walletAddress } = useAccount();
   const [isPending, setIsPending] = useState(false);
