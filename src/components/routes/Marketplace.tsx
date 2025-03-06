@@ -17,7 +17,7 @@ import { Label } from "@radix-ui/react-label";
 import axios from 'axios';
 
 export const Marketplace = () => {
-  const [nftAddress, setNftAddress] = useState<Address>('0xaa1059a2475b547F6A6A3612e2889281a5a496f8');
+  const [nftAddress, setNftAddress] = useState<Address>(nftMonaContracts[0].value);
   const [nfts, setNfts] = useState([]);
   const chainId = monadTestnet.id;
   const { address: walletAddress } = useAccount();
@@ -177,7 +177,7 @@ export const Marketplace = () => {
                       <Label>Price: {nft.price}</Label>
                     </div>
                     <div>
-                      <Button onClick={() => buyNFT(nft.tokenId, nft.price)}
+                      <Button disabled={nft.seller == walletAddress} onClick={() => buyNFT(nft.tokenId, nft.price)}
                         className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition">Buy NFT</Button>
                     </div>
                   </div>

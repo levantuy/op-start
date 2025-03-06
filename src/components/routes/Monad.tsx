@@ -250,6 +250,7 @@ export const Monad = () => {
     refetch();
     refetchPL();
     refetchWL();
+    refreshBaseURI();
   }
 
   async function withdraw(): Promise<void> {

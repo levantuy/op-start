@@ -17,7 +17,7 @@ import { Label } from "@radix-ui/react-label";
 import axios from "axios";
 
 export const AccountNft = () => {
-  const [nftAddress, setNftAddress] = useState<Address>('0xaa1059a2475b547F6A6A3612e2889281a5a496f8');
+  const [nftAddress, setNftAddress] = useState<Address>(nftMonaContracts[0].value);
   const [nfts, setNfts] = useState([]);
   const [selectedNFT, setSelectedNFT] = useState(null);
   const [price, setPrice] = useState("");

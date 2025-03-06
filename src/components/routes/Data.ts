@@ -14,6 +14,7 @@ const nftContracts: Array<IItemContract> =
 const nftMonaContracts: Array<IItemContract> =
     [
         { key: 'Monad Nft 3', value: '0x2A75C1EC766435Edc2DBc7B8ECEE0178959d6CB4' },
+        { key: 'Monad Nft 4', value: '0x4099f7b986fFee4F3Ef335d9dD7c348cBDEE7F33' },
     ];
 
 const marketplaceContract: Address = '0x5b5EE93E4994fE285a81B3952526aeFd8425e5c0';
