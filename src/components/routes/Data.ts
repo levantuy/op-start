@@ -8,21 +8,18 @@ const nftContracts: Array<IItemContract> =
     { key: 'Mug Token', value: '0x17018B76BB88C62Ef468a5323aE4Ffd775C1f9C3' },
     { key: 'Smart Contract Token', value: '0x2FE4E18eA571EA3b8bd9d1dAC6F3779a549A0f9F' },
     { key: 'Just Like It', value: '0x2073C3260A5537CE9f3bb0292E49E6146d1405A9' },
-	{ key: 'Keep Building', value: '0x984F27D333F066bbe1e08791D0f053ae9EA76392' },
-	{ key: 'Cz Token', value: '0xEB117ffe3d71987550ebAEA2D9af2650310A1286' }];
+    { key: 'Keep Building', value: '0x984F27D333F066bbe1e08791D0f053ae9EA76392' },
+    { key: 'Cz Token', value: '0xEB117ffe3d71987550ebAEA2D9af2650310A1286' }];
 
 const nftMonaContracts: Array<IItemContract> =
-    [{ key: 'Monad Nft', value: '0xe27Ee4CdDF7794cE36AEAb0Ebff3eDb73A892410' },
-    { key: 'Monad Nft1', value: '0xA792a454C5a36af8Cf2b517E3a65b06fd742e662' },
-    { key: 'Monad Nft V1', value: '0x385cd0F8fb6A0C25685066D9f2Afe3aEBFc3F8c7' },
-    { key: 'Girl Nft', value: '0xaa1059a2475b547F6A6A3612e2889281a5a496f8' },
-    { key: 'X', value: '0xe1a42c333ad20845546e402f5f4256cf2b8b62ab' },
-    { key: 'Monad Nft 1', value: '0x43827020f01b806868B1809508d8Ef863bB5c64D' },
-	{ key: 'Monad Nft 2', value: '0x6ece535635DD9c8812638DDb3a3C34DE9398C359' },	
+    [
+        { key: 'Monad Nft 3', value: '0x2A75C1EC766435Edc2DBc7B8ECEE0178959d6CB4' },
     ];
 
+const marketplaceContract: Address = '0x5b5EE93E4994fE285a81B3952526aeFd8425e5c0';
+
 export {
-    nftContracts, nftMonaContracts
+    nftContracts, nftMonaContracts, marketplaceContract
 }
 
 export type { IItemContract };

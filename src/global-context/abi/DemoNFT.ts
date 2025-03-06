@@ -395,6 +395,13 @@ export default [
   },
   {
     inputs: [],
+    name: "baseURI",
+    outputs: [{ "internalType": "string", "name": "baseURI", "type": "string" }],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
     name: "whitelistStartTime",
     outputs: [{ "internalType": "uint256", "name": "whitelistStartTime", "type": "uint256" }],
     stateMutability: "view",
@@ -673,4 +680,18 @@ export default [
     stateMutability: "nonpayable",
     type: "function",
   },
+  {
+    "constant": true,
+    "inputs": [],
+    "name": "getAllTokenIds",
+    "outputs": [
+      {
+        "name": "",
+        "type": "uint256[]"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  }  
 ] as const;

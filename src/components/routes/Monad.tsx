@@ -14,7 +14,6 @@ import {
   useChainId,
   usePublicClient,
   useReadContract,
-  useReadContracts,
   useSwitchChain,
   useWalletClient,
 } from "wagmi";
@@ -31,7 +30,7 @@ export const Monad = () => {
   const [isPending, setIsPending] = useState(false);
   const chainId = monadTestnet.id;
   const { address: walletAddress } = useAccount();
-  const [nftContractAddress, setNftContractAddress] = useState<Address>('0xe27Ee4CdDF7794cE36AEAb0Ebff3eDb73A892410');
+  const [nftContractAddress, setNftContractAddress] = useState<Address>('0x2A75C1EC766435Edc2DBc7B8ECEE0178959d6CB4');
   const [contracts] = useState<Array<IItemContract>>(nftContracts);
   const connectedId = useChainId();
   const isConnectedToMinato = connectedId === monadTestnet.id;
@@ -48,13 +47,6 @@ export const Monad = () => {
 
   const publicClient = usePublicClient({
     chainId,
-  });
-
-  const { data: totalNFT, refetch } = useReadContract({
-    abi: NFT_ABI,
-    address: nftContractAddress,
-    functionName: "balanceOf",
-    args: [walletAddress as Address],
   });
 
   const { data: whitelistStartTime, refetch: refetchWL } = useReadContract({
@@ -85,29 +77,12 @@ export const Monad = () => {
     args: [],
   });
 
-  const newArray = totalNFT ? (Array(Number(totalNFT)).fill(0) as number[]) : []
-  const calls = newArray.map((_, index) => ({
-    abi: NFT_ABI,
+  const { data: baseURI, refetch: refreshBaseURI } = useReadContract({
+    account: walletAddress,
     address: nftContractAddress,
-    functionName: 'tokenOfOwnerByIndex',
-    args: [walletAddress as Address, index],
-    chainId,
-  }))
-
-  const { data: tokenIDs } = useReadContracts({
-    contracts: newArray.length > 0 ? calls as any : [],
-  });
-
-  const callsTokenURI = tokenIDs?.map((tokenId) => ({
     abi: NFT_ABI,
-    address: nftContractAddress as Address,
-    functionName: 'tokenURI',
-    args: [tokenId.result as any],
-    chainId,
-  }));
-
-  const { data: tokenUri } = useReadContracts({
-    contracts: tokenIDs ? callsTokenURI : [],
+    functionName: "baseURI",
+    args: [],
   });
 
   const { data: bal } = useBalance({
@@ -116,11 +91,18 @@ export const Monad = () => {
   });
   const isBalanceZero = bal?.value.toString() === "0";
 
-  const fetchTokenURI = async (tokenURI: any) => {
+  const { data: totalNFT, refetch } = useReadContract({
+    abi: NFT_ABI,
+    address: nftContractAddress,
+    functionName: "getAllTokenIds",
+    args: [],
+  });
+
+  const fetchTokenURI = async (totalNFT: bigint[]) => {
     const metaData = await Promise.all(
-      tokenURI.map(async (item: any) => {
+      totalNFT.map(async (item) => {
         try {
-          const { data } = await axios.get(item.result)
+          const { data } = await axios.get(baseURI ? `${baseURI.toString()}${item}` : '');
 
           return data
         } catch (error) {
@@ -132,16 +114,15 @@ export const Monad = () => {
   }
 
   useEffect(() => {
-    if (tokenUri) {
-      setIsPending(true);
-      fetchTokenURI(tokenUri as any)
+    if (totalNFT) {
+      fetchTokenURI(totalNFT as any)
         .then((data) => {
           setMintedNFTs(data as any)
         })
         .catch(console.log)
         .finally(() => setIsPending(false));
     }
-  }, [tokenUri]);
+  }, [totalNFT]);
 
   useEffect(() => {
     if (isConnected && !didConnect) {
@@ -328,9 +309,9 @@ export const Monad = () => {
           <h2 className="text-xl font-bold text-left ml-6">Minted NFTs</h2>
           <div className="p-6 rounded-lg"> {isPending ? <>Loading...</> :
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-              {newArray.length > 0 && mintedNFTs.map((nft: any, index) => (
+              {mintedNFTs && mintedNFTs.map((nft: any, index) => (
                 <div key={index} className="border border-gray-300 rounded-lg p-4">
-                  {/* <div className="flex flex-row" style={{
+                  <div className="flex flex-row" style={{
                     display: 'flex',
                     justifyContent: 'center',
                     alignItems: 'center',
@@ -341,7 +322,7 @@ export const Monad = () => {
                       className="rounded-sm mb-2" style={{
                         height: '20vh', maxWidth: '100%', objectFit: 'cover'
                       }}
-                    /></div> */}
+                    /></div>
                   <div className="flex flex-row">
                     <Label>NFT #{nft.tokenId}</Label>
                   </div>

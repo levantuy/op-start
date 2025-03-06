@@ -1,6 +1,6 @@
 import styles from "./NftMint.module.css";
 import { useEffect, useState } from 'react';
-import { Address, parseEther } from 'viem';
+import { Address, formatEther, parseEther } from 'viem';
 import { Monad as monadTestnet } from '../../global-context/soneiumMainnet.ts';
 import {
   useAccount,
@@ -9,17 +9,18 @@ import {
   useWalletClient
 } from "wagmi";
 import contractABI from "../../global-context/abi/Marketplace.ts";
+import NFT_ABI from "../../global-context/abi/DemoNFT.ts";
 import { Button, Input } from '../base/index.tsx';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../base/select/select.tsx";
-import { IItemContract, nftMonaContracts } from "./Data.ts";
+import { IItemContract, nftMonaContracts, marketplaceContract } from "./Data.ts";
 import { Label } from "@radix-ui/react-label";
+import axios from "axios";
 
 export const AccountNft = () => {
   const [nftAddress, setNftAddress] = useState<Address>('0xaa1059a2475b547F6A6A3612e2889281a5a496f8');
   const [nfts, setNfts] = useState([]);
   const [selectedNFT, setSelectedNFT] = useState(null);
   const [price, setPrice] = useState("");
-  const [marketplaceContract] = useState<Address>('0x3b32C9Ada9DaB66760f74F89866361015Af3Cf3C');
   const chainId = monadTestnet.id;
   const { address: walletAddress } = useAccount();
   const [isPending, setIsPending] = useState(false);
@@ -80,6 +81,14 @@ export const AccountNft = () => {
     }
   };
 
+  const { data: baseURI, refetch: refreshBaseURI } = useReadContract({
+    account: walletAddress,
+    address: nftAddress,
+    abi: NFT_ABI,
+    functionName: "baseURI",
+    args: [],
+  });
+
   // Fetch all NFTs owned by the user
   const { data: nftList, refetch: refetchNfts } = useReadContract({
     account: walletAddress,
@@ -89,10 +98,32 @@ export const AccountNft = () => {
     args: [nftAddress, walletAddress as any]
   });
 
+  const fetchTokenURI = async (tokenURI: any) => {
+    const metaData = await Promise.all(
+      tokenURI.map(async (listing: bigint) => {
+        let itemRes = {
+          tokenId: Number(listing)
+        };
+
+        try {
+          const { data } = await axios.get(baseURI ? `${baseURI.toString()}${listing}` : '');
+          return { ...itemRes, metadata: data };
+        } catch (error) {
+          return itemRes;
+        }
+      })
+    )
+    return metaData
+  }
+
   useEffect(() => {
     if (nftList) {
-      const newArray = nftList ? nftList.map(id => Number(id)) : []
-      setNfts(newArray as any);
+      fetchTokenURI(nftList)
+        .then((data) => {
+          setNfts(data as any)
+        })
+        .catch(console.log)
+        .finally(() => setIsPending(false));
     }
   }, [nftList]);
 
@@ -116,7 +147,7 @@ export const AccountNft = () => {
       await publicClient.waitForTransactionReceipt({
         hash,
       });
-      
+
       setTxDetails(`https://testnet.monadexplorer.com/tx/${hash}`);
       setSelectedNFT(null);
     } catch (error) {
@@ -130,6 +161,7 @@ export const AccountNft = () => {
     setNftAddress(address);
     refetch();
     refetchNfts();
+    refreshBaseURI();
   }
 
   return (
@@ -182,23 +214,26 @@ export const AccountNft = () => {
               <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                 {nfts.length > 0 && nfts.map((nft: any, index) => (
                   <div key={index} className={styles.backgroundItem}>
-                    {/* <div className="flex flex-row" style={{
-                    display: 'flex',
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                  }}>
-                    <img
-                      src={nft.image}
-                      alt={`NFT ${nft.id}`}
-                      className="rounded-sm mb-2" style={{
-                        height: '20vh', maxWidth: '100%', objectFit: 'cover'
-                      }}
-                    /></div> */}
+                    <div className="flex flex-row" style={{
+                      display: 'flex',
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                    }}>
+                      <img
+                        src={nft.metadata.image}
+                        alt={`NFT ${nft.metadata.name}`}
+                        className="rounded-sm mb-2" style={{
+                          height: '20vh', maxWidth: '100%', objectFit: 'cover'
+                        }}
+                      /></div>
                     <div className="flex flex-row">
-                      <Label>NFT #{nft}</Label>
+                      <Label>NFT #{nft.tokenId}</Label>
+                    </div>
+                    <div className="flex flex-row">
+                      <Label>Name: {nft.metadata.name}</Label>
                     </div>
                     <div>
-                      {selectedNFT && selectedNFT === nft ? <>
+                      {selectedNFT && selectedNFT === nft.tokenId ? <>
                         <Input
                           type="text"
                           placeholder="Enter price in MON"
@@ -208,7 +243,7 @@ export const AccountNft = () => {
                         />
                         <Button onClick={listNFT} className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition">List NFT</Button>
                       </> : <>
-                        <Button onClick={() => setSelectedNFT(nft)} className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition">List NFT</Button>
+                        <Button onClick={() => setSelectedNFT(nft.tokenId)} className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition">List NFT</Button>
                       </>}
                     </div>
                   </div>

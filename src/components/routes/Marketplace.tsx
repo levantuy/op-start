@@ -9,15 +9,16 @@ import {
   useWalletClient
 } from "wagmi";
 import contractABI from "../../global-context/abi/Marketplace.ts";
+import NFT_ABI from "../../global-context/abi/DemoNFT.ts";
 import { Button } from '../base/index.tsx';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../base/select/select.tsx";
-import { IItemContract, nftMonaContracts } from "./Data.ts";
+import { IItemContract, nftMonaContracts, marketplaceContract } from "./Data.ts";
 import { Label } from "@radix-ui/react-label";
+import axios from 'axios';
 
 export const Marketplace = () => {
   const [nftAddress, setNftAddress] = useState<Address>('0xaa1059a2475b547F6A6A3612e2889281a5a496f8');
   const [nfts, setNfts] = useState([]);
-  const [marketplaceContract] = useState<Address>('0x8D480Cb4670Bf738651f7faaD01238E99Aeb1329');
   const chainId = monadTestnet.id;
   const { address: walletAddress } = useAccount();
   const [isPending, setIsPending] = useState(false);
@@ -41,22 +42,50 @@ export const Marketplace = () => {
     args: [nftAddress]
   });
 
+  const { data: baseURI, refetch: refreshBaseURI } = useReadContract({
+    account: walletAddress,
+    address: nftAddress,
+    abi: NFT_ABI,
+    functionName: "baseURI",
+    args: [],
+  });
+
+  const fetchTokenURI = async (tokenURI: any) => {
+    const metaData = await Promise.all(
+      tokenURI.map(async (listing: any) => {
+        let itemRes = {
+          tokenId: Number(listing.tokenId),
+          seller: listing.seller,
+          price: formatEther(listing.price),
+          active: listing.active
+        };
+
+        try {
+          const { data } = await axios.get(baseURI ? `${baseURI.toString()}${listing.tokenId}` : '');
+          return { ...itemRes, metadata: data };
+        } catch (error) {
+          return itemRes;
+        }
+      })
+    )
+    return metaData
+  }
+
   useEffect(() => {
     if (nftList) {
-      const formattedNFTs = nftList.map(listing => ({
-        tokenId: Number(listing.tokenId),
-        seller: listing.seller,
-        price: formatEther(listing.price),
-        active: listing.active,
-      }));
-
-      setNfts(formattedNFTs as any);
+      fetchTokenURI(nftList)
+        .then((data) => {
+          setNfts(data as any)
+        })
+        .catch(console.log)
+        .finally(() => setIsPending(false));
     }
   }, [nftList]);
 
   const handlechangeContract = (address: Address) => {
     setNftAddress(address);
     refetchNfts();
+    refreshBaseURI();
   }
 
   async function buyNFT(tokenId: Number, price: string): Promise<void> {
@@ -126,23 +155,23 @@ export const Marketplace = () => {
               <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                 {nfts.length > 0 && nfts.map((nft: any, index) => (
                   <div key={index} className={styles.backgroundItem}>
-                    {/* <div className="flex flex-row" style={{
-                    display: 'flex',
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                  }}>
-                    <img
-                      src={nft.image}
-                      alt={`NFT ${nft.id}`}
-                      className="rounded-sm mb-2" style={{
-                        height: '20vh', maxWidth: '100%', objectFit: 'cover'
-                      }}
-                    /></div> */}
+                    <div className="flex flex-row" style={{
+                      display: 'flex',
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                    }}>
+                      <img
+                        src={nft.metadata.image}
+                        alt={`NFT ${nft.metadata.name}`}
+                        className="rounded-sm mb-2" style={{
+                          height: '20vh', maxWidth: '100%', objectFit: 'cover'
+                        }}
+                      /></div>
                     <div className="flex flex-row">
                       <Label>NFT #{nft.tokenId}</Label>
                     </div>
                     <div className="flex flex-row">
-                      <Label>Seller: {nft.seller}</Label>
+                      <Label>Name: {nft.metadata.name}</Label>
                     </div>
                     <div className="flex flex-row">
                       <Label>Price: {nft.price}</Label>
