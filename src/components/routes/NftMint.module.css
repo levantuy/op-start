@@ -69,3 +69,10 @@
 .rowBalance {
   font-size: 2rem;
 }
+
+.backgroundItem {
+  background-color: rgba(0, 100, 200, 0.08); /* 90% intensity */
+  border: 1px solid transparent;
+  border-radius: 5px;
+  padding: 10px;
+}

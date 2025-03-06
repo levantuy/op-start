@@ -1,6 +1,6 @@
 import styles from "./NftMint.module.css";
 import { useEffect, useState } from 'react';
-import { Address, formatEther, parseEther } from 'viem';
+import { Address, parseEther } from 'viem';
 import { Monad as monadTestnet } from '../../global-context/soneiumMainnet.ts';
 import {
   useAccount,
@@ -9,18 +9,21 @@ import {
   useWalletClient
 } from "wagmi";
 import contractABI from "../../global-context/abi/Marketplace.ts";
-import { Button } from '../base/index.tsx';
+import { Button, Input } from '../base/index.tsx';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../base/select/select.tsx";
 import { IItemContract, nftMonaContracts } from "./Data.ts";
 import { Label } from "@radix-ui/react-label";
 
-export const Marketplace = () => {
+export const AccountNft = () => {
   const [nftAddress, setNftAddress] = useState<Address>('0xaa1059a2475b547F6A6A3612e2889281a5a496f8');
   const [nfts, setNfts] = useState([]);
-  const [marketplaceContract] = useState<Address>('0x8D480Cb4670Bf738651f7faaD01238E99Aeb1329');
+  const [selectedNFT, setSelectedNFT] = useState(null);
+  const [price, setPrice] = useState("");
+  const [marketplaceContract] = useState<Address>('0x3b32C9Ada9DaB66760f74F89866361015Af3Cf3C');
   const chainId = monadTestnet.id;
   const { address: walletAddress } = useAccount();
   const [isPending, setIsPending] = useState(false);
+  const [isApproved, setIsApproved] = useState<boolean | null>(null);
   const [txDetails, setTxDetails] = useState<string>("");
   const [contracts] = useState<Array<IItemContract>>(nftMonaContracts);
   const { data: walletClient } = useWalletClient({
@@ -32,45 +35,34 @@ export const Marketplace = () => {
     chainId,
   });
 
-  // Fetch all NFTs owned by the user
-  const { data: nftList, refetch: refetchNfts } = useReadContract({
+  // 🟢 Check if Approved For All
+  const { data: approvedForAll, refetch } = useReadContract({
     account: walletAddress,
     address: marketplaceContract,
     abi: contractABI,
-    functionName: "getNFTsByContract",
-    args: [nftAddress]
+    functionName: "isApprovedForAll",
+    args: [nftAddress, walletAddress as any],
   });
 
   useEffect(() => {
-    if (nftList) {
-      const formattedNFTs = nftList.map(listing => ({
-        tokenId: Number(listing.tokenId),
-        seller: listing.seller,
-        price: formatEther(listing.price),
-        active: listing.active,
-      }));
-
-      setNfts(formattedNFTs as any);
+    if (approvedForAll !== undefined) {
+      setIsApproved(approvedForAll);
     }
-  }, [nftList]);
+  }, [approvedForAll]);
 
-  const handlechangeContract = (address: Address) => {
-    setNftAddress(address);
-    refetchNfts();
-  }
-
-  async function buyNFT(tokenId: Number, price: string): Promise<void> {
-    if (!walletClient || !publicClient || !walletAddress) return;
+  // 🔵 Request Approval
+  const approveMarketplaceForAll = async () => {
+    if (!walletClient || !publicClient || !walletAddress) return alert("Wallet not connected");
     setIsPending(true);
+    setTxDetails('');
 
     try {
       const tx = {
         account: walletAddress,
-        address: marketplaceContract,
+        address: nftAddress,
         abi: contractABI,
-        functionName: "buyNFT",
-        value: parseEther(price),
-        args: [nftAddress, tokenId],
+        functionName: "setApprovalForAll",
+        args: [marketplaceContract, true],
       } as const;
 
       const { request } = await publicClient.simulateContract(tx as any);
@@ -80,12 +72,64 @@ export const Marketplace = () => {
       });
 
       setTxDetails(`https://testnet.monadexplorer.com/tx/${hash}`);
-      refetchNfts();
+      refetch();
+    } catch (error) {
+      console.error("Approval Failed:", error);
+    } finally {
+      setIsPending(false);
+    }
+  };
+
+  // Fetch all NFTs owned by the user
+  const { data: nftList, refetch: refetchNfts } = useReadContract({
+    account: walletAddress,
+    address: marketplaceContract,
+    abi: contractABI,
+    functionName: "getAllNFTsAccount",
+    args: [nftAddress, walletAddress as any]
+  });
+
+  useEffect(() => {
+    if (nftList) {
+      const newArray = nftList ? nftList.map(id => Number(id)) : []
+      setNfts(newArray as any);
+    }
+  }, [nftList]);
+
+  async function listNFT(): Promise<void> {
+    if (!walletClient || !publicClient || !walletAddress) return;
+    setIsPending(true);
+
+    if (!isApproved) await approveMarketplaceForAll();
+
+    try {
+      const tx = {
+        account: walletAddress,
+        address: marketplaceContract,
+        abi: contractABI,
+        functionName: "listNFT",
+        args: [nftAddress, selectedNFT, parseEther(price)],
+      } as const;
+
+      const { request } = await publicClient.simulateContract(tx as any);
+      const hash = await walletClient.writeContract(request);
+      await publicClient.waitForTransactionReceipt({
+        hash,
+      });
+      
+      setTxDetails(`https://testnet.monadexplorer.com/tx/${hash}`);
+      setSelectedNFT(null);
     } catch (error) {
       console.error(error);
     } finally {
       setIsPending(false);
     }
+  }
+
+  const handlechangeContract = (address: Address) => {
+    setNftAddress(address);
+    refetch();
+    refetchNfts();
   }
 
   return (
@@ -102,6 +146,18 @@ export const Marketplace = () => {
               )}
             </SelectContent>
           </Select>
+        </div>
+        <div className={"basis-1/4 bg-transparent"}>
+          {isApproved === null ? (
+            <p>Checking approval
+              status...</p>
+          ) : isApproved ? (
+            <p>✅ Approved for all NFTs</p>
+          ) : (
+            <Button onClick={approveMarketplaceForAll} disabled={isPending} className="w-full bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition">
+              {isPending ? "Approving..." : "Approve Marketplace for All"}
+            </Button>
+          )}
         </div>
         <div className={"basis-1/4 bg-transparent"}>
           {txDetails && (
@@ -139,17 +195,21 @@ export const Marketplace = () => {
                       }}
                     /></div> */}
                     <div className="flex flex-row">
-                      <Label>NFT #{nft.tokenId}</Label>
-                    </div>
-                    <div className="flex flex-row">
-                      <Label>Seller: {nft.seller}</Label>
-                    </div>
-                    <div className="flex flex-row">
-                      <Label>Price: {nft.price}</Label>
+                      <Label>NFT #{nft}</Label>
                     </div>
                     <div>
-                      <Button onClick={() => buyNFT(nft.tokenId, nft.price)}
-                        className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition">Buy NFT</Button>
+                      {selectedNFT && selectedNFT === nft ? <>
+                        <Input
+                          type="text"
+                          placeholder="Enter price in MON"
+                          value={price}
+                          onChange={(e) => setPrice(e.target.value)}
+                          className="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                        />
+                        <Button onClick={listNFT} className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition">List NFT</Button>
+                      </> : <>
+                        <Button onClick={() => setSelectedNFT(nft)} className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition">List NFT</Button>
+                      </>}
                     </div>
                   </div>
                 ))}
