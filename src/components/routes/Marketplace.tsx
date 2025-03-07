@@ -33,6 +33,14 @@ export const Marketplace = () => {
     chainId,
   });
 
+  const { data: baseURI, refetch: refreshBaseURI, isFetched } = useReadContract({
+    account: walletAddress,
+    address: nftAddress,
+    abi: NFT_ABI,
+    functionName: "baseURI",
+    args: [],
+  });
+
   // Fetch all NFTs of nftAddress
   const { data: nftList, refetch: refetchNfts } = useReadContract({
     account: walletAddress,
@@ -40,14 +48,6 @@ export const Marketplace = () => {
     abi: contractABI,
     functionName: "getNFTsByContract",
     args: [nftAddress]
-  });
-
-  const { data: baseURI, refetch: refreshBaseURI } = useReadContract({
-    account: walletAddress,
-    address: nftAddress,
-    abi: NFT_ABI,
-    functionName: "baseURI",
-    args: [],
   });
 
   const fetchTokenURI = async (tokenURI: any) => {
@@ -72,7 +72,7 @@ export const Marketplace = () => {
   }
 
   useEffect(() => {
-    if (nftList) {
+    if (nftList && isFetched) {
       fetchTokenURI(nftList)
         .then((data) => {
           setNfts(data as any)
@@ -80,13 +80,13 @@ export const Marketplace = () => {
         .catch(console.log)
         .finally(() => setIsPending(false));
     }
-  }, [nftList]);
+  }, [nftList, isFetched]);
 
   const handlechangeContract = async (address: Address) => {
     setIsPending(true);
     setNftAddress(address);
     try {
-      await Promise.all([        
+      await Promise.all([
         refreshBaseURI(),
         refetchNfts()
       ]);
@@ -130,8 +130,8 @@ export const Marketplace = () => {
 
   return (
     <div className="w-full">
-      <div className="flex flex-row">
-        <div className={"basis-1/2 bg-transparent"}>
+      <div className="flex flex-row mb-2">
+        <div className={"basis-2/4 bg-transparent"}>
           <Select onValueChange={item => handlechangeContract(item as any)}>
             <SelectTrigger className="w-96 w-full">
               <SelectValue placeholder="Select a contract" defaultValue={nftAddress} />
@@ -143,7 +143,7 @@ export const Marketplace = () => {
             </SelectContent>
           </Select>
         </div>
-        <div className={"basis-1/4 bg-transparent"}>
+        <div className={"basis-2/4 bg-transparent"}>
           {txDetails && (
             <div className={styles.txDetails}>
               <span>🎉 Congrats! 🐣<a
@@ -159,42 +159,39 @@ export const Marketplace = () => {
         </div>
       </div>
       <div className="flex flex-row">
-        <div className={"basis-4/4 w-full bg-transparent"}>
-          <div className={"m-2 border border-gray-300 rounded-lg p-4 bg-transparent"}>
-            {/* Minted NFTs List */}
-            <div className="p-6 rounded-lg"> {isPending ? <>Loading...</> :
-              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                {nfts.length > 0 && nfts.map((nft: any, index) => (
-                  <div key={index} className={styles.backgroundItem}>
-                    <div className="flex flex-row" style={{
-                      display: 'flex',
-                      justifyContent: 'center',
-                      alignItems: 'center',
-                    }}>
-                      <img
-                        src={nft.metadata.image}
-                        alt={`NFT ${nft.metadata.name}`}
-                        className="rounded-sm mb-2" style={{
-                          height: '20vh', maxWidth: '100%', objectFit: 'cover'
-                        }}
-                      /></div>
-                    <div className="flex flex-row">
-                      <Label>NFT #{nft.tokenId}</Label>
-                    </div>
-                    <div className="flex flex-row">
-                      <Label>Name: {nft.metadata.name}</Label>
-                    </div>
-                    <div className="flex flex-row">
-                      <Label>Price: {nft.price}</Label>
-                    </div>
-                    <div>
-                      <Button disabled={nft.seller == walletAddress} onClick={() => buyNFT(nft.tokenId, nft.price)}
-                        className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition">Buy NFT</Button>
-                    </div>
+        <div className={"basis-4/4 w-full bg-transparent border rounded-sm"}>
+          <div className="p-6 rounded-lg"> {isPending ? <>Loading...</> :
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+              {nfts.length > 0 && nfts.map((nft: any, index) => (
+                <div key={index} className={styles.backgroundItem}>
+                  <div className="flex flex-row" style={{
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                  }}>
+                    <img
+                      src={nft.metadata.image}
+                      alt={`NFT ${nft.metadata.name}`}
+                      className="rounded-sm mb-2" style={{
+                        height: '20vh', maxWidth: '100%', objectFit: 'cover'
+                      }}
+                    /></div>
+                  <div className="flex flex-row">
+                    <Label>NFT #{nft.tokenId}</Label>
                   </div>
-                ))}
-              </div>}
-            </div>
+                  <div className="flex flex-row">
+                    <Label>Name: {nft.metadata.name}</Label>
+                  </div>
+                  <div className="flex flex-row">
+                    <Label>Price: {nft.price}</Label>
+                  </div>
+                  <div>
+                    <Button disabled={nft.seller == walletAddress} onClick={() => buyNFT(nft.tokenId, nft.price)}
+                      className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition">Buy NFT</Button>
+                  </div>
+                </div>
+              ))}
+            </div>}
           </div>
         </div>
       </div>

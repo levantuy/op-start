@@ -18,8 +18,8 @@ export const HeaderLeft = ({ logo }: HeaderLeftProps) => {
       <NavigationMenu.Root className={styles.Root}>
         <NavigationMenu.List className={styles.MenuList}>
           <NavigationMenu.Item>
-            <NavigationMenu.Trigger className={styles.Trigger}>
-              Learn <CaretDownIcon className={styles.CaretDown} aria-hidden />
+            <NavigationMenu.Trigger className={styles.Trigger}>More
+              <CaretDownIcon className={styles.CaretDown} aria-hidden />
             </NavigationMenu.Trigger>
             <NavigationMenu.Content className={styles.Content}>
               <NavigationMenu.List>

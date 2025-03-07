@@ -12,7 +12,6 @@ import { WagmiProvider } from 'wagmi'
 import { Layout } from './components/Layout'
 import { HeaderLeft } from './components/header/HeaderLeft'
 import { HeaderRight } from './components/header/HeaderRight'
-import { Home } from './components/routes/Home'
 import { Bridge } from './components/routes/Bridge'
 import { ThemeProvider } from './providers/ThemeProvider'
 import { Toaster } from './components/base/toast/toaster'
@@ -79,7 +78,7 @@ const router = createBrowserRouter([
     path: '/',
     element: <AppRoot />,
     children: [
-      { index: true, element: <Home /> },
+      { index: true, element: <Marketplace /> },
       { path: '/bridge', children: bridgeRoutes },
       { path: '/playground', children: playgroundRoutes },
       { path: '/nft-mint', element: <NftMint /> },

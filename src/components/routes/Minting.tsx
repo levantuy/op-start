@@ -289,7 +289,7 @@ export const Minting = () => {
 
   return (
     <div className="min-h-screen w-full font-sans bg-transparent">
-      <div className="flex flex-row">
+      <div className="flex flex-row mb-2">
         <div className={"basis-2/4 bg-transparent"}>
           <Select onValueChange={item => handlechangeContract(item as any)}>
             <SelectTrigger className="w-96 w-full">
@@ -312,13 +312,11 @@ export const Minting = () => {
         </div>
       </div>
       <div className="flex flex-row">
-        <div className={"basis-3/4 m-2 border border-gray-300 rounded-lg p-4 bg-transparent"}>
-          {/* Minted NFTs List */}
-          <h2 className="text-xl font-bold text-left ml-6">Minted NFTs</h2>
+        <div className={"basis-3/4 w-full bg-transparent border rounded-sm mr-2"}>
           <div className="p-6 rounded-lg"> {isPending ? <>Loading...</> :
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
               {mintedNFTs && mintedNFTs.map((nft: any, index) => (
-                <div key={index} className="border border-gray-300 rounded-lg p-4">
+                <div key={index} className={styles.backgroundItem}>
                   <div className="flex flex-row" style={{
                     display: 'flex',
                     justifyContent: 'center',
@@ -342,7 +340,7 @@ export const Minting = () => {
             </div>}
           </div>
         </div>
-        <div className="basis-1/4 m-2 border border-gray-300 rounded-lg p-4 bg-transparent">
+        <div className="basis-1/4 border rounded-sm p-4 bg-transparent">
           <div className="grid grid-flow-row grid-cols-4 gap-4">
             <div className="col-span-4">
               <h2 className="text-xl font-bold">Mint NFTs</h2>
