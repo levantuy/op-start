@@ -20,7 +20,7 @@ import { MixpanelContextProvider } from './global-context/mixpanelContext'
 import mixpanel from 'mixpanel-browser'
 import { Transfer } from './components/routes/Transfer'
 import { NftMint } from './components/routes/NftMint'
-import { Monad } from './components/routes/Monad'
+import { Minting } from './components/routes/Minting'
 import { Marketplace } from './components/routes/Marketplace'
 import { AccountNft } from './components/routes/AccountNft'
 
@@ -83,7 +83,7 @@ const router = createBrowserRouter([
       { path: '/bridge', children: bridgeRoutes },
       { path: '/playground', children: playgroundRoutes },
       { path: '/nft-mint', element: <NftMint /> },
-      { path: '/monad', element: <Monad /> },
+      { path: '/minting', element: <Minting /> },
       { path: '/marketplace', element: <Marketplace /> },
       { path: '/account-nft', element: <AccountNft /> },
     ],

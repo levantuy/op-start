@@ -22,7 +22,7 @@ import axios from 'axios';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../base/select/select.tsx";
 import { IItemContract, nftMonaContracts as nftContracts } from "./Data.ts";
 
-export const Monad = () => {
+export const Minting = () => {
   const { isConnected, address } = useAccount();
   const mixpanel = useMixpanel();
   let didConnect = false;

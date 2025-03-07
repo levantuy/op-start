@@ -31,10 +31,10 @@ export const Home = () => {
           <CardDescription>Page mint Nft</CardDescription>
         </CardHeader>
       </Card>
-      <Card className="cursor-pointer" onClick={() => navigate('/monad')}>
+      <Card className="cursor-pointer" onClick={() => navigate('/minting')}>
         <CardHeader>
-          <CardTitle>Monad Minting</CardTitle>
-          <CardDescription>Monad Minting</CardDescription>
+          <CardTitle>Minting</CardTitle>
+          <CardDescription>Minting</CardDescription>
         </CardHeader>
       </Card>
       <Card className="cursor-pointer" onClick={() => navigate('/marketplace')}>
