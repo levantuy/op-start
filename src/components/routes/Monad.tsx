@@ -30,7 +30,7 @@ export const Monad = () => {
   const [isPending, setIsPending] = useState(false);
   const chainId = monadTestnet.id;
   const { address: walletAddress } = useAccount();
-  const [nftContractAddress, setNftContractAddress] = useState<Address>('0x2A75C1EC766435Edc2DBc7B8ECEE0178959d6CB4');
+  const [nftContractAddress, setNftContractAddress] = useState<Address>(nftContracts[0].value);
   const [contracts] = useState<Array<IItemContract>>(nftContracts);
   const connectedId = useChainId();
   const isConnectedToMinato = connectedId === monadTestnet.id;
@@ -103,13 +103,11 @@ export const Monad = () => {
       totalNFT.map(async (item) => {
         try {
           const { data } = await axios.get(baseURI ? `${baseURI.toString()}${item}` : '');
-
           return data
         } catch (error) {
           return ''
         }
-      })
-    )
+      }));
     return metaData
   }
 
@@ -245,12 +243,21 @@ export const Monad = () => {
     return () => clearInterval(interval);
   }, [publicMintStartTime, publicDuration]);
 
-  const handlechangeContract = (address: Address) => {
+  const handlechangeContract = async (address: Address) => {
     setNftContractAddress(address);
-    refetch();
-    refetchPL();
-    refetchWL();
-    refreshBaseURI();
+    try {
+      await Promise.all([        
+        refreshBaseURI(),
+        refetch(),
+        refetchPL(),
+        refetchWL()
+      ]);
+    } catch (error) {
+      console.error("Error updating contract data:", error);
+    }
+    finally {
+      setIsPending(false);
+    }
   }
 
   async function withdraw(): Promise<void> {

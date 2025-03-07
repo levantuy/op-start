@@ -129,7 +129,33 @@ export default [
     {
         "inputs": [{ "internalType": "address", "name": "nft", "type": "address" }, { "internalType": "address", "name": "user", "type": "address" }],
         "name": "getAllNFTsAccount",
-        "outputs": [{ "internalType": "uint256[]", "name": "", "type": "uint256[]" }],
+        "outputs": [{
+            "components": [
+                {
+                    "internalType": "uint256",
+                    "name": "tokenId",
+                    "type": "uint256"
+                },
+                {
+                    "internalType": "address",
+                    "name": "seller",
+                    "type": "address"
+                },
+                {
+                    "internalType": "uint256",
+                    "name": "price",
+                    "type": "uint256"
+                },
+                {
+                    "internalType": "bool",
+                    "name": "active",
+                    "type": "bool"
+                }
+            ],
+            "internalType": "struct Mrk9.Listing[]",
+            "name": "",
+            "type": "tuple[]"
+        }],
         "stateMutability": "view",
         "type": "function"
     },

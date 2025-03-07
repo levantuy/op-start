@@ -33,7 +33,7 @@ export const Marketplace = () => {
     chainId,
   });
 
-  // Fetch all NFTs owned by the user
+  // Fetch all NFTs of nftAddress
   const { data: nftList, refetch: refetchNfts } = useReadContract({
     account: walletAddress,
     address: marketplaceContract,
@@ -82,10 +82,21 @@ export const Marketplace = () => {
     }
   }, [nftList]);
 
-  const handlechangeContract = (address: Address) => {
+  const handlechangeContract = async (address: Address) => {
+    setIsPending(true);
     setNftAddress(address);
-    refetchNfts();
-    refreshBaseURI();
+    try {
+      await Promise.all([        
+        refreshBaseURI(),
+        refetchNfts()
+      ]);
+    }
+    catch (error) {
+      console.error("Error updating contract data:", error);
+    }
+    finally {
+      setIsPending(false);
+    }
   }
 
   async function buyNFT(tokenId: Number, price: string): Promise<void> {

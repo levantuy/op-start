@@ -100,13 +100,16 @@ export const AccountNft = () => {
 
   const fetchTokenURI = async (tokenURI: any) => {
     const metaData = await Promise.all(
-      tokenURI.map(async (listing: bigint) => {
+      tokenURI.map(async (listing: any) => {
         let itemRes = {
-          tokenId: Number(listing)
+          tokenId: Number(listing.tokenId),
+          seller: listing.seller,
+          price: formatEther(listing.price),
+          active: listing.active
         };
 
         try {
-          const { data } = await axios.get(baseURI ? `${baseURI.toString()}${listing}` : '');
+          const { data } = await axios.get(baseURI ? `${baseURI.toString()}${listing.tokenId}` : '');
           return { ...itemRes, metadata: data };
         } catch (error) {
           return itemRes;
@@ -150,6 +153,7 @@ export const AccountNft = () => {
 
       setTxDetails(`https://testnet.monadexplorer.com/tx/${hash}`);
       setSelectedNFT(null);
+      refetchNfts();
     } catch (error) {
       console.error(error);
     } finally {
@@ -157,11 +161,21 @@ export const AccountNft = () => {
     }
   }
 
-  const handlechangeContract = (address: Address) => {
+  const handlechangeContract = async (address: Address) => {
+    setIsPending(true);
     setNftAddress(address);
-    refetch();
-    refetchNfts();
-    refreshBaseURI();
+
+    try {
+      await Promise.all([
+        refreshBaseURI(),
+        refetch(),        
+        refetchNfts(),
+      ]);
+    } catch (error) {
+      console.error("Error updating contract data:", error);
+    } finally {
+      setIsPending(false);
+    }
   }
 
   return (
@@ -232,6 +246,9 @@ export const AccountNft = () => {
                     <div className="flex flex-row">
                       <Label>Name: {nft.metadata.name}</Label>
                     </div>
+                    {nft.active ? <div className="flex flex-row">
+                      <Label>Price: {nft.price}</Label>
+                    </div> : <></>}
                     <div>
                       {selectedNFT && selectedNFT === nft.tokenId ? <>
                         <Input
@@ -243,7 +260,7 @@ export const AccountNft = () => {
                         />
                         <Button onClick={listNFT} className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition">List NFT</Button>
                       </> : <>
-                        <Button onClick={() => setSelectedNFT(nft.tokenId)} className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition">List NFT</Button>
+                        <Button onClick={() => setSelectedNFT(nft.tokenId)} className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition">{nft.active ? 'Edit' : 'List'}</Button>
                       </>}
                     </div>
                   </div>
