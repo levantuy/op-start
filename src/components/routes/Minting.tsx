@@ -322,7 +322,7 @@ export const Minting = () => {
                     justifyContent: 'center',
                     alignItems: 'center',
                   }}>
-                    <img
+                    <img hidden={true}
                       src={nft.image}
                       alt={`NFT ${nft.id}`}
                       className="rounded-sm mb-2" style={{

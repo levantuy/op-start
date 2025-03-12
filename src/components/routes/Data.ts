@@ -16,9 +16,10 @@ const nftMonaContracts: Array<IItemContract> =
         { key: 'Monad Nft 3', value: '0x2A75C1EC766435Edc2DBc7B8ECEE0178959d6CB4' },
         { key: 'Monad Nft 4', value: '0x4099f7b986fFee4F3Ef335d9dD7c348cBDEE7F33' },
         { key: 'Monad Nft 5', value: '0x8F46F32C23643687f46631df00B3a90A6D1748D6' },
+        { key: 'Monad Sexy', value: '0x31B9f3F0268aFD1c6f037f576284bc86f4C0F610' },
     ];
 
-const marketplaceContract: Address = '0x0A1e8C3b6A95aD69689820f87926FB409DE86fEE';
+const marketplaceContract: Address = '0x351c1c597248B14bac5A7E8a391d712661976E9C';
 
 export {
     nftContracts, nftMonaContracts, marketplaceContract

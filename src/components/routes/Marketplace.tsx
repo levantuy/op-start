@@ -169,7 +169,7 @@ export const Marketplace = () => {
                     justifyContent: 'center',
                     alignItems: 'center',
                   }}>
-                    <img
+                    <img hidden={true}
                       src={nft.metadata.image}
                       alt={`NFT ${nft.metadata.name}`}
                       className="rounded-sm mb-2" style={{
