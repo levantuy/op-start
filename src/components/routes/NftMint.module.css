@@ -8,16 +8,14 @@
 }
 
 .buttonAction {
-  background-color: #0085ff;
-  padding: 1.5rem;
-  border-radius: 16px;
-  color: black;
-  font-weight: 600;
-  color: white;
+  background-color: transparent;
+  border-radius: 6px;
+  color: transparent;
   border: 0px solid transparent;
   cursor: pointer;
-  font-size: 3rem;
   transition: all 0.2s ease-in-out;
+  width: 100%;
+  margin: 0px;
 }
 
 .buttonAction:disabled {
@@ -26,7 +24,8 @@
 }
 
 .buttonAction:hover {
-  transform: scale(1.1);
+  background-color: #0085ff;
+  color: white;
 }
 
 .txDetails {
@@ -74,5 +73,10 @@
   background-color: rgba(0, 100, 200, 0.08); /* 90% intensity */
   border: 1px solid transparent;
   border-radius: 5px;
-  padding: 10px;
+  padding: 5px 10px 0px 10px;
+}
+
+.backgroundItem:hover button {
+  background-color: #0085ff;
+  color: white;
 }

@@ -161,7 +161,7 @@ export const Marketplace = () => {
       <div className="flex flex-row">
         <div className={"basis-4/4 w-full bg-transparent border rounded-sm"}>
           <div className="p-6 rounded-lg"> {isPending ? <>Loading...</> :
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
               {nfts.length > 0 && nfts.map((nft: any, index) => (
                 <div key={index} className={styles.backgroundItem}>
                   <div className="flex flex-row" style={{
@@ -187,7 +187,7 @@ export const Marketplace = () => {
                   </div>
                   <div>
                     <Button disabled={nft.seller == walletAddress} onClick={() => buyNFT(nft.tokenId, nft.price)}
-                      className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition">Buy NFT</Button>
+                      className={styles.buttonAction}>Buy NFT</Button>
                   </div>
                 </div>
               ))}

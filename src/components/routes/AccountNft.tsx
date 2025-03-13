@@ -224,7 +224,7 @@ export const AccountNft = () => {
         <div className={"basis-4/4 w-full bg-transparent border rounded-sm"}>
           {/* Minted NFTs List */}
           <div className="p-6 rounded-lg"> {isPending ? <>Loading...</> :
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
               {nfts.length > 0 && nfts.map((nft: any, index) => (
                 <div key={index} className={styles.backgroundItem}>
                   <div className="flex flex-row" style={{
@@ -257,9 +257,9 @@ export const AccountNft = () => {
                         onChange={(e) => setPrice(e.target.value)}
                         className="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-500 focus:outline-none"
                       />
-                      <Button onClick={listNFT} className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition">List NFT</Button>
+                      <Button onClick={listNFT} className={styles.buttonAction}>List NFT</Button>
                     </> : <>
-                      <Button onClick={() => setSelectedNFT(nft.tokenId)} className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition">{nft.active ? 'Edit' : 'List'}</Button>
+                      <Button onClick={() => setSelectedNFT(nft.tokenId)} className={styles.buttonAction}>{nft.active ? 'Edit' : 'List'}</Button>
                     </>}
                   </div>
                 </div>
