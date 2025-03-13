@@ -10,7 +10,7 @@ import {
 } from "wagmi";
 import contractABI from "../../global-context/abi/Marketplace.ts";
 import NFT_ABI from "../../global-context/abi/DemoNFT.ts";
-import { Button } from '../base/index.tsx';
+import { Button, Toast, ToastClose, ToastDescription, ToastProvider, ToastTitle, ToastViewport } from '../base/index.tsx';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../base/select/select.tsx";
 import { IItemContract, nftMonaContracts, marketplaceContract } from "./Data.ts";
 import { Label } from "@radix-ui/react-label";
@@ -130,6 +130,31 @@ export const Marketplace = () => {
 
   return (
     <div className="w-full">
+      <ToastProvider>
+        <button
+          onClick={() => setIsPending(true)}
+          className="px-4 py-2 bg-blue-500 text-white rounded"
+        >
+          Show Toast
+        </button>
+        {isPending && txDetails && (
+          <Toast onOpenChange={setIsPending} variant="default">
+            <div className="flex flex-col space-y-2">
+              <ToastTitle>Congrats! 🐣</ToastTitle>
+              <ToastDescription><a
+                href={txDetails}
+                target="_blank"
+                rel="noreferrer"
+                className={styles.txLink}
+              >
+                View transaction
+              </a></ToastDescription>
+            </div>
+            <ToastClose />
+          </Toast>
+        )}
+        <ToastViewport />
+      </ToastProvider>
       <div className="flex flex-row mb-2">
         <div className={"basis-2/4 bg-transparent"}>
           <Select onValueChange={item => handlechangeContract(item as any)}>
