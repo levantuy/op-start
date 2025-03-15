@@ -3,6 +3,12 @@ import {
   Button,
   Input,
   Label,
+  Toast,
+  ToastClose,
+  ToastDescription,
+  ToastProvider,
+  ToastTitle,
+  ToastViewport,
 } from '../base/index.tsx';
 import { useMixpanel } from '../../global-context/mixpanelContext.tsx';
 import { useEffect, useState } from 'react';
@@ -246,7 +252,7 @@ export const Minting = () => {
   const handlechangeContract = async (address: Address) => {
     setNftContractAddress(address);
     try {
-      await Promise.all([        
+      await Promise.all([
         refreshBaseURI(),
         refetch(),
         refetchPL(),
@@ -289,6 +295,25 @@ export const Minting = () => {
 
   return (
     <div className="min-h-screen w-full font-sans bg-transparent">
+      <ToastProvider>
+        {!isPending && txDetails && (
+          <Toast onOpenChange={setIsPending} variant="default">
+            <div className="flex flex-col space-y-2">
+              <ToastTitle>Congrats! 🐣</ToastTitle>
+              <ToastDescription><a
+                href={txDetails}
+                target="_blank"
+                rel="noreferrer"
+                className={styles.txLink}
+              >
+                View transaction
+              </a></ToastDescription>
+            </div>
+            <ToastClose />
+          </Toast>
+        )}
+        <ToastViewport />
+      </ToastProvider>
       <div className="flex flex-row mb-2">
         <div className={"basis-2/4 bg-transparent"}>
           <Select onValueChange={item => handlechangeContract(item as any)}>
@@ -406,20 +431,6 @@ export const Minting = () => {
             </div>}
 
             <div className="col-span-4">
-              {txDetails && (
-                <div className={styles.txDetails}>
-                  <span>🎉 Congrats! Your NFT has been minted 🐣 </span>
-                  <a
-                    href={txDetails}
-                    target="_blank"
-                    rel="noreferrer"
-                    className={styles.txLink}
-                  >
-                    View transaction
-                  </a>
-                </div>
-              )}
-
               {walletAddress && isBalanceZero && (
                 <div className={styles.rowChecker}>
                   <span className={styles.textError}>

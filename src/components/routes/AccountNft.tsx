@@ -10,7 +10,7 @@ import {
 } from "wagmi";
 import contractABI from "../../global-context/abi/Marketplace.ts";
 import NFT_ABI from "../../global-context/abi/DemoNFT.ts";
-import { Button, Input } from '../base/index.tsx';
+import { Button, Input, Toast, ToastClose, ToastDescription, ToastProvider, ToastTitle, ToastViewport } from '../base/index.tsx';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../base/select/select.tsx";
 import { IItemContract, nftMonaContracts, marketplaceContract } from "./Data.ts";
 import { Label } from "@radix-ui/react-label";
@@ -180,6 +180,25 @@ export const AccountNft = () => {
 
   return (
     <div className="w-full">
+      <ToastProvider>
+        {!isPending && txDetails && (
+          <Toast onOpenChange={setIsPending} variant="default">
+            <div className="flex flex-col space-y-2">
+              <ToastTitle>Congrats! 🐣</ToastTitle>
+              <ToastDescription><a
+                href={txDetails}
+                target="_blank"
+                rel="noreferrer"
+                className={styles.txLink}
+              >
+                View transaction
+              </a></ToastDescription>
+            </div>
+            <ToastClose />
+          </Toast>
+        )}
+        <ToastViewport />
+      </ToastProvider>
       <div className="flex flex-row mb-2">
         <div className={"basis-1/2 bg-transparent"}>
           <Select onValueChange={item => handlechangeContract(item as any)}>
@@ -203,20 +222,6 @@ export const AccountNft = () => {
             <Button onClick={approveMarketplaceForAll} disabled={isPending} className="w-full bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition">
               {isPending ? "Approving..." : "Approve Marketplace for All"}
             </Button>
-          )}
-        </div>
-        <div className={"basis-1/4 bg-transparent"}>
-          {txDetails && (
-            <div className={styles.txDetails}>
-              <span>🎉 Congrats! 🐣<a
-                href={txDetails}
-                target="_blank"
-                rel="noreferrer"
-                className={styles.txLink}
-              >
-                View transaction
-              </a> </span>
-            </div>
           )}
         </div>
       </div>

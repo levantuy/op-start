@@ -131,13 +131,7 @@ export const Marketplace = () => {
   return (
     <div className="w-full">
       <ToastProvider>
-        <button
-          onClick={() => setIsPending(true)}
-          className="px-4 py-2 bg-blue-500 text-white rounded"
-        >
-          Show Toast
-        </button>
-        {isPending && txDetails && (
+        {!isPending && txDetails && (
           <Toast onOpenChange={setIsPending} variant="default">
             <div className="flex flex-col space-y-2">
               <ToastTitle>Congrats! 🐣</ToastTitle>
@@ -167,20 +161,6 @@ export const Marketplace = () => {
               )}
             </SelectContent>
           </Select>
-        </div>
-        <div className={"basis-2/4 bg-transparent"}>
-          {txDetails && (
-            <div className={styles.txDetails}>
-              <span>🎉 Congrats! 🐣<a
-                href={txDetails}
-                target="_blank"
-                rel="noreferrer"
-                className={styles.txLink}
-              >
-                View transaction
-              </a> </span>
-            </div>
-          )}
         </div>
       </div>
       <div className="flex flex-row">
