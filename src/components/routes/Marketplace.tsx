@@ -85,6 +85,8 @@ export const Marketplace = () => {
   const handlechangeContract = async (address: Address) => {
     setIsPending(true);
     setNftAddress(address);
+    setTxDetails("");
+    
     try {
       await Promise.all([
         refreshBaseURI(),

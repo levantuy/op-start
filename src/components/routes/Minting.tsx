@@ -251,6 +251,8 @@ export const Minting = () => {
 
   const handlechangeContract = async (address: Address) => {
     setNftContractAddress(address);
+    setIsPending(true);
+    setTxDetails("");
     try {
       await Promise.all([
         refreshBaseURI(),
