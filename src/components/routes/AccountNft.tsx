@@ -17,7 +17,7 @@ import { Label } from "@radix-ui/react-label";
 import axios from "axios";
 
 export const AccountNft = () => {
-  const [nftAddress, setNftAddress] = useState<Address>(nftMonaContracts[0].value);
+  const [nftAddress, setNftAddress] = useState<Address>(nftMonaContracts[nftMonaContracts.length - 1].value);
   const [nfts, setNfts] = useState([]);
   const [selectedNFT, setSelectedNFT] = useState(null);
   const [price, setPrice] = useState("");
@@ -202,7 +202,7 @@ export const AccountNft = () => {
         <ToastViewport />
       </ToastProvider>
       <div className="flex flex-row mb-2">
-        <div className={"basis-1/2 bg-transparent"}>
+        <div className={"basis-1/2 bg-transparent mr-2"}>
           <Select onValueChange={item => handlechangeContract(item as any)}>
             <SelectTrigger className="w-96 w-full">
               <SelectValue placeholder="Select a contract" defaultValue={nftAddress} />
@@ -214,7 +214,7 @@ export const AccountNft = () => {
             </SelectContent>
           </Select>
         </div>
-        <div className={"basis-1/4 bg-transparent"}>
+        <div className={"basis-1/2 bg-transparent flex justify-left items-center text-center"}>
           {isApproved === null ? (
             <p>Checking approval
               status...</p>
@@ -254,7 +254,7 @@ export const AccountNft = () => {
                   </div>
                   {nft.active ? <div className="flex flex-row">
                     <Label>Price: {nft.price}</Label>
-                  </div> : <></>}
+                  </div> : <>Not listing</>}
                   <div>
                     {selectedNFT && selectedNFT === nft.tokenId ? <>
                       <Input

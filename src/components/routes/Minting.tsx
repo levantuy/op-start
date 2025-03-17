@@ -36,7 +36,7 @@ export const Minting = () => {
   const [isPending, setIsPending] = useState(false);
   const chainId = monadTestnet.id;
   const { address: walletAddress } = useAccount();
-  const [nftContractAddress, setNftContractAddress] = useState<Address>(nftContracts[0].value);
+  const [nftContractAddress, setNftContractAddress] = useState<Address>(nftContracts[nftContracts.length - 1].value);
   const [contracts] = useState<Array<IItemContract>>(nftContracts);
   const connectedId = useChainId();
   const isConnectedToMinato = connectedId === monadTestnet.id;
@@ -317,7 +317,7 @@ export const Minting = () => {
         <ToastViewport />
       </ToastProvider>
       <div className="flex flex-row mb-2">
-        <div className={"basis-2/4 bg-transparent"}>
+        <div className={"basis-2/4 bg-transparent mr-2"}>
           <Select onValueChange={item => handlechangeContract(item as any)}>
             <SelectTrigger className="w-96 w-full">
               <SelectValue placeholder="Select a contract" defaultValue={nftContractAddress} />
@@ -349,7 +349,7 @@ export const Minting = () => {
                     justifyContent: 'center',
                     alignItems: 'center',
                   }}>
-                    <img hidden={true}
+                    <img
                       src={nft.image}
                       alt={`NFT ${nft.id}`}
                       className="rounded-sm mb-2" style={{

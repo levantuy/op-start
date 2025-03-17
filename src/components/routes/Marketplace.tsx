@@ -17,7 +17,7 @@ import { Label } from "@radix-ui/react-label";
 import axios from 'axios';
 
 export const Marketplace = () => {
-  const [nftAddress, setNftAddress] = useState<Address>(nftMonaContracts[0].value);
+  const [nftAddress, setNftAddress] = useState<Address>(nftMonaContracts[nftMonaContracts.length - 1].value);
   const [nfts, setNfts] = useState([]);
   const chainId = monadTestnet.id;
   const { address: walletAddress } = useAccount();
@@ -153,7 +153,7 @@ export const Marketplace = () => {
         <ToastViewport />
       </ToastProvider>
       <div className="flex flex-row mb-2">
-        <div className={"basis-2/4 bg-transparent"}>
+        <div className={"basis-2/4 bg-transparent mr-2"}>
           <Select onValueChange={item => handlechangeContract(item as any)}>
             <SelectTrigger className="w-96 w-full">
               <SelectValue placeholder="Select a contract" defaultValue={nftAddress} />
@@ -177,7 +177,7 @@ export const Marketplace = () => {
                     justifyContent: 'center',
                     alignItems: 'center',
                   }}>
-                    <img hidden={true}
+                    <img
                       src={nft.metadata.image}
                       alt={`NFT ${nft.metadata.name}`}
                       className="rounded-sm mb-2" style={{
