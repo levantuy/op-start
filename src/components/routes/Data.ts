@@ -22,8 +22,33 @@ const nftMonaContracts: Array<IItemContract> =
 
 const marketplaceContract: Address = '0x351c1c597248B14bac5A7E8a391d712661976E9C';
 
+const metadataDefault = {
+    "name": "Girl NFT",
+    "tokenId": 1,
+    "image": "https://red-electrical-herring-642.mypinata.cloud/ipfs/bafybeihbplnzglpr572ucbcbvdz3xmkgxhkilin2whohkvd5rxoc6bzudi/1.jpg",
+    "description": "Girl NFT",
+    "attributes": [
+        {
+            "trait_type": "Background",
+            "value": "Brown"
+        },
+        {
+            "trait_type": "Body Color",
+            "value": "Black"
+        },
+        {
+            "trait_type": "Eyes",
+            "value": "Red"
+        },
+        {
+            "trait_type": "Bullet Color",
+            "value": "Yellow"
+        }
+    ]
+};
+
 export {
-    nftContracts, nftMonaContracts, marketplaceContract
+    nftContracts, nftMonaContracts, marketplaceContract, metadataDefault
 }
 
 export type { IItemContract };

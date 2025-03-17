@@ -12,7 +12,7 @@ import contractABI from "../../global-context/abi/Marketplace.ts";
 import NFT_ABI from "../../global-context/abi/DemoNFT.ts";
 import { Button, Input, Toast, ToastClose, ToastDescription, ToastProvider, ToastTitle, ToastViewport } from '../base/index.tsx';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../base/select/select.tsx";
-import { IItemContract, nftMonaContracts, marketplaceContract } from "./Data.ts";
+import { IItemContract, nftMonaContracts, marketplaceContract, metadataDefault } from "./Data.ts";
 import { Label } from "@radix-ui/react-label";
 import axios from "axios";
 
@@ -105,7 +105,8 @@ export const AccountNft = () => {
           tokenId: Number(listing.tokenId),
           seller: listing.seller,
           price: formatEther(listing.price),
-          active: listing.active
+          active: listing.active, 
+          metadata: metadataDefault
         };
 
         try {
@@ -238,13 +239,13 @@ export const AccountNft = () => {
                     justifyContent: 'center',
                     alignItems: 'center',
                   }}>
-                    <img hidden={true}
+                    {nft.metadata && <img
                       src={nft.metadata.image}
                       alt={`NFT ${nft.metadata.name}`}
                       className="rounded-sm mb-2" style={{
                         height: '20vh', maxWidth: '100%', objectFit: 'cover'
                       }}
-                    /></div>
+                    />}</div>
                   <div className="flex flex-row">
                     <Label>NFT #{nft.tokenId}</Label>
                   </div>

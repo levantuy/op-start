@@ -12,7 +12,7 @@ import contractABI from "../../global-context/abi/Marketplace.ts";
 import NFT_ABI from "../../global-context/abi/DemoNFT.ts";
 import { Button, Toast, ToastClose, ToastDescription, ToastProvider, ToastTitle, ToastViewport } from '../base/index.tsx';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../base/select/select.tsx";
-import { IItemContract, nftMonaContracts, marketplaceContract } from "./Data.ts";
+import { IItemContract, nftMonaContracts, marketplaceContract, metadataDefault } from "./Data.ts";
 import { Label } from "@radix-ui/react-label";
 import axios from 'axios';
 
@@ -57,7 +57,8 @@ export const Marketplace = () => {
           tokenId: Number(listing.tokenId),
           seller: listing.seller,
           price: formatEther(listing.price),
-          active: listing.active
+          active: listing.active,
+          metadata: metadataDefault
         };
 
         try {

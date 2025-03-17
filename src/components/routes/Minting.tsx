@@ -26,7 +26,7 @@ import {
 import NFT_ABI from "../../global-context/abi/DemoNFT.ts";
 import axios from 'axios';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../base/select/select.tsx";
-import { IItemContract, nftMonaContracts as nftContracts } from "./Data.ts";
+import { IItemContract, metadataDefault, nftMonaContracts as nftContracts } from "./Data.ts";
 
 export const Minting = () => {
   const { isConnected, address } = useAccount();
@@ -111,7 +111,7 @@ export const Minting = () => {
           const { data } = await axios.get(baseURI ? `${baseURI.toString()}${item}` : '');
           return data
         } catch (error) {
-          return ''
+          return metadataDefault;
         }
       }));
     return metaData
