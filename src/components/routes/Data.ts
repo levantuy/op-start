@@ -15,9 +15,9 @@ const nftContracts: Array<IItemContract> =
 const nftMonaContracts: Array<IItemContract> =
     [
         { key: 'Monad Nft 6', value: '0x6364A78A80D3fb3B681A4b75b8dDc38A856531De', image: 'https://i.postimg.cc/bv0KKFxy/91.jpg', description: 'Swiper React is available only via NPM as a part of the main Swiper library' },
-        { key: 'Monad Nft 3', value: '0x2A75C1EC766435Edc2DBc7B8ECEE0178959d6CB4', image: 'https://i.postimg.cc/bv0KKFxy/91.jpg', description: 'Swiper React is available only via NPM as a part of the main Swiper library' },
+        { key: 'Monad Nft 3', value: '0x2A75C1EC766435Edc2DBc7B8ECEE0178959d6CB4', image: 'https://i.postimg.cc/Hnx3vJL4/cat.avif', description: 'Swiper React is available only via NPM as a part of the main Swiper library' },
         { key: 'Monad Nft 4', value: '0x4099f7b986fFee4F3Ef335d9dD7c348cBDEE7F33', image: 'https://i.postimg.cc/bv0KKFxy/91.jpg', description: 'Swiper React is available only via NPM as a part of the main Swiper library' },
-        { key: 'Monad Nft 5', value: '0x8F46F32C23643687f46631df00B3a90A6D1748D6', image: 'https://i.postimg.cc/bv0KKFxy/91.jpg', description: 'Swiper React is available only via NPM as a part of the main Swiper library' },
+        { key: 'Monad Nft 5', value: '0x8F46F32C23643687f46631df00B3a90A6D1748D6', image: 'https://i.postimg.cc/Hnx3vJL4/cat.avif', description: 'Swiper React is available only via NPM as a part of the main Swiper library' },
         { key: 'Monad Sexy', value: '0x31B9f3F0268aFD1c6f037f576284bc86f4C0F610', image: 'https://i.postimg.cc/bv0KKFxy/91.jpg', description: 'Swiper React is available only via NPM as a part of the main Swiper library' },
         { key: 'Girl Sexy', value: '0x8b326526a82cB44e1911FB2A9f14A8f4711E2206', image: 'https://i.postimg.cc/bv0KKFxy/91.jpg', description: 'Swiper React is available only via NPM as a part of the main Swiper library' },
     ];

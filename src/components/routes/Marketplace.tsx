@@ -15,6 +15,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from ".
 import { IItemContract, nftMonaContracts, marketplaceContract, metadataDefault } from "./Data.ts";
 import { Label } from "@radix-ui/react-label";
 import axios from 'axios';
+import { motion } from 'framer-motion';
 
 export const Marketplace = () => {
   const [nftAddress, setNftAddress] = useState<Address>(nftMonaContracts[nftMonaContracts.length - 1].value);
@@ -87,7 +88,7 @@ export const Marketplace = () => {
     setIsPending(true);
     setNftAddress(address);
     setTxDetails("");
-    
+
     try {
       await Promise.all([
         refreshBaseURI(),
@@ -171,7 +172,12 @@ export const Marketplace = () => {
           <div className="p-6 rounded-lg"> {isPending ? <>Loading...</> :
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
               {nfts.length > 0 && nfts.map((nft: any, index) => (
-                <div key={index} className={styles.backgroundItem}>
+                <motion.div
+                  key={index}
+                  whileHover={{ scale: 1.05 }}
+                  className={styles.backgroundItem}
+                  style={{ padding: '10px' }}
+                >
                   <div className="flex flex-row" style={{
                     display: 'flex',
                     justifyContent: 'center',
@@ -197,7 +203,7 @@ export const Marketplace = () => {
                     <Button disabled={nft.seller == walletAddress} onClick={() => buyNFT(nft.tokenId, nft.price)}
                       className={styles.buttonAction}>Buy NFT</Button>
                   </div>
-                </div>
+                </motion.div>
               ))}
             </div>}
           </div>

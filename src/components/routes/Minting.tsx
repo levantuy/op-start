@@ -27,6 +27,7 @@ import NFT_ABI from "../../global-context/abi/DemoNFT.ts";
 import axios from 'axios';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../base/select/select.tsx";
 import { IItemContract, metadataDefault, nftMonaContracts as nftContracts } from "./Data.ts";
+import { motion } from 'framer-motion';
 
 export const Minting = () => {
   const { isConnected, address } = useAccount();
@@ -343,7 +344,12 @@ export const Minting = () => {
           <div className="p-6 rounded-lg"> {isPending ? <>Loading...</> :
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
               {mintedNFTs && mintedNFTs.map((nft: any, index) => (
-                <div key={index} className={styles.backgroundItem}>
+                <motion.div
+                key={index}
+                whileHover={{ scale: 1.05 }}
+                className={styles.backgroundItem}
+                style={{ padding: '10px' }}
+              >
                   <div className="flex flex-row" style={{
                     display: 'flex',
                     justifyContent: 'center',
@@ -362,7 +368,7 @@ export const Minting = () => {
                   <div className="flex flex-row">
                     <Label>{nft.name}</Label>
                   </div>
-                </div>
+                </motion.div>
               ))}
             </div>}
           </div>
