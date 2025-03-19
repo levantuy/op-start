@@ -14,7 +14,6 @@
   border: 0px solid transparent;
   cursor: pointer;
   transition: all 0.2s ease-in-out;
-  width: 100%;
 }
 
 .buttonAction:disabled {

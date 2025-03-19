@@ -22,6 +22,7 @@ import { NftMint } from './components/routes/NftMint'
 import { Minting } from './components/routes/Minting'
 import { Marketplace } from './components/routes/Marketplace'
 import { AccountNft } from './components/routes/AccountNft'
+import { Collection } from './components/routes/Collection'
 
 const classNames = {
   app: 'app w-full min-h-screen flex flex-col',
@@ -85,6 +86,7 @@ const router = createBrowserRouter([
       { path: '/minting', element: <Minting /> },
       { path: '/marketplace', element: <Marketplace /> },
       { path: '/account-nft', element: <AccountNft /> },
+      { path: '/collection', element: <Collection /> },
     ],
   },
 ])

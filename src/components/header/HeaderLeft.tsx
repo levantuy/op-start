@@ -64,6 +64,15 @@ export const HeaderLeft = ({ logo }: HeaderLeftProps) => {
           <NavigationMenu.Item>
             <NavigationMenu.Link
               className={styles.Link}
+              onClick={() => navigate('/collection')}
+            >
+              Collection
+            </NavigationMenu.Link>
+          </NavigationMenu.Item>
+
+          <NavigationMenu.Item>
+            <NavigationMenu.Link
+              className={styles.Link}
               onClick={() => navigate('/marketplace')}
             >
               Marketplace
