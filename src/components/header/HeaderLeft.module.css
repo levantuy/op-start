@@ -232,6 +232,12 @@
 	border-top-left-radius: 2px;
 }
 
+ul li:hover {
+	border: 1px solid transparent;
+  	border-radius: 5px;
+	background-color: rgba(0, 100, 200, 0.5); /* 90% intensity */
+}
+
 @keyframes enterFromRight {
 	from {
 		opacity: 0;
