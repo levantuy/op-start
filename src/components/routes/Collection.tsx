@@ -141,9 +141,11 @@ export const Collection = () => {
       loop
       navigation={true}
       modules={[Pagination, Navigation]}
-      spaceBetween={50}
+      spaceBetween={20}
       slidesPerView={3}
-      pagination={{ clickable: true }}
+      pagination={{
+        type: 'fraction', clickable: true 
+      }}
       scrollbar={{ draggable: true }}
     >
       {slides.map((slide, index) => (
