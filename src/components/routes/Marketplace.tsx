@@ -16,9 +16,11 @@ import { IItemContract, nftMonaContracts, marketplaceContract, metadataDefault }
 import { Label } from "@radix-ui/react-label";
 import axios from 'axios';
 import { motion } from 'framer-motion';
+import { useParams } from 'react-router-dom';
 
 export const Marketplace = () => {
-  const [nftAddress, setNftAddress] = useState<Address>(nftMonaContracts[nftMonaContracts.length - 1].value);
+  const { id } = useParams();
+  const [nftAddress, setNftAddress] = useState<Address>(id == '0x' ? '0x6364A78A80D3fb3B681A4b75b8dDc38A856531De' : id as any);
   const [nfts, setNfts] = useState([]);
   const chainId = monadTestnet.id;
   const { address: walletAddress } = useAccount();

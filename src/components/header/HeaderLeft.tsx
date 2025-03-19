@@ -73,7 +73,7 @@ export const HeaderLeft = ({ logo }: HeaderLeftProps) => {
           <NavigationMenu.Item>
             <NavigationMenu.Link
               className={styles.Link}
-              onClick={() => navigate('/marketplace')}
+              onClick={() => navigate('/marketplace/0x')}
             >
               Marketplace
             </NavigationMenu.Link>
