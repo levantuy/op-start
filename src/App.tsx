@@ -84,7 +84,7 @@ const router = createBrowserRouter([
       { path: '/playground', children: playgroundRoutes },
       { path: '/nft-mint', element: <NftMint /> },
       { path: '/minting', element: <Minting /> },
-      { path: '/marketplace', element: <Marketplace /> },
+      { path: '/marketplace/:id', element: <Marketplace /> },
       { path: '/account-nft', element: <AccountNft /> },
       { path: '/collection', element: <Collection /> },
     ],

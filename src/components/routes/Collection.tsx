@@ -40,7 +40,7 @@ export const Collection = () => {
         </Swiper>
       </div>
       <div className="flex flex-row" style={{ paddingBottom: '10px', paddingTop: '20px' }}>
-        <h2 className="text-4xl font-semibold">Hot Collections</h2>
+        <h2 className="text-5xl font-semibold">Hot Collections</h2>
       </div>
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
         {slides.map((slide, index) => (
@@ -56,9 +56,9 @@ export const Collection = () => {
             <div className="mt-4 text-center">
               <h2 className="text-2xl font-semibold">{slide.key}</h2>
               <p className="text-gray-600 mt-2">{slide.description}</p>
-              <Button onClick={() => navigate('/marketplace')} className={styles.buttonAction}>Open Collection</Button>
+              <Button onClick={() => navigate('/marketplace/' + slide.value)} className={styles.buttonAction}>Open Collection</Button>
             </div>
-          </motion.div >
+          </motion.div>
         ))}
       </div>
     </div>
