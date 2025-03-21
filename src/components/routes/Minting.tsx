@@ -28,8 +28,10 @@ import axios from 'axios';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../base/select/select.tsx";
 import { IItemContract, metadataDefault, nftMonaContracts as nftContracts } from "./Data.ts";
 import { motion } from 'framer-motion';
+import { useNavigate } from "react-router-dom";
 
 export const Minting = () => {
+  const navigate = useNavigate();
   const { isConnected, address } = useAccount();
   const mixpanel = useMixpanel();
   let didConnect = false;
@@ -37,7 +39,7 @@ export const Minting = () => {
   const [isPending, setIsPending] = useState(false);
   const chainId = monadTestnet.id;
   const { address: walletAddress } = useAccount();
-  const [nftContractAddress, setNftContractAddress] = useState<Address>(nftContracts[nftContracts.length - 1].value);
+  const [nftContractAddress, setNftContractAddress] = useState<IItemContract>(nftContracts[0]);
   const [contracts] = useState<Array<IItemContract>>(nftContracts);
   const connectedId = useChainId();
   const isConnectedToMinato = connectedId === monadTestnet.id;
@@ -58,35 +60,35 @@ export const Minting = () => {
 
   const { data: whitelistStartTime, refetch: refetchWL } = useReadContract({
     abi: NFT_ABI,
-    address: nftContractAddress,
+    address: nftContractAddress.value,
     functionName: "whitelistStartTime",
     args: [],
   });
 
   const { data: whitelistDuration } = useReadContract({
     abi: NFT_ABI,
-    address: nftContractAddress,
+    address: nftContractAddress.value,
     functionName: "whitelistDuration",
     args: [],
   });
 
   const { data: publicMintStartTime, refetch: refetchPL } = useReadContract({
     abi: NFT_ABI,
-    address: nftContractAddress,
+    address: nftContractAddress.value,
     functionName: "publicMintStartTime",
     args: [],
   });
 
   const { data: publicDuration } = useReadContract({
     abi: NFT_ABI,
-    address: nftContractAddress,
+    address: nftContractAddress.value,
     functionName: "publicDuration",
     args: [],
   });
 
   const { data: baseURI, refetch: refreshBaseURI } = useReadContract({
     account: walletAddress,
-    address: nftContractAddress,
+    address: nftContractAddress.value,
     abi: NFT_ABI,
     functionName: "baseURI",
     args: [],
@@ -100,7 +102,7 @@ export const Minting = () => {
 
   const { data: totalNFT, refetch } = useReadContract({
     abi: NFT_ABI,
-    address: nftContractAddress,
+    address: nftContractAddress.value,
     functionName: "getAllTokenIds",
     args: [],
   });
@@ -144,7 +146,7 @@ export const Minting = () => {
       setTxDetails("");
       const tx = {
         account: walletAddress as Address,
-        address: nftContractAddress as Address,
+        address: nftContractAddress.value,
         abi: NFT_ABI,
         value: parseEther((0.0001 * quantity).toString()),
         functionName: "whitelistMint",
@@ -172,7 +174,7 @@ export const Minting = () => {
       setTxDetails("");
       const tx = {
         account: walletAddress as Address,
-        address: nftContractAddress as Address,
+        address: nftContractAddress.value,
         abi: NFT_ABI,
         value: parseEther((0.0001 * quantity).toString()),
         functionName: "publicMint",
@@ -250,7 +252,7 @@ export const Minting = () => {
     return () => clearInterval(interval);
   }, [publicMintStartTime, publicDuration]);
 
-  const handlechangeContract = async (address: Address) => {
+  const handlechangeContract = async (address: IItemContract) => {
     setNftContractAddress(address);
     setIsPending(true);
     setTxDetails("");
@@ -277,7 +279,7 @@ export const Minting = () => {
       setTxDetails("");
       const tx = {
         account: walletAddress as Address,
-        address: nftContractAddress as Address,
+        address: nftContractAddress.value,
         abi: NFT_ABI,
         functionName: "withdraw",
         args: [],
@@ -319,13 +321,13 @@ export const Minting = () => {
       </ToastProvider>
       <div className="flex flex-row mb-2">
         <div className={"basis-2/4 bg-transparent mr-2"}>
-          <Select onValueChange={item => handlechangeContract(item as any)}>
+          <Select onValueChange={(value) => handlechangeContract(JSON.parse(value))}>
             <SelectTrigger className="w-96 w-full">
-              <SelectValue placeholder="Select a contract" defaultValue={nftContractAddress} />
+              <SelectValue placeholder="Select a contract" />
             </SelectTrigger>
             <SelectContent className="w-96 border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-500 focus:outline-none">
               {contracts.map((item, i) =>
-                <SelectItem key={i} value={item.value}>{item.key}</SelectItem>
+                <SelectItem key={i} value={JSON.stringify(item)}>{item.key}</SelectItem>
               )}
             </SelectContent>
           </Select>
@@ -345,11 +347,11 @@ export const Minting = () => {
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
               {mintedNFTs && mintedNFTs.map((nft: any, index) => (
                 <motion.div
-                key={index}
-                whileHover={{ scale: 1.05 }}
-                className={styles.backgroundItem}
-                style={{ padding: '10px' }}
-              >
+                  key={index}
+                  whileHover={{ scale: 1.05 }}
+                  className={styles.backgroundItem}
+                  style={{ padding: '10px' }}
+                >
                   <div className="flex flex-row" style={{
                     display: 'flex',
                     justifyContent: 'center',
@@ -478,25 +480,15 @@ export const Minting = () => {
                 )}</span>
               </Label>
             </div>
-
             <div className="col-span-4">
-              {/* <img
-                src="https://gateway.pinata.cloud/ipfs/QmaHGo7pQ9x7B1rNvPbkzTnrZNuHA4mx53t8ZnAA8JFUG2/0.gif"
+              <img
+                src={nftContractAddress && nftContractAddress.image}
                 alt='Image preview'
                 className="w-full rounded-lg mb-2"
-              /> */}
+              />
             </div>
-
             <div className="col-span-4">
-              <Label>Description: Heralding the dawn of NFT power users, OpenSea Pro unlocks a new level
-                of optionality, selection, and control for pro NFT collectors.
-                Previously known as Gem, OpenSea Pro has been months in the making,
-                culminating in the platform’s rebirth as the most powerful NFT
-                marketplace aggregator. Commemorating our community’s journey, we are
-                releasing Gemesis, a thank you to Gem community members who have steered
-                the ship with us. This limited-edition collection encapsulates our
-                evolution, celebrates our community, and embodies the exciting road
-                ahead. [OpenSea Pro](<a target="_blank" className="text-blue-600 visited:text-purple-600 hover:underline" href="https://pro.opensea.io">https://pro.opensea.io</a>)</Label>
+              <Label>{nftContractAddress && nftContractAddress.description} [View Collection](<a target="_blank" className="text-blue-600 visited:text-purple-600 hover:underline" onClick={() => navigate('/marketplace/' + nftContractAddress.value)}>{nftContractAddress.key}</a>)</Label>
             </div>
           </div>
         </div>
