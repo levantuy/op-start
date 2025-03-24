@@ -14,6 +14,7 @@ const nftContracts: Array<IItemContract> =
 
 const nftMonaContracts: Array<IItemContract> =
     [
+        { key: 'Taylor Swift', value: '0xDEcC68B46d2DEF6234a8EfC84E462c6504cFBD52', image: 'https://i.postimg.cc/4NQmwhQK/taylor-swift.webp', description: 'Love Selena Gomez'},
         { key: 'Selena Gomez', value: '0xD722A68D0A1891297ef8E3B086597c0cC83A34Bd', image: 'https://i.postimg.cc/3Rvp5XDY/selena-Gomez.jpg', description: 'Love Selena Gomez'},
         { key: 'Monad Nft 6', value: '0x6364A78A80D3fb3B681A4b75b8dDc38A856531De', image: 'https://i.postimg.cc/bv0KKFxy/91.jpg', description: 'Swiper React is available only via NPM as a part of the main Swiper library' },
         { key: 'Monad Nft 3', value: '0x2A75C1EC766435Edc2DBc7B8ECEE0178959d6CB4', image: 'https://i.postimg.cc/Hnx3vJL4/cat.avif', description: 'Swiper React is available only via NPM as a part of the main Swiper library' },
