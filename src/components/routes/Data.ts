@@ -14,6 +14,7 @@ const nftContracts: Array<IItemContract> =
 
 const nftMonaContracts: Array<IItemContract> =
     [
+        { key: 'Nam Truong', value: '0x6c97F7C4e511620a70b0aB61fc1A6b8185988E45', image: 'https://i.postimg.cc/XYvfxtGP/nam-truong.jpg', description: 'Nam Truong. '},
         { key: 'Adele', value: '0x465E50c6AC477DF9187F1a0c30bb3Bd2ddCA8A7A', image: 'https://i.postimg.cc/brgq447G/l-Ca-TNth-U5s6r-N8-TQ9-UXT8-Zt1v1w.jpg', description: 'Adele Laurie Blue Adkins (born 5 May 1988) is an English singer and songwriter. After graduating in arts from the BRIT School in 2006, Adele signed a record deal with XL Recordings. Her debut album, 19, was released in 2008 and spawned the UK top-five singles "Chasing Pavements" and "Make You Feel My Love". '},
         { key: 'Taylor Swift', value: '0xDEcC68B46d2DEF6234a8EfC84E462c6504cFBD52', image: 'https://i.postimg.cc/4NQmwhQK/taylor-swift.webp', description: 'Love Selena Gomez'},
         { key: 'Selena Gomez', value: '0xD722A68D0A1891297ef8E3B086597c0cC83A34Bd', image: 'https://i.postimg.cc/3Rvp5XDY/selena-Gomez.jpg', description: 'Love Selena Gomez'},
