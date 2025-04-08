@@ -14,6 +14,8 @@ const nftContracts: Array<IItemContract> =
 
 const nftMonaContracts: Array<IItemContract> =
     [
+        { key: 'Farmer', value: '0x838Bd7A522cb793f484A5Ca0B69A82dd21873aDb', image: 'https://i.postimg.cc/7ZYZzq59/Farmer.avif', description: 'Farmer airdrop.'},
+        { key: 'Zora', value: '0xdbbB34A307Cba3352A0d4A425aE04e071204C0ed', image: 'https://i.postimg.cc/L43zXJJc/zora.webp', description: 'Zora is a new kind of social network.'},
         { key: 'Zoë Mozert', value: '0x92a20330706FF8601b7A541D7d5Ebb4B8979F074', image: 'https://i.postimg.cc/9MhG2N4g/Zo-Mozert.jpg', description: 'In 1925 Mozert entered the Pennsylvania Museum School of Industrial Art where she studied under Thornton Oakley, a former student of Howard Pyle, and modeled to raise money for tuition'},
         { key: 'Nam Truong', value: '0x6c97F7C4e511620a70b0aB61fc1A6b8185988E45', image: 'https://i.postimg.cc/XYvfxtGP/nam-truong.jpg', description: 'Nam Truong. '},
         { key: 'Adele', value: '0x465E50c6AC477DF9187F1a0c30bb3Bd2ddCA8A7A', image: 'https://i.postimg.cc/brgq447G/l-Ca-TNth-U5s6r-N8-TQ9-UXT8-Zt1v1w.jpg', description: 'Adele Laurie Blue Adkins (born 5 May 1988) is an English singer and songwriter. After graduating in arts from the BRIT School in 2006, Adele signed a record deal with XL Recordings. Her debut album, 19, was released in 2008 and spawned the UK top-five singles "Chasing Pavements" and "Make You Feel My Love". '},
