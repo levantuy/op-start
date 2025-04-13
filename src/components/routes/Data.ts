@@ -13,7 +13,8 @@ const nftContracts: Array<IItemContract> =
     ];
 
 const nftMonaContracts: Array<IItemContract> =
-    [
+    [        
+        { key: 'ZKSwap', value: '0xcA591d96cF1F88847172Ab1fa0543A482b531dD9', image: 'https://i.postimg.cc/Nf1HwS9T/flying-coin.webp', description: 'The First Swap2Earn Platform'},
         { key: 'Farmer', value: '0x838Bd7A522cb793f484A5Ca0B69A82dd21873aDb', image: 'https://i.postimg.cc/7ZYZzq59/Farmer.avif', description: 'Farmer airdrop.'},
         { key: 'Zora', value: '0xdbbB34A307Cba3352A0d4A425aE04e071204C0ed', image: 'https://i.postimg.cc/L43zXJJc/zora.webp', description: 'Zora is a new kind of social network.'},
         { key: 'Zoë Mozert', value: '0x92a20330706FF8601b7A541D7d5Ebb4B8979F074', image: 'https://i.postimg.cc/9MhG2N4g/Zo-Mozert.jpg', description: 'In 1925 Mozert entered the Pennsylvania Museum School of Industrial Art where she studied under Thornton Oakley, a former student of Howard Pyle, and modeled to raise money for tuition'},
