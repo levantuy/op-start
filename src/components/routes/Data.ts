@@ -14,6 +14,7 @@ const nftContracts: Array<IItemContract> =
 
 const nftMonaContracts: Array<IItemContract> =
     [   
+        { key: 'Bull', value: '0x8218b425B81E36C56D80Ad95c880FCd5C4b5B088', image: 'https://i.postimg.cc/7hz6Dcxx/bear.jpg', description: 'Bull Nft'},
         { key: 'Bear', value: '0x21b36F89C157742104F21d356b8B1E3F774d959B', image: 'https://i.postimg.cc/7hz6Dcxx/bear.jpg', description: 'Bear Nft'},
         { key: 'Zora', value: '0xa05B082C80614aD6Ac83211D231aE906BfabD1BA', image: 'https://i.postimg.cc/Kj4c0h2Q/zora.webp', description: 'Zora coin'},
         { key: 'Base', value: '0x2f1Be96A9E43899086c9DA2b5F90194287144F1B', image: 'https://i.postimg.cc/mr97tzN8/base.webp', description: 'Base meme coin'},
