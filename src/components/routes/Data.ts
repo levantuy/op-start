@@ -13,7 +13,8 @@ const nftContracts: Array<IItemContract> =
     ];
 
 const nftMonaContracts: Array<IItemContract> =
-    [           
+    [   
+        { key: 'ICE', value: '0xFA13E0dd0ad4c7974D3A15f0FC3E2bfaF1ec9cBF', image: 'https://i.postimg.cc/W1rxDdLQ/picture.jpg', description: 'Ice Nft'},
         { key: 'Alp', value: '0x2275b3FC510117e2357Bac8223510F8C82Bc19bF', image: 'https://i.postimg.cc/1Rgbmvrt/monad.jpg', description: 'Alpha Nft'},
         { key: 'Bull', value: '0x8218b425B81E36C56D80Ad95c880FCd5C4b5B088', image: 'https://i.postimg.cc/7hz6Dcxx/bear.jpg', description: 'Bull Nft'},
         { key: 'Bear', value: '0x21b36F89C157742104F21d356b8B1E3F774d959B', image: 'https://i.postimg.cc/7hz6Dcxx/bear.jpg', description: 'Bear Nft'},
