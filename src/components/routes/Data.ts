@@ -14,6 +14,7 @@ const nftContracts: Array<IItemContract> =
 
 const nftMonaContracts: Array<IItemContract> =
     [   
+        { key: 'AI Agent', value: '0xDCfef6d4F9Ac26b0982fEf22b55F1bFf4Bf36188', image: 'https://i.postimg.cc/MZC9LdT1/ai-agent.jpg', description: 'AI Agent'},
         { key: 'Photographer', value: '0x8D5473AE7d5D12bf23E582C19F2cf7828B8A16EC', image: 'https://i.postimg.cc/Y0bLQrGn/photographer.jpg', description: 'Photographer'},
         { key: 'ICE', value: '0xFA13E0dd0ad4c7974D3A15f0FC3E2bfaF1ec9cBF', image: 'https://i.postimg.cc/W1rxDdLQ/picture.jpg', description: 'Ice Nft'},
         { key: 'Alp', value: '0x2275b3FC510117e2357Bac8223510F8C82Bc19bF', image: 'https://i.postimg.cc/1Rgbmvrt/monad.jpg', description: 'Alpha Nft'},
