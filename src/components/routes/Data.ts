@@ -13,7 +13,8 @@ const nftContracts: Array<IItemContract> =
     ];
 
 const nftMonaContracts: Array<IItemContract> =
-    [   
+    [           
+        { key: 'Influencer Nft', value: '0x81EeCd8d7268ac6368fF96c4E853F3a83144E035', image: 'https://i.postimg.cc/NjHjdmR7/Influencer.avif', description: 'Influencer Nft on Starknet'},
         { key: 'Farmer Nft', value: '0x75ca41C3362aAfC442523486B05e4FbdB33702Ac', image: 'https://i.postimg.cc/HkPbK4Z7/Farmer.avif', description: 'Farmer Nft on Starknet'},
         { key: 'Builder Nft', value: '0x9e11507AaE27F8c8EE1929E4b9EcDe4F211b5C39', image: 'https://i.postimg.cc/TwdN6tvP/builder.avif', description: 'Builder Nft on Starknet'},
         { key: 'AI Agent', value: '0xDCfef6d4F9Ac26b0982fEf22b55F1bFf4Bf36188', image: 'https://i.postimg.cc/MZC9LdT1/ai-agent.jpg', description: 'AI Agent'},
