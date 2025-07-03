@@ -1,7 +1,7 @@
 import './globals.css'
 import '@rainbow-me/rainbowkit/styles.css'
 
-import logo from './assets/react.svg'
+import logo from '/TTTD_logo.ico'
 
 import { RouterProvider, Outlet, createBrowserRouter } from 'react-router-dom'
 import { queryClient } from './global-context/queryClient'
