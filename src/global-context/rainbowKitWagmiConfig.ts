@@ -42,6 +42,6 @@ const transports = {
 export const rainbowKitWagmiConfig = getDefaultConfig({
   appName: 'Superchain Relayer',
   projectId: envVars.VITE_WALLETCONNECT_PROJECT_ID,
-  chains: chainsToConfigure,
+  chains: chainsToConfigure as any,
   transports,
 })
