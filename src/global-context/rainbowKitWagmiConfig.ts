@@ -22,21 +22,21 @@ import { fraxtalSepolia } from '../chain-pairs/chains/fraxtalSepolia'
 import { soneiumMainnet, Monad } from './/../global-context/soneiumMainnet';
 
 const transports = {
-  // Mainnet chains
-  [mainnet.id]: http(),
-  [base.id]: http(),
-  [fraxtal.id]: http(),
-  [optimism.id]: http(),
-  [zora.id]: http(),
-
   // Sepolia chains
+  [Monad.id]: http(),
   [sepolia.id]: http(),
   [baseSepolia.id]: http(),
   [fraxtalSepolia.id]: http(),
   [optimismSepolia.id]: http(),
   [zoraSepolia.id]: http(),
   [soneiumMainnet.id]: http(),
-  [Monad.id]: http(),
+
+  // Mainnet chains
+  [mainnet.id]: http(),
+  [base.id]: http(),
+  [fraxtal.id]: http(),
+  [optimism.id]: http(),
+  [zora.id]: http(),  
 } as const satisfies Record<ChainIdsToConfigure, Transport>
 
 export const rainbowKitWagmiConfig = getDefaultConfig({
