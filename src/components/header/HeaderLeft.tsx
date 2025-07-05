@@ -12,7 +12,7 @@ export const HeaderLeft = ({ logo }: HeaderLeftProps) => {
 
   return (
     <div className="flex flex-row">
-      <div className="flex logo">
+      <div className="flex logo" style={{width: '40px', height: '40px'}}>
         <a onClick={() => navigate('/')}><img src={logo} /></a>
       </div>
       <NavigationMenu.Root className={styles.Root}>
