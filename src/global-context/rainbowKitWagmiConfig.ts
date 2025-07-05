@@ -2,15 +2,15 @@ import '@rainbow-me/rainbowkit/styles.css'
 import { getDefaultConfig } from '@rainbow-me/rainbowkit'
 import { http } from 'wagmi'
 import {
+  mainnet,
+  optimism,
+  zora,
   sepolia,
-  // mainnet,
-  // optimism,
-  // zora,  
-  // fraxtal,
-  // base,
-  // baseSepolia,
-  // zoraSepolia,
-  // optimismSepolia
+  fraxtal,
+  base,
+  baseSepolia,
+  zoraSepolia,
+  optimismSepolia
 } from 'wagmi/chains'
 import { envVars } from '../envVars'
 import {
@@ -18,17 +18,13 @@ import {
   chainsToConfigure,
 } from '../chain-pairs/supportedChainPairs'
 import { Transport } from 'viem'
-// import { fraxtalSepolia } from '../chain-pairs/chains/fraxtalSepolia'
-import { 
-  // soneiumMainnet, 
-  Monad 
-} from './/../global-context/soneiumMainnet';
+import { fraxtalSepolia } from '../chain-pairs/chains/fraxtalSepolia'
+import { soneiumMainnet, Monad } from './/../global-context/soneiumMainnet';
 
 const transports = {
   // Sepolia chains
   [Monad.id]: http(),
   [sepolia.id]: http(),
-  /*
   [baseSepolia.id]: http(),
   [fraxtalSepolia.id]: http(),
   [optimismSepolia.id]: http(),
@@ -41,7 +37,6 @@ const transports = {
   [fraxtal.id]: http(),
   [optimism.id]: http(),
   [zora.id]: http(),  
-  */
 } as const satisfies Record<ChainIdsToConfigure, Transport>
 
 export const rainbowKitWagmiConfig = getDefaultConfig({
