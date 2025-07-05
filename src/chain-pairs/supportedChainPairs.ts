@@ -50,24 +50,24 @@ export const supportedMainnetChainPairs = [
 ] as const
 
 export const supportedSepoliaChainPairs = [
-  baseSepoliaChainPair,
-  fraxtalSepoliaChainPair,
-  optimismSepoliaChainPair,
-  zoraSepoliaChainPair,
-  minatoChainPair,
   monadChainPair,
-  beraChainPair,
+  // baseSepoliaChainPair,
+  // fraxtalSepoliaChainPair,
+  // optimismSepoliaChainPair,
+  // zoraSepoliaChainPair,
+  // minatoChainPair,  
+  // beraChainPair,
 ] as const
 
 export const supportedChainPairs = [
-  ...supportedMainnetChainPairs,
+  // ...supportedMainnetChainPairs,
   ...supportedSepoliaChainPairs,
 ] as const
 
-export const chainsToConfigure = [
-  mainnet,
-  sepolia,
+export const chainsToConfigure = [    
   ...supportedChainPairs.map(({ l2Chain }) => l2Chain),
+  sepolia,
+  mainnet,
 ] as const
 
 export type ChainToConfigure = (typeof chainsToConfigure)[number]
