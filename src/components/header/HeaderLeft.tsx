@@ -16,33 +16,7 @@ export const HeaderLeft = ({ logo }: HeaderLeftProps) => {
         <a onClick={() => navigate('/')}><img src={logo} /></a>
       </div>
       <NavigationMenu.Root className={styles.Root}>
-        <NavigationMenu.List className={styles.MenuList}>
-          <NavigationMenu.Item>
-            <NavigationMenu.Trigger className={styles.Trigger}>More
-              <CaretDownIcon className={styles.CaretDown} aria-hidden />
-            </NavigationMenu.Trigger>
-            <NavigationMenu.Content className={styles.Content}>
-              <NavigationMenu.List>
-                <NavigationMenu.Item>
-                  <NavigationMenu.Link
-                    className={styles.Link}
-                    onClick={() => navigate('/bridge')}
-                  >
-                    Bridge
-                  </NavigationMenu.Link>
-                </NavigationMenu.Item>
-                <NavigationMenu.Item>
-                  <NavigationMenu.Link
-                    className={styles.Link}
-                    onClick={() => navigate('/playground')}
-                  >
-                    Send
-                  </NavigationMenu.Link>
-                </NavigationMenu.Item>
-              </NavigationMenu.List>
-            </NavigationMenu.Content>
-          </NavigationMenu.Item>
-
+        <NavigationMenu.List className={styles.MenuList}>        
           <NavigationMenu.Item>
             <NavigationMenu.Link
               className={styles.Link}
@@ -77,6 +51,32 @@ export const HeaderLeft = ({ logo }: HeaderLeftProps) => {
             >
               Marketplace
             </NavigationMenu.Link>
+          </NavigationMenu.Item>
+
+          <NavigationMenu.Item>
+            <NavigationMenu.Trigger className={styles.Trigger}>More
+              <CaretDownIcon className={styles.CaretDown} aria-hidden />
+            </NavigationMenu.Trigger>
+            <NavigationMenu.Content className={styles.Content}>
+              <NavigationMenu.List>
+                <NavigationMenu.Item>
+                  <NavigationMenu.Link
+                    className={styles.Link}
+                    onClick={() => navigate('/bridge')}
+                  >
+                    Bridge
+                  </NavigationMenu.Link>
+                </NavigationMenu.Item>
+                <NavigationMenu.Item>
+                  <NavigationMenu.Link
+                    className={styles.Link}
+                    onClick={() => navigate('/playground')}
+                  >
+                    Send
+                  </NavigationMenu.Link>
+                </NavigationMenu.Item>
+              </NavigationMenu.List>
+            </NavigationMenu.Content>
           </NavigationMenu.Item>
 
           <NavigationMenu.Indicator className={styles.Indicator}>
