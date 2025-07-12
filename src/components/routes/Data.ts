@@ -12,9 +12,9 @@ const nftContracts: Array<IItemContract> =
     { key: 'Cz Token', value: '0xEB117ffe3d71987550ebAEA2D9af2650310A1286', image: 'https://i.postimg.cc/bv0KKFxy/91.jpg', description: 'Swiper React is available only via NPM as a part of the main Swiper library' },
     ];
 
-const nftMonaContracts: Array<IItemContract> =
-    [   
-        { key: 'Hunter Nft', value: '0x3C345fAa3c7440075E2214086a9954a86DE54DeC', image: 'https://i.postimg.cc/VNd1nBm0/hunter.avif', description: 'Hunter Nft on Starknet'},        
+const nftMonaContracts: Array<IItemContract> =[
+        { key: 'BTC ATH Nft', value: '0xd4c9b611b301Ac008E4C0ee7a86a78c6c9687C17', image: 'https://i.postimg.cc/9fpQKR28/btc-ath.png', description: 'BTC ATH Nft'},
+        { key: 'Hunter Nft', value: '0x3C345fAa3c7440075E2214086a9954a86DE54DeC', image: 'https://i.postimg.cc/VNd1nBm0/hunter.avif', description: 'Hunter Nft on Starknet'},
         { key: 'Influencer Nft', value: '0x81EeCd8d7268ac6368fF96c4E853F3a83144E035', image: 'https://i.postimg.cc/NjHjdmR7/Influencer.avif', description: 'Influencer Nft on Starknet'},
         { key: 'Farmer Nft', value: '0x75ca41C3362aAfC442523486B05e4FbdB33702Ac', image: 'https://i.postimg.cc/HkPbK4Z7/Farmer.avif', description: 'Farmer Nft on Starknet'},
         { key: 'Builder Nft', value: '0x9e11507AaE27F8c8EE1929E4b9EcDe4F211b5C39', image: 'https://i.postimg.cc/TwdN6tvP/builder.avif', description: 'Builder Nft on Starknet'},
