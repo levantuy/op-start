@@ -285,5 +285,23 @@ export default [
             { "name": "approved", "type": "bool" }
         ],
         "outputs": []
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "nft",
+                "type": "address"
+            },
+            {
+                "internalType": "uint256[]",
+                "name": "tokenIds",
+                "type": "uint256[]"
+            }
+        ],
+        "name": "buyListNFT",
+        "outputs": [],
+        "stateMutability": "payable",
+        "type": "function"
     }
 ] as const;

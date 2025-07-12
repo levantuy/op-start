@@ -27,6 +27,8 @@ export const Marketplace = () => {
   const [isPending, setIsPending] = useState(false);
   const [txDetails, setTxDetails] = useState<string>("");
   const [contracts] = useState<Array<IItemContract>>(nftMonaContracts);
+  const [selectedNFTs, setSelectedNFTs] = useState<Set<number>>(new Set());
+
   const { data: walletClient } = useWalletClient({
     chainId,
     account: walletAddress,
@@ -134,6 +136,54 @@ export const Marketplace = () => {
     }
   }
 
+  const toggleSelect = (tokenId: number) => {
+    setSelectedNFTs(prev => {
+      const newSet = new Set(prev);
+      if (newSet.has(tokenId)) {
+        newSet.delete(tokenId);
+      } else {
+        newSet.add(tokenId);
+      }
+      return newSet;
+    });
+  };
+
+  const buySelectedNFTs = async () => {
+    if (!walletClient || !publicClient || !walletAddress) return;
+    if (selectedNFTs.size === 0) return;
+
+    setIsPending(true);
+
+    try {
+      let total = 0;
+      for (const tokenId of selectedNFTs) {
+        const nft = nfts.find((item: any) => item.tokenId === tokenId) as any;
+        if (!nft || nft.seller === walletAddress) continue;
+        total += Number(nft.price);
+      }
+
+      const tx = {
+        account: walletAddress,
+        address: marketplaceContract,
+        abi: contractABI,
+        functionName: "buyListNFT",
+        value: parseEther(total.toString()),
+        args: [nftAddress, Array.from(selectedNFTs)],
+      } as const;
+
+      const { request } = await publicClient.simulateContract(tx as any);
+      const hash = await walletClient.writeContract(request);
+      await publicClient.waitForTransactionReceipt({ hash });
+
+      setSelectedNFTs(new Set()); // reset sau khi mua
+      refetchNfts();
+    } catch (error) {
+      console.error("Error buying selected NFTs:", error);
+    } finally {
+      setIsPending(false);
+    }
+  };
+
   return (
     <div className="w-full">
       <ToastProvider>
@@ -168,6 +218,15 @@ export const Marketplace = () => {
             </SelectContent>
           </Select>
         </div>
+        <div className={"basis-2/4 bg-transparent mr-2"}>
+          <Button
+            onClick={buySelectedNFTs}
+            disabled={selectedNFTs.size === 0}
+            className="w-full bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition disabled:opacity-50"
+          >
+            Buy {selectedNFTs.size} now
+          </Button>
+        </div>
       </div>
       <div className="flex flex-row">
         <div className={"basis-4/4 w-full bg-transparent border rounded-sm"}>
@@ -201,9 +260,48 @@ export const Marketplace = () => {
                   <div className="flex flex-row">
                     <Label>Price: {nft.price}</Label>
                   </div>
-                  <div>
+                  <div className="flex justify-between w-full">
                     <Button disabled={nft.seller == walletAddress} onClick={() => buyNFT(nft.tokenId, nft.price)}
                       className={styles.buttonAction}>Buy NFT</Button>
+                    <Button
+                      type="button"
+                      style={{ backgroundColor: 'transparent' }}
+                      onClick={() => toggleSelect(nft.tokenId)}
+                      disabled={nft.seller === walletAddress}
+                    >
+                      {selectedNFTs.has(nft.tokenId) ? (
+                        <svg
+                          aria-label="Check Circle"
+                          className="fill-blue-3 m-[-3px] animate-in fade-in"
+                          fill="currentColor"
+                          height="38"
+                          role="img"
+                          viewBox="0 -960 960 960"
+                          width="38"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <path
+                            className="fill-white"
+                            d="m424 -296 282 -282-56 -56 -226 226 -114-114-56 56 170 170Z"
+                            fill="blue"
+                          ></path>
+                        </svg>
+                      ) : (
+                        <svg
+                          aria-label="Add"
+                          className="fill-current rounded-full bg-black/80 animate-in fade-in"
+                          fill="currentColor"
+                          height="32"
+                          role="img"
+                          viewBox="0 -960 960 960"
+                          width="32"
+                          xmlns="http://www.w3.org/2000/svg"
+                          color="white"
+                        >
+                          <path d="M440-440H200v-80h240v-240h80v240h240v80H520v240h-80v-240Z"></path>
+                        </svg>
+                      )}
+                    </Button>
                   </div>
                 </motion.div>
               ))}
