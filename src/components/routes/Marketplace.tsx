@@ -159,7 +159,8 @@ export const Marketplace = () => {
       for (const tokenId of selectedNFTs) {
         const nft = nfts.find((item: any) => item.tokenId === tokenId) as any;
         if (!nft || nft.seller === walletAddress) continue;
-        total += Number(nft.price);
+        const price = Number(nft.price);
+        total =  Math.round((total + price) * 100) / 100 // Làm tròn đến 2 chữ số thập phân;
       }
 
       const tx = {
