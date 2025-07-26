@@ -303,5 +303,38 @@ export default [
         "outputs": [],
         "stateMutability": "payable",
         "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "nft",
+                "type": "address"
+            },
+            {
+                "internalType": "uint256[]",
+                "name": "tokenIds",
+                "type": "uint256[]"
+            },
+            {
+                "internalType": "uint256[]",
+                "name": "prices",
+                "type": "uint256[]"
+            }
+        ],
+        "name": "listNFTs",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "name": "Error",
+        "type": "error",
+        "inputs": [
+            {
+                "name": "message",
+                "type": "string"
+            }
+        ]
     }
 ] as const;

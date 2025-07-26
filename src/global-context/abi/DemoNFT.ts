@@ -693,5 +693,5 @@ export default [
     "payable": false,
     "stateMutability": "view",
     "type": "function"
-  }  
+  }
 ] as const;

@@ -7,6 +7,22 @@
   align-items: center;
 }
 
+.button {
+  background-color: #0085ff;
+  border-radius: 6px;
+  border: 0px solid;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+}
+.button:disabled {
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+.button:hover {
+  background-color: #006bb3;
+  color: white;
+}
+
 .buttonAction {
   background-color: transparent;
   border-radius: 6px;

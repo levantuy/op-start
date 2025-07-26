@@ -43,7 +43,7 @@ const nftMonaContracts: Array<IItemContract> = [
     { key: 'Girl Sexy', value: '0x8b326526a82cB44e1911FB2A9f14A8f4711E2206', image: 'https://i.postimg.cc/bv0KKFxy/91.jpg', description: 'Swiper React is available only via NPM as a part of the main Swiper library' },
 ];
 
-const marketplaceContract: Address = '0x2BeEA41c597e5C0c7a4c1635F67dD340957FE90c';
+const marketplaceContract: Address = '0x5a88F8617788E52dBbF59Fe7702112259685ECD8';
 
 const metadataDefault = {
     "name": "Girl NFT",

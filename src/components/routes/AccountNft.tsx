@@ -28,6 +28,8 @@ export const AccountNft = () => {
   const [isApproved, setIsApproved] = useState<boolean | null>(null);
   const [txDetails, setTxDetails] = useState<string>("");
   const [contracts] = useState<Array<IItemContract>>(nftMonaContracts);
+  const [selectedNFTs, setSelectedNFTs] = useState<Set<number>>(new Set());
+
   const { data: walletClient } = useWalletClient({
     chainId,
     account: walletAddress,
@@ -106,7 +108,7 @@ export const AccountNft = () => {
           tokenId: Number(listing.tokenId),
           seller: listing.seller,
           price: formatEther(listing.price),
-          active: listing.active, 
+          active: listing.active,
           metadata: metadataDefault
         };
 
@@ -167,7 +169,7 @@ export const AccountNft = () => {
     setIsPending(true);
     setNftAddress(address);
     setTxDetails("");
-    
+
     try {
       await Promise.all([
         refreshBaseURI(),
@@ -180,6 +182,56 @@ export const AccountNft = () => {
       setIsPending(false);
     }
   }
+
+  const toggleSelect = (tokenId: number) => {
+    setSelectedNFTs(prev => {
+      const newSet = new Set(prev);
+      if (newSet.has(tokenId)) {
+        newSet.delete(tokenId);
+      } else {
+        newSet.add(tokenId);
+      }
+      return newSet;
+    });
+  };
+
+  const listSelectedNFTs = async () => {
+    if (!walletClient || !publicClient || !walletAddress) return;
+    if (selectedNFTs.size === 0) return;
+
+    setIsPending(true);
+    if (!isApproved) await approveMarketplaceForAll();
+
+    try {
+      let total = 0;
+      for (const tokenId of selectedNFTs) {
+        const nft = nfts.find((item: any) => item.tokenId === tokenId) as any;
+        if (!nft || nft.seller === walletAddress) continue;
+        total += Number(nft.price);
+      }
+
+      const priceInEther = Array.from(selectedNFTs).map(() => price ? parseEther(price) : parseEther("0"));
+
+      const tx = {
+        account: walletAddress,
+        address: marketplaceContract,
+        abi: contractABI,
+        functionName: "listNFTs",
+        args: [nftAddress, Array.from(selectedNFTs), priceInEther],
+      } as const;
+
+      const { request } = await publicClient.simulateContract(tx as any);
+      const hash = await walletClient.writeContract(request);
+      await publicClient.waitForTransactionReceipt({ hash });
+
+      setSelectedNFTs(new Set()); // reset sau khi mua
+      refetchNfts();
+    } catch (error) {
+      console.error("Error buying selected NFTs:", error);
+    } finally {
+      setIsPending(false);
+    }
+  };
 
   return (
     <div className="w-full">
@@ -215,17 +267,33 @@ export const AccountNft = () => {
             </SelectContent>
           </Select>
         </div>
-        <div className={"basis-1/2 bg-transparent flex justify-left items-center text-center"}>
-          {isApproved === null ? (
-            <p>Checking approval
-              status...</p>
-          ) : isApproved ? (
-            <p>✅ Approved for all NFTs</p>
-          ) : (
-            <Button onClick={approveMarketplaceForAll} disabled={isPending} className="w-full bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition">
-              {isPending ? "Approving..." : "Approve Marketplace for All"}
-            </Button>
-          )}
+        <div className={"basis-1/2 bg-transparent flex justify-start items-center"}>
+          <div className="flex flex-row w-full">
+            <div className={"basis-1/2 bg-transparent flex justify-start items-center"}>
+              {isApproved === null ? (
+                <p>Checking approval
+                  status...</p>
+              ) : isApproved ? (
+                <p>✅ Approved for all NFTs</p>
+              ) : (
+                <Button onClick={approveMarketplaceForAll} disabled={isPending} className="w-full bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition">
+                  {isPending ? "Approving..." : "Approve Marketplace for All"}
+                </Button>
+              )}
+            </div>
+            <div className={"basis-1/4 bg-transparent flex justify-start items-center"}>
+              <Input
+                type="text"
+                placeholder="Enter price in MON"
+                value={price}
+                onChange={(e) => setPrice(e.target.value)}
+                className="w-48 border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+              />
+            </div>
+            <div className={"basis-1/4 bg-transparent flex justify-start items-center"}>
+              <Button disabled={selectedNFTs.size ? false : true} className={styles.button} onClick={listSelectedNFTs}>List same price</Button>
+            </div>
+          </div>
         </div>
       </div>
       <div className="flex flex-row">
@@ -235,11 +303,11 @@ export const AccountNft = () => {
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
               {nfts.length > 0 && nfts.map((nft: any, index) => (
                 <motion.div
-                key={index}
-                whileHover={{ scale: 1.05 }}
-                className={styles.backgroundItem}
-                style={{ padding: '10px' }}
-              >
+                  key={index}
+                  whileHover={{ scale: 1.05 }}
+                  className={styles.backgroundItem}
+                  style={{ padding: '10px' }}
+                >
                   <div className="flex flex-row" style={{
                     display: 'flex',
                     justifyContent: 'center',
@@ -261,7 +329,7 @@ export const AccountNft = () => {
                   {nft.active ? <div className="flex flex-row">
                     <Label>Price: {nft.price}</Label>
                   </div> : <>Not listing</>}
-                  <div>
+                  <div className="flex justify-between w-full">
                     {selectedNFT && selectedNFT === nft.tokenId ? <>
                       <Input
                         type="text"
@@ -274,6 +342,44 @@ export const AccountNft = () => {
                     </> : <>
                       <Button onClick={() => setSelectedNFT(nft.tokenId)} className={styles.buttonAction}>{nft.active ? 'Edit' : 'List'}</Button>
                     </>}
+                    <Button
+                      type="button"
+                      style={{ backgroundColor: 'transparent' }}
+                      onClick={() => toggleSelect(nft.tokenId)}
+                    >
+                      {selectedNFTs.has(nft.tokenId) ? (
+                        <svg
+                          aria-label="Check Circle"
+                          className="fill-blue-3 m-[-3px] animate-in fade-in"
+                          fill="currentColor"
+                          height="38"
+                          role="img"
+                          viewBox="0 -960 960 960"
+                          width="38"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <path
+                            className="fill-white"
+                            d="m424 -296 282 -282-56 -56 -226 226 -114-114-56 56 170 170Z"
+                            fill="blue"
+                          ></path>
+                        </svg>
+                      ) : (
+                        <svg
+                          aria-label="Add"
+                          className="fill-current rounded-full bg-black/80 animate-in fade-in"
+                          fill="currentColor"
+                          height="32"
+                          role="img"
+                          viewBox="0 -960 960 960"
+                          width="32"
+                          xmlns="http://www.w3.org/2000/svg"
+                          color="white"
+                        >
+                          <path d="M440-440H200v-80h240v-240h80v240h240v80H520v240h-80v-240Z"></path>
+                        </svg>
+                      )}
+                    </Button>
                   </div>
                 </motion.div>
               ))}
