@@ -17,10 +17,18 @@ import { Label } from "@radix-ui/react-label";
 import axios from "axios";
 import { motion } from 'framer-motion';
 import { decodeErrorResult } from 'viem';
+import * as Slider from '@radix-ui/react-slider';
 
 export const AccountNft = () => {
   const [nftAddress, setNftAddress] = useState<Address>(nftMonaContracts[nftMonaContracts.length - 1].value);
-  const [nfts, setNfts] = useState([]);
+  interface NFTItem {
+    tokenId: number;
+    seller: string;
+    price: string;
+    active: boolean;
+    metadata: any;
+  }
+  const [nfts, setNfts] = useState<NFTItem[]>([]);
   const [selectedNFT, setSelectedNFT] = useState(null);
   const [price, setPrice] = useState("");
   const chainId = monadTestnet.id;
@@ -30,6 +38,8 @@ export const AccountNft = () => {
   const [txDetails, setTxDetails] = useState<string>("");
   const [contracts] = useState<Array<IItemContract>>(nftMonaContracts);
   const [selectedNFTs, setSelectedNFTs] = useState<Set<number>>(new Set());
+  const [value, setValue] = useState(0);
+  const min = 0;
 
   const { data: walletClient } = useWalletClient({
     chainId,
@@ -157,7 +167,7 @@ export const AccountNft = () => {
       });
 
       setTxDetails(`https://testnet.monadexplorer.com/tx/${hash}`);
-      setSelectedNFT(null);
+      clearData();
       refetchNfts();
     } catch (error) {
       console.error(error);
@@ -166,10 +176,18 @@ export const AccountNft = () => {
     }
   }
 
+  const clearData = () => {
+    setSelectedNFT(null);
+    setPrice("0");
+    setTxDetails("");
+    setSelectedNFTs(new Set());
+    setValue(0);
+  }
+
   const handlechangeContract = async (address: Address) => {
     setIsPending(true);
     setNftAddress(address);
-    setTxDetails("");
+    clearData();
 
     try {
       await Promise.all([
@@ -216,7 +234,7 @@ export const AccountNft = () => {
       const hash = await walletClient.writeContract(request);
       await publicClient.waitForTransactionReceipt({ hash });
 
-      setSelectedNFTs(new Set()); // reset sau khi mua
+      clearData();
       refetchNfts();
     } catch (error) {
       if (error instanceof ContractFunctionExecutionError) {
@@ -230,6 +248,32 @@ export const AccountNft = () => {
     } finally {
       setIsPending(false);
     }
+  };
+
+  const sliderChangeHandler = (value: number) => {
+    const newSelectedNFTs = new Set<number>();
+    setSelectedNFTs(new Set());
+    setValue(value);
+    if (value === 0 || nfts.length === 0) return;
+
+    for (let i = 0; i < value; i++) {
+      newSelectedNFTs.add(nfts[i].tokenId);
+    }
+    setSelectedNFTs(newSelectedNFTs);
+  }
+
+  const increment = () => {
+    sliderChangeHandler(value + 1);
+  }
+
+  const decrement = () => {
+    sliderChangeHandler(value - 1);
+  }
+
+  const inputChange = (e: any) => {
+    const val = Math.max(min, Math.min(Number(e.target.value), nfts.length));
+    setValue(val);
+    sliderChangeHandler(val);
   };
 
   return (
@@ -267,31 +311,81 @@ export const AccountNft = () => {
           </Select>
         </div>
         <div className={"basis-1/2 bg-transparent flex justify-start items-center"}>
-          <div className="flex flex-row w-full">
-            <div className={"basis-1/2 bg-transparent flex justify-start items-center"}>
-              {isApproved === null ? (
-                <p>Checking approval
-                  status...</p>
-              ) : isApproved ? (
-                <p>✅ Approved for all NFTs</p>
-              ) : (
-                <Button onClick={approveMarketplaceForAll} disabled={isPending} className="w-full bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition">
-                  {isPending ? "Approving..." : "Approve Marketplace for All"}
-                </Button>
-              )}
-            </div>
-            <div className={"basis-1/4 bg-transparent flex justify-start items-center"}>
-              <Input
-                type="text"
-                placeholder="Enter price in MON"
-                value={price}
-                onChange={(e) => setPrice(e.target.value)}
-                className="w-48 border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+          <div className="flex flex-row">
+            <Slider.Root
+              className="relative flex w-[140px] items-center select-none touch-none mr-2"
+              max={nfts.length}
+              step={1}
+              onValueChange={(value) => sliderChangeHandler(value[0])}
+              value={[selectedNFTs.size ? selectedNFTs.size : 0]}
+            >
+              <Slider.Track className="bg-gray-200 relative h-2 w-full grow overflow-hidden rounded-full">
+                <Slider.Range className="absolute h-full bg-blue-500" />
+              </Slider.Track>
+              <Slider.Thumb className="block size-4 rounded-full bg-blue-500 shadow-sm transition-colors" />
+            </Slider.Root>
+
+            {/* Custom Number Input */}
+            <div className="inline-flex items-center whitespace-nowrap rounded-lg transition duration-200 placeholder:text-gray-400 border border-gray-300 gap-1 text-sm px-2.5 font-mono w-[105px] shrink-0 mr-2">
+              <div className="flex items-center min-w-fit">
+                <button
+                  type="button"
+                  onClick={decrement}
+                  disabled={value <= min}
+                  className="inline-flex items-center border-0 cursor-pointer text-gray-800 hover:text-gray-600 disabled:pointer-events-none disabled:opacity-40"
+                >
+                  <svg
+                    aria-label="Remove"
+                    className="fill-current"
+                    height="16"
+                    viewBox="0 -960 960 960"
+                    width="16"
+                  >
+                    <path d="M200-440v-80h560v80H200Z" />
+                  </svg>
+                </button>
+              </div>
+
+              <input
+                type="number"
+                min={min}
+                max={nfts.length}
+                value={value}
+                onChange={e => inputChange(e)}
+                placeholder="0"
+                className="text-sm w-full border-0 bg-transparent text-center [appearance:textfield] outline-none [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
               />
+
+              <div className="flex items-center min-w-fit">
+                <button
+                  type="button"
+                  onClick={increment}
+                  disabled={value >= nfts.length}
+                  className="inline-flex items-center border-0 cursor-pointer text-gray-800 hover:text-gray-600 disabled:pointer-events-none disabled:opacity-40"
+                >
+                  <svg
+                    aria-label="Add"
+                    className="fill-current"
+                    height="16"
+                    viewBox="0 -960 960 960"
+                    width="16"
+                  >
+                    <path d="M440-440H200v-80h240v-240h80v240h240v80H520v240h-80v-240Z" />
+                  </svg>
+                </button>
+              </div>
             </div>
-            <div className={"basis-1/4 bg-transparent flex justify-start items-center"}>
-              <Button disabled={selectedNFTs.size ? false : true} className={styles.button} onClick={listSelectedNFTs}>List same price</Button>
-            </div>
+
+            <Input
+              type="text"
+              placeholder="Enter price in MON"
+              title="Price in MON"
+              value={price}
+              onChange={(e) => setPrice(e.target.value)}
+              className="w-48 border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-500 focus:outline-none mr-2"
+            />
+
+            <Button disabled={selectedNFTs.size ? false : true} className={styles.button || ' mr-2'} onClick={listSelectedNFTs}>List {selectedNFTs.size} same price</Button>
           </div>
         </div>
       </div>

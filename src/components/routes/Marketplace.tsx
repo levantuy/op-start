@@ -92,6 +92,7 @@ export const Marketplace = () => {
     setIsPending(true);
     setNftAddress(address);
     setTxDetails("");
+    setSelectedNFTs(new Set()); // reset selected NFTs
 
     try {
       await Promise.all([
