@@ -1,6 +1,6 @@
 import styles from "./NftMint.module.css";
 import { useEffect, useState } from 'react';
-import { Address, formatEther, parseEther } from 'viem';
+import { Address, ContractFunctionExecutionError, formatEther, parseEther } from 'viem';
 import { Monad as monadTestnet } from '../../global-context/soneiumMainnet.ts';
 import {
   useAccount,
@@ -16,6 +16,7 @@ import { IItemContract, nftMonaContracts, marketplaceContract, metadataDefault }
 import { Label } from "@radix-ui/react-label";
 import axios from "axios";
 import { motion } from 'framer-motion';
+import { decodeErrorResult } from 'viem';
 
 export const AccountNft = () => {
   const [nftAddress, setNftAddress] = useState<Address>(nftMonaContracts[nftMonaContracts.length - 1].value);
@@ -203,21 +204,12 @@ export const AccountNft = () => {
     if (!isApproved) await approveMarketplaceForAll();
 
     try {
-      let total = 0;
-      for (const tokenId of selectedNFTs) {
-        const nft = nfts.find((item: any) => item.tokenId === tokenId) as any;
-        if (!nft || nft.seller === walletAddress) continue;
-        total += Number(nft.price);
-      }
-
-      const priceInEther = Array.from(selectedNFTs).map(() => price ? parseEther(price) : parseEther("0"));
-
       const tx = {
         account: walletAddress,
         address: marketplaceContract,
         abi: contractABI,
         functionName: "listNFTs",
-        args: [nftAddress, Array.from(selectedNFTs), priceInEther],
+        args: [nftAddress, Array.from(selectedNFTs), Array.from(selectedNFTs).map(() => price ? parseEther(price) : parseEther("0"))],
       } as const;
 
       const { request } = await publicClient.simulateContract(tx as any);
@@ -227,6 +219,13 @@ export const AccountNft = () => {
       setSelectedNFTs(new Set()); // reset sau khi mua
       refetchNfts();
     } catch (error) {
+      if (error instanceof ContractFunctionExecutionError) {
+        const decoded = decodeErrorResult({
+          abi: contractABI,
+          data: error.message as any,
+        });
+        console.error("Decoded error:", decoded);
+      }
       console.error("Error buying selected NFTs:", error);
     } finally {
       setIsPending(false);
