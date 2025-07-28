@@ -91,8 +91,8 @@ export const Marketplace = () => {
   useEffect(() => {
     if (nftList && isFetched) {
       fetchTokenURI(nftList)
-        .then((data) => {
-          setNfts(data as any)
+        .then(data => {
+          setNfts(Array.from(data).filter(item => item.seller !== walletAddress))
         })
         .catch(console.log)
         .finally(() => setIsPending(false));
