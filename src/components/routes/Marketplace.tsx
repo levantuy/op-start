@@ -56,7 +56,7 @@ export const Marketplace = () => {
 
   const { data: baseURI, refetch: refreshBaseURI, isFetched } = useReadContract({
     account: walletAddress,
-    address: nftAddress,
+    address: nftAddress?.value as Address,
     abi: NFT_ABI,
     functionName: "baseURI",
     args: [],
@@ -68,7 +68,7 @@ export const Marketplace = () => {
     address: marketplaceContract,
     abi: contractABI,
     functionName: "getNFTsByContract",
-    args: [nftAddress]
+    args: [nftAddress?.value as Address],
   });
 
   const fetchTokenURI = async (tokenURI: any) => {
@@ -106,7 +106,7 @@ export const Marketplace = () => {
 
   const handlechangeContract = async (address: Address) => {
     setIsPending(true);
-    setNftAddress(address);
+    setNftAddress(nftMonaContracts.find(contract => contract.value === address));
     clearData();
 
     try {
@@ -264,7 +264,7 @@ export const Marketplace = () => {
       </ToastProvider>
       <div className="flex flex-row mb-2">
         <div className={"basis-2/4 bg-transparent mr-2"}>
-          <Select onValueChange={item => handlechangeContract(item as any)}>
+          <Select onValueChange={item => handlechangeContract(item as Address)}>
             <SelectTrigger className="w-96 w-full">
               <SelectValue placeholder="Select a contract" defaultValue={nftAddress?.value} />
             </SelectTrigger>
