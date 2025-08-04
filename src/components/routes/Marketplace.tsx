@@ -12,7 +12,7 @@ import contractABI from "../../global-context/abi/Marketplace.ts";
 import NFT_ABI from "../../global-context/abi/DemoNFT.ts";
 import { Button, Toast, ToastClose, ToastDescription, ToastProvider, ToastTitle, ToastViewport } from '../base/index.tsx';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../base/select/select.tsx";
-import { IItemContract, nftMonaContracts, marketplaceContract, metadataDefault } from "./Data.ts";
+import { nftMonaContracts, marketplaceContract, metadataDefault, IItemContract } from "./Data.ts";
 import { Label } from "@radix-ui/react-label";
 import axios from 'axios';
 import { motion } from 'framer-motion';
@@ -21,7 +21,7 @@ import * as Slider from '@radix-ui/react-slider';
 
 export const Marketplace = () => {
   const { id } = useParams();
-  const [nftAddress, setNftAddress] = useState<Address>(id == '0x' ? '0x6364A78A80D3fb3B681A4b75b8dDc38A856531De' : id as any);
+  const [nftAddress, setNftAddress] = useState<IItemContract>(); // Default NFT contract address
   interface NFTItem {
     tokenId: number;
     seller: string;
@@ -34,11 +34,16 @@ export const Marketplace = () => {
   const { address: walletAddress } = useAccount();
   const [isPending, setIsPending] = useState(false);
   const [txDetails, setTxDetails] = useState<string>("");
-  const [contracts] = useState<Array<IItemContract>>(nftMonaContracts);
   const [selectedNFTs, setSelectedNFTs] = useState<Set<number>>(new Set());
   const [value, setValue] = useState(0);
   const min = 0;
 
+  useEffect(() => {
+    if (nftMonaContracts.length > 0) {
+      const found = nftMonaContracts.find(contract => contract.value === id);
+      setNftAddress(found || nftMonaContracts[0]);
+    }
+  }, [nftMonaContracts, id]);
 
   const { data: walletClient } = useWalletClient({
     chainId,
@@ -91,8 +96,8 @@ export const Marketplace = () => {
   useEffect(() => {
     if (nftList && isFetched) {
       fetchTokenURI(nftList)
-        .then((data) => {
-          setNfts(data as any)
+        .then(data => {
+          setNfts(Array.from(data).filter(item => item.seller !== walletAddress))
         })
         .catch(console.log)
         .finally(() => setIsPending(false));
@@ -261,10 +266,10 @@ export const Marketplace = () => {
         <div className={"basis-2/4 bg-transparent mr-2"}>
           <Select onValueChange={item => handlechangeContract(item as any)}>
             <SelectTrigger className="w-96 w-full">
-              <SelectValue placeholder="Select a contract" defaultValue={nftAddress} />
+              <SelectValue placeholder="Select a contract" defaultValue={nftAddress?.value} />
             </SelectTrigger>
             <SelectContent className="w-96 border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-500 focus:outline-none">
-              {contracts.map((item, i) =>
+              {nftMonaContracts.map((item, i) =>
                 <SelectItem key={i} value={item.value}>{item.key}</SelectItem>
               )}
             </SelectContent>
