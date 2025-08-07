@@ -134,7 +134,7 @@ export const Marketplace = () => {
         abi: contractABI,
         functionName: "buyNFT",
         value: parseEther(price),
-        args: [nftAddress, tokenId],
+        args: [nftAddress?.value, tokenId],
       } as const;
 
       const { request } = await publicClient.simulateContract(tx as any);
@@ -185,7 +185,7 @@ export const Marketplace = () => {
         abi: contractABI,
         functionName: "buyListNFT",
         value: parseEther(total.toString()),
-        args: [nftAddress, Array.from(selectedNFTs)],
+        args: [nftAddress?.value, Array.from(selectedNFTs)],
       } as const;
 
       const { request } = await publicClient.simulateContract(tx as any);
