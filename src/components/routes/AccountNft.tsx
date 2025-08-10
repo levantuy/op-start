@@ -20,7 +20,7 @@ import { decodeErrorResult } from 'viem';
 import * as Slider from '@radix-ui/react-slider';
 
 export const AccountNft = () => {
-  const [nftAddress, setNftAddress] = useState<Address>(nftMonaContracts[nftMonaContracts.length - 1].value);
+  const [nftAddress, setNftAddress] = useState<IItemContract>(); // Default NFT contract address
   interface NFTItem {
     tokenId: number;
     seller: string;
@@ -56,7 +56,7 @@ export const AccountNft = () => {
     address: marketplaceContract,
     abi: contractABI,
     functionName: "isApprovedForAll",
-    args: [nftAddress, walletAddress as any],
+    args: [nftAddress?.value as Address, walletAddress as any],
   });
 
   useEffect(() => {
@@ -64,6 +64,12 @@ export const AccountNft = () => {
       setIsApproved(approvedForAll);
     }
   }, [approvedForAll]);
+
+  useEffect(() => {
+    if (nftMonaContracts.length > 0) {
+      setNftAddress(nftMonaContracts[0]);
+    }
+  }, [nftMonaContracts]);
 
   // 🔵 Request Approval
   const approveMarketplaceForAll = async () => {
@@ -97,7 +103,7 @@ export const AccountNft = () => {
 
   const { data: baseURI, refetch: refreshBaseURI } = useReadContract({
     account: walletAddress,
-    address: nftAddress,
+    address: nftAddress?.value,
     abi: NFT_ABI,
     functionName: "baseURI",
     args: [],
@@ -109,7 +115,7 @@ export const AccountNft = () => {
     address: marketplaceContract,
     abi: contractABI,
     functionName: "getAllNFTsAccount",
-    args: [nftAddress, walletAddress as any]
+    args: [nftAddress?.value as Address, walletAddress as any]
   });
 
   const fetchTokenURI = async (tokenURI: any) => {
@@ -186,8 +192,7 @@ export const AccountNft = () => {
 
   const handlechangeContract = async (address: Address) => {
     setIsPending(true);
-    setNftAddress(address);
-    clearData();
+    setNftAddress(nftMonaContracts.find(contract => contract.value === address));
 
     try {
       await Promise.all([
@@ -199,6 +204,7 @@ export const AccountNft = () => {
       console.error("Error updating contract data:", error);
     } finally {
       setIsPending(false);
+      clearData();
     }
   }
 
@@ -299,9 +305,9 @@ export const AccountNft = () => {
       </ToastProvider>
       <div className="flex flex-row mb-2">
         <div className={"basis-1/2 bg-transparent mr-2"}>
-          <Select onValueChange={item => handlechangeContract(item as any)}>
+          <Select onValueChange={item => handlechangeContract(item as any)} value={nftAddress?.value}>
             <SelectTrigger className="w-96 w-full">
-              <SelectValue placeholder="Select a contract" defaultValue={nftAddress} />
+              <SelectValue placeholder="Phương Thúy"/>
             </SelectTrigger>
             <SelectContent className="w-96 border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-500 focus:outline-none">
               {contracts.map((item, i) =>

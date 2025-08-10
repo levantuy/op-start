@@ -107,7 +107,6 @@ export const Marketplace = () => {
   const handlechangeContract = async (address: Address) => {
     setIsPending(true);
     setNftAddress(nftMonaContracts.find(contract => contract.value === address));
-    clearData();
 
     try {
       await Promise.all([
@@ -120,6 +119,7 @@ export const Marketplace = () => {
     }
     finally {
       setIsPending(false);
+      clearData();
     }
   }
 
@@ -264,9 +264,9 @@ export const Marketplace = () => {
       </ToastProvider>
       <div className="flex flex-row mb-2">
         <div className={"basis-2/4 bg-transparent mr-2"}>
-          <Select onValueChange={item => handlechangeContract(item as Address)}>
+          <Select onValueChange={item => handlechangeContract(item as Address)} value={nftAddress?.value}>
             <SelectTrigger className="w-96 w-full">
-              <SelectValue placeholder="Select a contract" defaultValue={nftAddress?.value} />
+              <SelectValue placeholder="Select a contract"/>
             </SelectTrigger>
             <SelectContent className="w-96 border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-500 focus:outline-none">
               {nftMonaContracts.map((item, i) =>

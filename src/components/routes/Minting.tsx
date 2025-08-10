@@ -321,7 +321,7 @@ export const Minting = () => {
       </ToastProvider>
       <div className="flex flex-row mb-2">
         <div className={"basis-2/4 bg-transparent mr-2"}>
-          <Select onValueChange={(value) => handlechangeContract(JSON.parse(value))}>
+          <Select onValueChange={(value) => handlechangeContract(JSON.parse(value))} value={JSON.stringify(nftContractAddress)}>
             <SelectTrigger className="w-96 w-full">
               <SelectValue placeholder="Select a contract" />
             </SelectTrigger>
