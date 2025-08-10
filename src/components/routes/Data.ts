@@ -13,6 +13,7 @@ const nftContracts: Array<IItemContract> =
     ];
 
 const nftMonaContracts: Array<IItemContract> = [
+    { key: 'ETH ATH', value: '0xCD396f096e2F69E50c2B7f5FF8827C0311901887', image: 'https://i.postimg.cc/fRy6Fhn1/eth-uptrend.png', description: 'ETH new ATH soon' },
     { key: 'Opensea studio 2.0 with AI', value: '0xcE41f8b0d0736A40d50912d63ddB0f7c888ED830', image: 'https://i2.seadn.io/base/0x3db8898291c666777667c802a4972d1aadc7e0b3/f507dc682bcf5ee40ddfa94cd4a831/d2f507dc682bcf5ee40ddfa94cd4a831.png', description: 'Opensea studio 2.0 with AI' },
     { key: 'Downtrend Nft', value: '0x8722A14e6804186F07FAB15E7C603c8dd59Df0ef', image: 'https://i.postimg.cc/brPB3jH3/downtrend.png', description: 'Downtrend Nft' },
     { key: 'BTC ATH Nft', value: '0xd4c9b611b301Ac008E4C0ee7a86a78c6c9687C17', image: 'https://i.postimg.cc/9fpQKR28/btc-ath.png', description: 'BTC ATH Nft' },
