@@ -80,7 +80,7 @@ export const AccountNft = () => {
     try {
       const tx = {
         account: walletAddress,
-        address: nftAddress,
+        address: nftAddress?.value,
         abi: contractABI,
         functionName: "setApprovalForAll",
         args: [marketplaceContract, true],
@@ -163,7 +163,7 @@ export const AccountNft = () => {
         address: marketplaceContract,
         abi: contractABI,
         functionName: "listNFT",
-        args: [nftAddress, selectedNFT, parseEther(price)],
+        args: [nftAddress?.value, selectedNFT, parseEther(price)],
       } as const;
 
       const { request } = await publicClient.simulateContract(tx as any);
@@ -233,7 +233,7 @@ export const AccountNft = () => {
         address: marketplaceContract,
         abi: contractABI,
         functionName: "listNFTs",
-        args: [nftAddress, Array.from(selectedNFTs), Array.from(selectedNFTs).map(() => price ? parseEther(price) : parseEther("0"))],
+        args: [nftAddress?.value, Array.from(selectedNFTs), Array.from(selectedNFTs).map(() => price ? parseEther(price) : parseEther("0"))],
       } as const;
 
       const { request } = await publicClient.simulateContract(tx as any);
