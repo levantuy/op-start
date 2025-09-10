@@ -92,7 +92,7 @@ export const Minting = () => {
 
   const { data: bal } = useBalance({
     address: walletAddress,
-    connectedId,
+    chainId: connectedId,
   });
   const isBalanceZero = bal?.value.toString() === "0";
 
