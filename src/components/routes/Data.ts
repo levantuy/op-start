@@ -13,6 +13,7 @@ const nftContracts: Array<IItemContract> =
     ];
 
 const nftMonaContracts: Array<IItemContract> = [
+    { key: 'Optimism TGE', value: '0x770D28d0d4e50a2b550786900BDc012b95b9eb8B', image: 'https://i.postimg.cc/XYH88Bd0/linea-nft.png', description: 'Optimism Nft' },
     { key: 'Linea TGE', value: '0xb919e0B0255359B067ED9C3B5F8723A33e9a1d0A', image: 'https://i.postimg.cc/XYH88Bd0/linea-nft.png', description: 'Linea Nft' },
     { key: 'Buddha', value: '0x7164A656B89649AE545814EB30Aa035C51e077Cc', image: 'https://i.postimg.cc/fLx2YMGs/buddha.jpg', description: 'Buddha on Web3' },
     { key: 'Minting Nft', value: '0x90Ef5Bc03eb500ee07A9CB714FC52f667B6ef94f', image: 'https://i2.seadn.io/base/0x08bee2bc026d6fb6b50a9d4040a374721d6a6c67/85c75e5f0118ad8665b9a20515c162/dc85c75e5f0118ad8665b9a20515c162.png?w=1000', description: 'Minting' },

@@ -20,6 +20,28 @@ const soneiumMainnet = {
   },
 };
 
+const optimism = {
+  id: 10,
+  name: 'Optimism Mainnet',
+  network: 'optimism',
+  nativeCurrency: {
+    decimals: 18,
+    name: 'Ether',
+    symbol: 'ETH',
+  },
+  rpcUrls: {
+    default: {
+      http: ['https://mainnet.optimism.io/'],
+    },
+    public: {
+      http: ['https://mainnet.optimism.io/'],
+    },
+  },
+  blockExplorers: {
+    default: { name: 'Optimism Explorer', url: 'https://explorer.optimism.io' },
+  },
+};
+
 const Monad = {
   id: 10143,
   name: 'Monad Testnet',
@@ -42,4 +64,4 @@ const Monad = {
   },
 };
 
-export { soneiumMainnet, Monad };
+export { soneiumMainnet, Monad, optimism };

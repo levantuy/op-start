@@ -13,7 +13,6 @@ import {
 import { useMixpanel } from '../../global-context/mixpanelContext.tsx';
 import { useEffect, useState } from 'react';
 import { Address, parseEther } from 'viem';
-import { Monad as monadTestnet } from '../../global-context/soneiumMainnet.ts';
 import {
   useAccount,
   useBalance,
@@ -37,25 +36,23 @@ export const Minting = () => {
   let didConnect = false;
   const [txDetails, setTxDetails] = useState<string>("");
   const [isPending, setIsPending] = useState(false);
-  const chainId = monadTestnet.id;
   const { address: walletAddress } = useAccount();
   const [nftContractAddress, setNftContractAddress] = useState<IItemContract>(nftContracts[0]);
   const [contracts] = useState<Array<IItemContract>>(nftContracts);
   const connectedId = useChainId();
-  const isConnectedToMinato = connectedId === monadTestnet.id;
   const [quantity, setQuantity] = useState(1);
   const [mintedNFTs, setMintedNFTs] = useState([]);
   const [timeLeft, setTimeLeft] = useState(''); // Countdown for whitelist
   const [isWhitelistOpen, setIsWhitelistOpen] = useState(false); // Toggle whitelist period
   const [isPublicOpen, setIsPublicOpen] = useState(false); // Toggle whitelist period
-  const { switchChain } = useSwitchChain();
+
   const { data: walletClient } = useWalletClient({
-    chainId,
+    chainId: connectedId,
     account: walletAddress,
   });
 
   const publicClient = usePublicClient({
-    chainId,
+    chainId: connectedId,
   });
 
   const { data: whitelistStartTime, refetch: refetchWL } = useReadContract({
@@ -96,7 +93,7 @@ export const Minting = () => {
 
   const { data: bal } = useBalance({
     address: walletAddress,
-    chainId,
+    connectedId,
   });
   const isBalanceZero = bal?.value.toString() === "0";
 
@@ -333,7 +330,7 @@ export const Minting = () => {
           </Select>
         </div>
         <div className={"basis-2/4 bg-transparent"}>
-          <Button disabled={isPending || !walletAddress || isBalanceZero || !isConnectedToMinato}
+          <Button disabled={isPending || !walletAddress || isBalanceZero || !connectedId}
             onClick={withdraw}
             className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition"
           >
@@ -398,7 +395,7 @@ export const Minting = () => {
                     className="w-16 border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-500 focus:outline-none"
                     min="1"
                   />
-                  <Button disabled={isPending || !walletAddress || isBalanceZero || !isConnectedToMinato}
+                  <Button disabled={isPending || !walletAddress || isBalanceZero || !connectedId}
                     onClick={mintWhitelistNft}
                     className="w-full bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition"
                   >
@@ -429,7 +426,7 @@ export const Minting = () => {
                     className="w-16 border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-500 focus:outline-none"
                     min="1"
                   />
-                  <Button disabled={isPending || !walletAddress || isBalanceZero || !isConnectedToMinato}
+                  <Button disabled={isPending || !walletAddress || isBalanceZero || !connectedId}
                     onClick={mintPublicNft}
                     className="w-full bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition"
                   >
@@ -454,21 +451,6 @@ export const Minting = () => {
                   >
                     Bridge
                   </a>
-                </div>
-              )}
-
-              {!isConnectedToMinato && walletAddress && (
-                <div className={styles.rowChecker}>
-                  <span className={styles.textError}>
-                    Please connect to Monad Testnet
-                  </span>
-
-                  <button
-                    className={styles.buttonSwitchChain}
-                    onClick={() => switchChain({ chainId })}
-                  >
-                    Switch to Monad Testnet
-                  </button>
                 </div>
               )}
             </div>

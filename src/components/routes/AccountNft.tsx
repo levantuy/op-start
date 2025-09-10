@@ -1,7 +1,7 @@
 import styles from "./NftMint.module.css";
 import { useEffect, useState } from 'react';
 import { Address, ContractFunctionExecutionError, formatEther, parseEther } from 'viem';
-import { Monad as monadTestnet } from '../../global-context/soneiumMainnet.ts';
+import { Monad as monadTestnet } from '../../global-context/contextChain.ts';
 import {
   useAccount,
   usePublicClient,

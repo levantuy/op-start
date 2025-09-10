@@ -15,7 +15,7 @@ import {
   zoraSepolia,
   berachainTestnetbArtio
 } from 'viem/chains';
-import { soneiumMainnet, Monad } from './/../global-context/soneiumMainnet';
+import { soneiumMainnet, Monad } from '../global-context/contextChain';
 
 export const baseChainPair = defineMainnetChainPair(base)
 export const fraxtalChainPair = defineMainnetChainPair(fraxtal)
@@ -43,10 +43,10 @@ const monad = {
 export const monadChainPair = defineSepoliaChainPair(monad)
 
 export const supportedMainnetChainPairs = [
-  baseChainPair,
-  fraxtalChainPair,
   optimismChainPair,
-  zoraChainPair,
+  baseChainPair,
+  // fraxtalChainPair,  
+  // zoraChainPair,
 ] as const
 
 export const supportedSepoliaChainPairs = [
@@ -60,7 +60,7 @@ export const supportedSepoliaChainPairs = [
 ] as const
 
 export const supportedChainPairs = [
-  // ...supportedMainnetChainPairs,
+  ...supportedMainnetChainPairs,
   ...supportedSepoliaChainPairs,
 ] as const
 

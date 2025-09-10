@@ -7,7 +7,7 @@ import {
 import { useMixpanel } from '../../global-context/mixpanelContext';
 import { useEffect, useState } from 'react';
 import { Address, parseEther } from 'viem';
-import { soneiumMainnet } from '../../global-context/soneiumMainnet';
+import { soneiumMainnet } from '../../global-context/contextChain.ts';
 import {
   useAccount,
   useBalance,

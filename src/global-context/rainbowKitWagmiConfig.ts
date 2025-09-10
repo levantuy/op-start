@@ -19,7 +19,7 @@ import {
 } from '../chain-pairs/supportedChainPairs'
 import { Transport } from 'viem'
 import { fraxtalSepolia } from '../chain-pairs/chains/fraxtalSepolia'
-import { soneiumMainnet, Monad } from './/../global-context/soneiumMainnet';
+import { soneiumMainnet, Monad } from './contextChain';
 
 const transports = {
   // Mainnet chains
