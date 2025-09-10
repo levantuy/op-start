@@ -19,7 +19,6 @@ import {
   useChainId,
   usePublicClient,
   useReadContract,
-  useSwitchChain,
   useWalletClient,
 } from "wagmi";
 import NFT_ABI from "../../global-context/abi/DemoNFT.ts";
