@@ -172,7 +172,7 @@ export const Minting = () => {
         account: walletAddress as Address,
         address: nftContractAddress.value,
         abi: NFT_ABI,
-        value: parseEther((0.0001 * quantity).toString()),
+        value: parseEther((0 * quantity).toString()),
         functionName: "publicMint",
         args: [quantity as any],
       } as const;
