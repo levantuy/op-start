@@ -42,6 +42,28 @@ const optimism = {
   },
 };
 
+const linea = {
+  id: 10,
+  name: 'Linea Mainnet',
+  network: 'linea',
+  nativeCurrency: {
+    decimals: 18,
+    name: 'Ether',
+    symbol: 'ETH',
+  },
+  rpcUrls: {
+    default: {
+      http: ['https://linea-mainnet.infura.io/'],
+    },
+    public: {
+      http: ['https://linea-mainnet.infura.io/'],
+    },
+  },
+  blockExplorers: {
+    default: { name: 'Linea Explorer', url: 'https://lineascan.build' },
+  },
+};
+
 const Monad = {
   id: 10143,
   name: 'Monad Testnet',
@@ -64,4 +86,4 @@ const Monad = {
   },
 };
 
-export { soneiumMainnet, Monad, optimism };
+export { soneiumMainnet, Monad, optimism, linea };

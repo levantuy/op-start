@@ -1,9 +1,9 @@
 import styles from "./NftMint.module.css";
 import { useEffect, useState } from 'react';
 import { Address, ContractFunctionExecutionError, formatEther, parseEther } from 'viem';
-import { Monad as monadTestnet } from '../../global-context/contextChain.ts';
 import {
   useAccount,
+  useChainId,
   usePublicClient,
   useReadContract,
   useWalletClient
@@ -31,7 +31,6 @@ export const AccountNft = () => {
   const [nfts, setNfts] = useState<NFTItem[]>([]);
   const [selectedNFT, setSelectedNFT] = useState(null);
   const [price, setPrice] = useState("");
-  const chainId = monadTestnet.id;
   const { address: walletAddress } = useAccount();
   const [isPending, setIsPending] = useState(false);
   const [isApproved, setIsApproved] = useState<boolean | null>(null);
@@ -40,14 +39,15 @@ export const AccountNft = () => {
   const [selectedNFTs, setSelectedNFTs] = useState<Set<number>>(new Set());
   const [value, setValue] = useState(0);
   const min = 0;
+  const connectedId = useChainId();
 
   const { data: walletClient } = useWalletClient({
-    chainId,
+    chainId: connectedId,
     account: walletAddress,
   });
 
   const publicClient = usePublicClient({
-    chainId,
+    chainId: connectedId,
   });
 
   // 🟢 Check if Approved For All

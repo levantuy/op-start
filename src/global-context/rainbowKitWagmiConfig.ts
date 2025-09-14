@@ -4,6 +4,7 @@ import { http } from 'wagmi'
 import {
   mainnet,
   optimism,
+  linea,
   zora,
   sepolia,
   fraxtal,
@@ -28,6 +29,7 @@ const transports = {
   [fraxtal.id]: http(),
   [optimism.id]: http(),
   [zora.id]: http(),
+  [linea.id]: http(),
 
   // Sepolia chains
   [sepolia.id]: http(),

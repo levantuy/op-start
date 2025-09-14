@@ -37,13 +37,13 @@ export const Minting = () => {
   const [isPending, setIsPending] = useState(false);
   const { address: walletAddress } = useAccount();
   const [nftContractAddress, setNftContractAddress] = useState<IItemContract>(nftContracts[0]);
-  const [contracts] = useState<Array<IItemContract>>(nftContracts);
-  const connectedId = useChainId();
+  const [contracts] = useState<Array<IItemContract>>(nftContracts);  
   const [quantity, setQuantity] = useState(1);
   const [mintedNFTs, setMintedNFTs] = useState([]);
   const [timeLeft, setTimeLeft] = useState(''); // Countdown for whitelist
   const [isWhitelistOpen, setIsWhitelistOpen] = useState(false); // Toggle whitelist period
   const [isPublicOpen, setIsPublicOpen] = useState(false); // Toggle whitelist period
+  const connectedId = useChainId();
 
   const { data: walletClient } = useWalletClient({
     chainId: connectedId,

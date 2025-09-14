@@ -12,7 +12,8 @@ const nftContracts: Array<IItemContract> =
     { key: 'Cz Token', value: '0xEB117ffe3d71987550ebAEA2D9af2650310A1286', image: 'https://i.postimg.cc/bv0KKFxy/91.jpg', description: 'Swiper React is available only via NPM as a part of the main Swiper library' },
     ];
 
-const nftMonaContracts: Array<IItemContract> = [
+const nftMonaContracts: Array<IItemContract> = [    
+    { key: 'Linea Contract NFT', value: '0x6960e382968F1bAb30794a7bc8443dEc257Be1Be', image: 'https://i.postimg.cc/c1RLMKz3/linea-contract.png', description: 'Linea Contract NFT' },
     { key: 'Optimism NFT', value: '0xa4661ABF257cDe99e9E46ad68F69d2304c1Bd8Bf', image: 'https://i.postimg.cc/1zmBTRRb/1a82bad1-0cf6-42ca-95b7-387c59821a3a.png', description: 'Optimism Nft' },
     { key: 'Optimism TGE', value: '0x770D28d0d4e50a2b550786900BDc012b95b9eb8B', image: 'https://i.postimg.cc/XYH88Bd0/linea-nft.png', description: 'Optimism TGE' },
     { key: 'Linea TGE', value: '0xb919e0B0255359B067ED9C3B5F8723A33e9a1d0A', image: 'https://i.postimg.cc/XYH88Bd0/linea-nft.png', description: 'Linea Nft' },
@@ -50,7 +51,8 @@ const nftMonaContracts: Array<IItemContract> = [
     { key: 'Girl Sexy', value: '0x8b326526a82cB44e1911FB2A9f14A8f4711E2206', image: 'https://i.postimg.cc/bv0KKFxy/91.jpg', description: 'Swiper React is available only via NPM as a part of the main Swiper library' },
 ];
 
-const marketplaceContract: Address = '0x5a88F8617788E52dBbF59Fe7702112259685ECD8';
+// const marketplaceContract: Address = '0xcb3D323aA579511874D5c7FBc905ec411d06Bd31'; // monad contract
+const marketplaceContract: Address = '0xe27Ee4CdDF7794cE36AEAb0Ebff3eDb73A892410'; // linea contract
 
 const metadataDefault = {
     "name": "Girl NFT",

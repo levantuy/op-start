@@ -1,9 +1,9 @@
 import styles from "./NftMint.module.css";
 import { useEffect, useState } from 'react';
 import { Address, formatEther, parseEther } from 'viem';
-import { Monad as monadTestnet } from '../../global-context/contextChain.ts';
 import {
   useAccount,
+  useChainId,
   usePublicClient,
   useReadContract,
   useWalletClient
@@ -30,13 +30,13 @@ export const Marketplace = () => {
     metadata: any;
   }
   const [nfts, setNfts] = useState<NFTItem[]>([]);
-  const chainId = monadTestnet.id;
   const { address: walletAddress } = useAccount();
   const [isPending, setIsPending] = useState(false);
   const [txDetails, setTxDetails] = useState<string>("");
   const [selectedNFTs, setSelectedNFTs] = useState<Set<number>>(new Set());
   const [value, setValue] = useState(0);
   const min = 0;
+  const connectedId = useChainId();
 
   useEffect(() => {
     if (nftMonaContracts.length > 0) {
@@ -46,12 +46,12 @@ export const Marketplace = () => {
   }, [nftMonaContracts, id]);
 
   const { data: walletClient } = useWalletClient({
-    chainId,
+    chainId: connectedId,
     account: walletAddress,
   });
 
   const publicClient = usePublicClient({
-    chainId,
+    chainId: connectedId,
   });
 
   const { data: baseURI, refetch: refreshBaseURI, isFetched } = useReadContract({
