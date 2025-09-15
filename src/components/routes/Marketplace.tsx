@@ -3,7 +3,6 @@ import { useEffect, useState } from 'react';
 import { Address, formatEther, parseEther } from 'viem';
 import {
   useAccount,
-  useChainId,
   usePublicClient,
   useReadContract,
   useWalletClient
