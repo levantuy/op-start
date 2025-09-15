@@ -337,7 +337,7 @@ export const Minting = () => {
           </Select>
         </div>
         <div className={"basis-2/4 bg-transparent"}>
-          <Button disabled={isPending || !walletAddress || isBalanceZero || !chain.id || chain?.id !== nftAddress?.chainId}
+          <Button disabled={isPending || !walletAddress || isBalanceZero || !chain?.id || chain?.id !== nftAddress?.chainId}
             onClick={withdraw}
             className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition"
           >
@@ -402,7 +402,7 @@ export const Minting = () => {
                     className="w-16 border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-500 focus:outline-none"
                     min="1"
                   />
-                  <Button disabled={isPending || !walletAddress || isBalanceZero || !chain.id || chain?.id !== nftAddress?.chainId}
+                  <Button disabled={isPending || !walletAddress || isBalanceZero || !chain?.id || chain?.id !== nftAddress?.chainId}
                     onClick={mintWhitelistNft}
                     className="w-full bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition"
                   >
@@ -433,7 +433,7 @@ export const Minting = () => {
                     className="w-16 border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-500 focus:outline-none"
                     min="1"
                   />
-                  <Button disabled={isPending || !walletAddress || isBalanceZero || !chain.id || chain?.id !== nftAddress?.chainId}
+                  <Button disabled={isPending || !walletAddress || isBalanceZero || !chain?.id || chain?.id !== nftAddress?.chainId}
                     onClick={mintPublicNft}
                     className="w-full bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition"
                   >
