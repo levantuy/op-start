@@ -37,13 +37,19 @@ export const Marketplace = () => {
   const [value, setValue] = useState(0);
   const min = 0;
   const connectedId = useChainId();
+  const [nftContracts, setNftContracts] = useState(nftMonaContracts.filter(contract => contract.chainId === connectedId));
 
   useEffect(() => {
-    if (nftMonaContracts.length > 0) {
-      const found = nftMonaContracts.find(contract => contract.value === id);
-      setNftAddress(found || nftMonaContracts[0]);
+    console.log("Connected Chain ID:", connectedId);
+    setNftContracts(nftMonaContracts.filter(contract => contract.chainId === connectedId));
+  }, [connectedId]);
+
+  useEffect(() => {
+    if (nftContracts.length > 0) {
+      const found = nftContracts.find(contract => contract.value === id);
+      setNftAddress(found || nftContracts[0]);
     }
-  }, [nftMonaContracts, id]);
+  }, [nftContracts, id]);
 
   const { data: walletClient } = useWalletClient({
     chainId: connectedId,
@@ -106,7 +112,7 @@ export const Marketplace = () => {
 
   const handlechangeContract = async (address: Address) => {
     setIsPending(true);
-    setNftAddress(nftMonaContracts.find(contract => contract.value === address));
+    setNftAddress(nftContracts.find(contract => contract.value === address));
 
     try {
       await Promise.all([
@@ -269,7 +275,7 @@ export const Marketplace = () => {
               <SelectValue placeholder="Select a contract"/>
             </SelectTrigger>
             <SelectContent className="w-96 border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-500 focus:outline-none">
-              {nftMonaContracts.map((item, i) =>
+              {nftContracts.map((item, i) =>
                 <SelectItem key={i} value={item.value}>{item.key}</SelectItem>
               )}
             </SelectContent>
