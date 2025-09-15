@@ -3,7 +3,6 @@ import { useEffect, useState } from 'react';
 import { Address, ContractFunctionExecutionError, formatEther, parseEther } from 'viem';
 import {
   useAccount,
-  useChainId,
   usePublicClient,
   useReadContract,
   useWalletClient
@@ -31,23 +30,22 @@ export const AccountNft = () => {
   const [nfts, setNfts] = useState<NFTItem[]>([]);
   const [selectedNFT, setSelectedNFT] = useState(null);
   const [price, setPrice] = useState("");
-  const { address: walletAddress } = useAccount();
+  const { address: walletAddress, chain } = useAccount();
   const [isPending, setIsPending] = useState(false);
   const [isApproved, setIsApproved] = useState<boolean | null>(null);
   const [txDetails, setTxDetails] = useState<string>("");
-  const [contracts] = useState<Array<IItemContract>>(nftMonaContracts);
+  const [nftContracts, setNftContracts] = useState(nftMonaContracts.filter(contract => contract.chainId === chain?.id));
   const [selectedNFTs, setSelectedNFTs] = useState<Set<number>>(new Set());
   const [value, setValue] = useState(0);
   const min = 0;
-  const connectedId = useChainId();
 
   const { data: walletClient } = useWalletClient({
-    chainId: connectedId,
+    chainId: chain?.id,
     account: walletAddress,
   });
 
   const publicClient = usePublicClient({
-    chainId: connectedId,
+    chainId: chain?.id,
   });
 
   // 🟢 Check if Approved For All
@@ -60,16 +58,20 @@ export const AccountNft = () => {
   });
 
   useEffect(() => {
+    setNftContracts(nftMonaContracts.filter(contract => contract.chainId === chain?.id));
+  }, [chain]);
+
+  useEffect(() => {
+    if (nftContracts.length > 0) {
+      setNftAddress(nftContracts[0]);
+    }
+  }, [nftContracts]);
+
+  useEffect(() => {
     if (approvedForAll !== undefined) {
       setIsApproved(approvedForAll);
     }
   }, [approvedForAll]);
-
-  useEffect(() => {
-    if (nftMonaContracts.length > 0) {
-      setNftAddress(nftMonaContracts[0]);
-    }
-  }, [nftMonaContracts]);
 
   // 🔵 Request Approval
   const approveMarketplaceForAll = async () => {
@@ -192,7 +194,7 @@ export const AccountNft = () => {
 
   const handlechangeContract = async (address: Address) => {
     setIsPending(true);
-    setNftAddress(nftMonaContracts.find(contract => contract.value === address));
+    setNftAddress(nftContracts.find(contract => contract.value === address));
 
     try {
       await Promise.all([
@@ -242,7 +244,7 @@ export const AccountNft = () => {
 
       clearData();
       refetchNfts();
-    } catch (error) {
+    } catch (error: any) {
       if (error instanceof ContractFunctionExecutionError) {
         const decoded = decodeErrorResult({
           abi: contractABI,
@@ -307,10 +309,10 @@ export const AccountNft = () => {
         <div className={"basis-1/2 bg-transparent mr-2"}>
           <Select onValueChange={item => handlechangeContract(item as any)} value={nftAddress?.value}>
             <SelectTrigger className="w-96 w-full">
-              <SelectValue placeholder="Phương Thúy"/>
+              <SelectValue placeholder="Phương Thúy" />
             </SelectTrigger>
             <SelectContent className="w-96 border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-500 focus:outline-none">
-              {contracts.map((item, i) =>
+              {nftContracts.map((item, i) =>
                 <SelectItem key={i} value={item.value}>{item.key}</SelectItem>
               )}
             </SelectContent>

@@ -30,19 +30,17 @@ export const Marketplace = () => {
     metadata: any;
   }
   const [nfts, setNfts] = useState<NFTItem[]>([]);
-  const { address: walletAddress } = useAccount();
+  const { address: walletAddress, chain } = useAccount();
   const [isPending, setIsPending] = useState(false);
   const [txDetails, setTxDetails] = useState<string>("");
   const [selectedNFTs, setSelectedNFTs] = useState<Set<number>>(new Set());
   const [value, setValue] = useState(0);
   const min = 0;
-  const connectedId = useChainId();
-  const [nftContracts, setNftContracts] = useState(nftMonaContracts.filter(contract => contract.chainId === connectedId));
+  const [nftContracts, setNftContracts] = useState(nftMonaContracts.filter(contract => contract.chainId === chain?.id));
 
   useEffect(() => {
-    console.log("Connected Chain ID:", connectedId);
-    setNftContracts(nftMonaContracts.filter(contract => contract.chainId === connectedId));
-  }, [connectedId]);
+    setNftContracts(nftMonaContracts.filter(contract => contract.chainId === chain?.id));
+  }, [chain]);
 
   useEffect(() => {
     if (nftContracts.length > 0) {
@@ -52,12 +50,12 @@ export const Marketplace = () => {
   }, [nftContracts, id]);
 
   const { data: walletClient } = useWalletClient({
-    chainId: connectedId,
+    chainId: chain?.id,
     account: walletAddress,
   });
 
   const publicClient = usePublicClient({
-    chainId: connectedId,
+    chainId: chain?.id,
   });
 
   const { data: baseURI, refetch: refreshBaseURI, isFetched } = useReadContract({

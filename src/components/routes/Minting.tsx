@@ -16,7 +16,6 @@ import { Address, parseEther } from 'viem';
 import {
   useAccount,
   useBalance,
-  useChainId,
   usePublicClient,
   useReadContract,
   useWalletClient,
@@ -24,67 +23,76 @@ import {
 import NFT_ABI from "../../global-context/abi/DemoNFT.ts";
 import axios from 'axios';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../base/select/select.tsx";
-import { IItemContract, metadataDefault, nftMonaContracts as nftContracts } from "./Data.ts";
+import { IItemContract, metadataDefault, nftMonaContracts } from "./Data.ts";
 import { motion } from 'framer-motion';
 import { useNavigate } from "react-router-dom";
 
 export const Minting = () => {
   const navigate = useNavigate();
-  const { isConnected, address } = useAccount();
+  const { isConnected, address, chain } = useAccount();
   const mixpanel = useMixpanel();
   let didConnect = false;
   const [txDetails, setTxDetails] = useState<string>("");
   const [isPending, setIsPending] = useState(false);
   const { address: walletAddress } = useAccount();
-  const [nftContractAddress, setNftContractAddress] = useState<IItemContract>(nftContracts[0]);
-  const [contracts] = useState<Array<IItemContract>>(nftContracts);  
   const [quantity, setQuantity] = useState(1);
   const [mintedNFTs, setMintedNFTs] = useState([]);
   const [timeLeft, setTimeLeft] = useState(''); // Countdown for whitelist
   const [isWhitelistOpen, setIsWhitelistOpen] = useState(false); // Toggle whitelist period
-  const [isPublicOpen, setIsPublicOpen] = useState(false); // Toggle whitelist period
-  const connectedId = useChainId();
+  const [isPublicOpen, setIsPublicOpen] = useState(false); // Toggle whitelist period  
+  const [nftContracts, setNftContracts] = useState(nftMonaContracts.filter(contract => contract.chainId === chain?.id));
+  const [nftAddress, setNftAddress] = useState<IItemContract>(); // Default NFT contract address
+
+  useEffect(() => {
+    setNftContracts(nftMonaContracts.filter(contract => contract.chainId === chain?.id));
+  }, [chain]);
+
+  useEffect(() => {
+    if (nftContracts.length > 0) {
+      setNftAddress(nftContracts[0]);
+    }
+  }, [nftContracts]);
 
   const { data: walletClient } = useWalletClient({
-    chainId: connectedId,
+    chainId: chain?.id,
     account: walletAddress,
   });
 
   const publicClient = usePublicClient({
-    chainId: connectedId,
+    chainId: chain?.id,
   });
 
   const { data: whitelistStartTime, refetch: refetchWL } = useReadContract({
     abi: NFT_ABI,
-    address: nftContractAddress.value,
+    address: nftAddress?.value,
     functionName: "whitelistStartTime",
     args: [],
   });
 
   const { data: whitelistDuration } = useReadContract({
     abi: NFT_ABI,
-    address: nftContractAddress.value,
+    address: nftAddress?.value,
     functionName: "whitelistDuration",
     args: [],
   });
 
   const { data: publicMintStartTime, refetch: refetchPL } = useReadContract({
     abi: NFT_ABI,
-    address: nftContractAddress.value,
+    address: nftAddress?.value,
     functionName: "publicMintStartTime",
     args: [],
   });
 
   const { data: publicDuration } = useReadContract({
     abi: NFT_ABI,
-    address: nftContractAddress.value,
+    address: nftAddress?.value,
     functionName: "publicDuration",
     args: [],
   });
 
   const { data: baseURI, refetch: refreshBaseURI } = useReadContract({
     account: walletAddress,
-    address: nftContractAddress.value,
+    address: nftAddress?.value,
     abi: NFT_ABI,
     functionName: "baseURI",
     args: [],
@@ -92,13 +100,13 @@ export const Minting = () => {
 
   const { data: bal } = useBalance({
     address: walletAddress,
-    chainId: connectedId,
+    chainId: chain?.id,
   });
   const isBalanceZero = bal?.value.toString() === "0";
 
   const { data: totalNFT, refetch } = useReadContract({
     abi: NFT_ABI,
-    address: nftContractAddress.value,
+    address: nftAddress?.value,
     functionName: "getAllTokenIds",
     args: [],
   });
@@ -142,7 +150,7 @@ export const Minting = () => {
       setTxDetails("");
       const tx = {
         account: walletAddress as Address,
-        address: nftContractAddress.value,
+        address: nftAddress?.value,
         abi: NFT_ABI,
         value: parseEther((0.0001 * quantity).toString()),
         functionName: "whitelistMint",
@@ -170,7 +178,7 @@ export const Minting = () => {
       setTxDetails("");
       const tx = {
         account: walletAddress as Address,
-        address: nftContractAddress.value,
+        address: nftAddress?.value,
         abi: NFT_ABI,
         value: parseEther((0 * quantity).toString()),
         functionName: "publicMint",
@@ -249,7 +257,7 @@ export const Minting = () => {
   }, [publicMintStartTime, publicDuration]);
 
   const handlechangeContract = async (address: IItemContract) => {
-    setNftContractAddress(address);
+    setNftAddress(address);
     setIsPending(true);
     setTxDetails("");
     try {
@@ -275,7 +283,7 @@ export const Minting = () => {
       setTxDetails("");
       const tx = {
         account: walletAddress as Address,
-        address: nftContractAddress.value,
+        address: nftAddress?.value,
         abi: NFT_ABI,
         functionName: "withdraw",
         args: [],
@@ -317,19 +325,19 @@ export const Minting = () => {
       </ToastProvider>
       <div className="flex flex-row mb-2">
         <div className={"basis-2/4 bg-transparent mr-2"}>
-          <Select onValueChange={(value) => handlechangeContract(JSON.parse(value))} value={JSON.stringify(nftContractAddress)}>
+          <Select onValueChange={(value) => handlechangeContract(JSON.parse(value))} value={JSON.stringify(nftAddress)}>
             <SelectTrigger className="w-96 w-full">
               <SelectValue placeholder="Select a contract" />
             </SelectTrigger>
             <SelectContent className="w-96 border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-500 focus:outline-none">
-              {contracts.map((item, i) =>
+              {nftContracts.map((item, i) =>
                 <SelectItem key={i} value={JSON.stringify(item)}>{item.key}</SelectItem>
               )}
             </SelectContent>
           </Select>
         </div>
         <div className={"basis-2/4 bg-transparent"}>
-          <Button disabled={isPending || !walletAddress || isBalanceZero || !connectedId}
+          <Button disabled={isPending || !walletAddress || isBalanceZero || !chain.id || chain?.id !== nftAddress?.chainId}
             onClick={withdraw}
             className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition"
           >
@@ -394,7 +402,7 @@ export const Minting = () => {
                     className="w-16 border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-500 focus:outline-none"
                     min="1"
                   />
-                  <Button disabled={isPending || !walletAddress || isBalanceZero || !connectedId}
+                  <Button disabled={isPending || !walletAddress || isBalanceZero || !chain.id || chain?.id !== nftAddress?.chainId}
                     onClick={mintWhitelistNft}
                     className="w-full bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition"
                   >
@@ -425,7 +433,7 @@ export const Minting = () => {
                     className="w-16 border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-500 focus:outline-none"
                     min="1"
                   />
-                  <Button disabled={isPending || !walletAddress || isBalanceZero || !connectedId}
+                  <Button disabled={isPending || !walletAddress || isBalanceZero || !chain.id || chain?.id !== nftAddress?.chainId}
                     onClick={mintPublicNft}
                     className="w-full bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition"
                   >
@@ -463,13 +471,13 @@ export const Minting = () => {
             </div>
             <div className="col-span-4">
               <img
-                src={nftContractAddress && nftContractAddress.image}
+                src={nftAddress && nftAddress.image}
                 alt='Image preview'
                 className="w-full rounded-lg mb-2"
               />
             </div>
             <div className="col-span-4">
-              <Label>{nftContractAddress && nftContractAddress.description} [View Collection](<a target="_blank" className="text-blue-600 visited:text-purple-600 hover:underline" onClick={() => navigate('/marketplace/' + nftContractAddress.value)}>{nftContractAddress.key}</a>)</Label>
+              <Label>{nftAddress && nftAddress.description} [View Collection](<a target="_blank" className="text-blue-600 visited:text-purple-600 hover:underline" onClick={() => navigate('/marketplace/' + nftAddress?.value)}>{nftAddress?.key}</a>)</Label>
             </div>
           </div>
         </div>
