@@ -82,7 +82,7 @@ export const AccountNft = () => {
     try {
       const tx = {
         account: walletAddress,
-        address: nftAddress?.value,
+        address: nftAddress?.value as Address,
         abi: contractABI,
         functionName: "setApprovalForAll",
         args: [marketplaceContract, true],
@@ -105,7 +105,7 @@ export const AccountNft = () => {
 
   const { data: baseURI, refetch: refreshBaseURI } = useReadContract({
     account: walletAddress,
-    address: nftAddress?.value,
+    address: nftAddress?.value as Address,
     abi: NFT_ABI,
     functionName: "baseURI",
     args: [],
@@ -165,7 +165,7 @@ export const AccountNft = () => {
         address: marketplaceContract,
         abi: contractABI,
         functionName: "listNFT",
-        args: [nftAddress?.value, selectedNFT, parseEther(price)],
+        args: [nftAddress?.value as Address, selectedNFT, parseEther(price)],
       } as const;
 
       const { request } = await publicClient.simulateContract(tx as any);
@@ -235,7 +235,7 @@ export const AccountNft = () => {
         address: marketplaceContract,
         abi: contractABI,
         functionName: "listNFTs",
-        args: [nftAddress?.value, Array.from(selectedNFTs), Array.from(selectedNFTs).map(() => price ? parseEther(price) : parseEther("0"))],
+        args: [nftAddress?.value as Address, Array.from(selectedNFTs), Array.from(selectedNFTs).map(() => price ? parseEther(price) : parseEther("0"))],
       } as const;
 
       const { request } = await publicClient.simulateContract(tx as any);
@@ -307,7 +307,7 @@ export const AccountNft = () => {
       </ToastProvider>
       <div className="flex flex-row mb-2">
         <div className={"basis-1/2 bg-transparent mr-2"}>
-          <Select onValueChange={item => handlechangeContract(item as any)} value={nftAddress?.value}>
+          <Select onValueChange={item => handlechangeContract(item as any)} value={nftAddress?.value as Address}>
             <SelectTrigger className="w-96 w-full">
               <SelectValue placeholder="Phương Thúy" />
             </SelectTrigger>

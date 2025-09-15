@@ -64,35 +64,35 @@ export const Minting = () => {
 
   const { data: whitelistStartTime, refetch: refetchWL } = useReadContract({
     abi: NFT_ABI,
-    address: nftAddress?.value,
+    address: nftAddress?.value as Address,
     functionName: "whitelistStartTime",
     args: [],
   });
 
   const { data: whitelistDuration } = useReadContract({
     abi: NFT_ABI,
-    address: nftAddress?.value,
+    address: nftAddress?.value as Address,
     functionName: "whitelistDuration",
     args: [],
   });
 
   const { data: publicMintStartTime, refetch: refetchPL } = useReadContract({
     abi: NFT_ABI,
-    address: nftAddress?.value,
+    address: nftAddress?.value as Address,
     functionName: "publicMintStartTime",
     args: [],
   });
 
   const { data: publicDuration } = useReadContract({
     abi: NFT_ABI,
-    address: nftAddress?.value,
+    address: nftAddress?.value as Address,
     functionName: "publicDuration",
     args: [],
   });
 
   const { data: baseURI, refetch: refreshBaseURI } = useReadContract({
     account: walletAddress,
-    address: nftAddress?.value,
+    address: nftAddress?.value as Address,
     abi: NFT_ABI,
     functionName: "baseURI",
     args: [],
@@ -106,7 +106,7 @@ export const Minting = () => {
 
   const { data: totalNFT, refetch } = useReadContract({
     abi: NFT_ABI,
-    address: nftAddress?.value,
+    address: nftAddress?.value as Address,
     functionName: "getAllTokenIds",
     args: [],
   });
@@ -150,7 +150,7 @@ export const Minting = () => {
       setTxDetails("");
       const tx = {
         account: walletAddress as Address,
-        address: nftAddress?.value,
+        address: nftAddress?.value as Address,
         abi: NFT_ABI,
         value: parseEther((0.0001 * quantity).toString()),
         functionName: "whitelistMint",
@@ -178,7 +178,7 @@ export const Minting = () => {
       setTxDetails("");
       const tx = {
         account: walletAddress as Address,
-        address: nftAddress?.value,
+        address: nftAddress?.value as Address,
         abi: NFT_ABI,
         value: parseEther((0 * quantity).toString()),
         functionName: "publicMint",
@@ -283,7 +283,7 @@ export const Minting = () => {
       setTxDetails("");
       const tx = {
         account: walletAddress as Address,
-        address: nftAddress?.value,
+        address: nftAddress?.value as Address,
         abi: NFT_ABI,
         functionName: "withdraw",
         args: [],

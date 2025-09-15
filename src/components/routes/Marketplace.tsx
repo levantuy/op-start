@@ -137,7 +137,7 @@ export const Marketplace = () => {
         abi: contractABI,
         functionName: "buyNFT",
         value: parseEther(price),
-        args: [nftAddress?.value, tokenId],
+        args: [nftAddress?.value as Address, tokenId],
       } as const;
 
       const { request } = await publicClient.simulateContract(tx as any);
@@ -188,7 +188,7 @@ export const Marketplace = () => {
         abi: contractABI,
         functionName: "buyListNFT",
         value: parseEther(total.toString()),
-        args: [nftAddress?.value, Array.from(selectedNFTs)],
+        args: [nftAddress?.value as Address, Array.from(selectedNFTs)],
       } as const;
 
       const { request } = await publicClient.simulateContract(tx as any);
@@ -267,7 +267,7 @@ export const Marketplace = () => {
       </ToastProvider>
       <div className="flex flex-row mb-2">
         <div className={"basis-2/4 bg-transparent mr-2"}>
-          <Select onValueChange={item => handlechangeContract(item as Address)} value={nftAddress?.value}>
+          <Select onValueChange={item => handlechangeContract(item as Address)} value={nftAddress?.value as Address}>
             <SelectTrigger className="w-96 w-full">
               <SelectValue placeholder="Select a contract"/>
             </SelectTrigger>
