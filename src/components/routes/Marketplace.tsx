@@ -11,7 +11,7 @@ import contractABI from "../../global-context/abi/Marketplace.ts";
 import NFT_ABI from "../../global-context/abi/DemoNFT.ts";
 import { Button, Toast, ToastClose, ToastDescription, ToastProvider, ToastTitle, ToastViewport } from '../base/index.tsx';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../base/select/select.tsx";
-import { nftMonaContracts, marketplaceContract, metadataDefault, IItemContract } from "./Data.ts";
+import { nftMonaContracts, marketContracts, metadataDefault, IItemContract } from "./Data.ts";
 import { Label } from "@radix-ui/react-label";
 import axios from 'axios';
 import { motion } from 'framer-motion';
@@ -36,6 +36,7 @@ export const Marketplace = () => {
   const [value, setValue] = useState(0);
   const min = 0;
   const [nftContracts, setNftContracts] = useState(nftMonaContracts.filter(contract => contract.chainId === chain?.id));
+  const [marketplaceContract, setMarketplaceContract] = useState(marketContracts.find(market => market.chainId === chain?.id)?.value as Address);
 
   useEffect(() => {
     setNftContracts(nftMonaContracts.filter(contract => contract.chainId === chain?.id));
@@ -45,6 +46,7 @@ export const Marketplace = () => {
     if (nftContracts.length > 0) {
       const found = nftContracts.find(contract => contract.value === id);
       setNftAddress(found || nftContracts[0]);
+      setMarketplaceContract(marketContracts.find(market => market.chainId === chain?.id)?.value as Address);
     }
   }, [nftContracts, id]);
 

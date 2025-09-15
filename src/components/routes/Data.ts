@@ -41,8 +41,10 @@ const nftMonaContracts: Array<IItemContract> = [
     { chainId: 10143, key: 'Girl Sexy', value: '0x8b326526a82cB44e1911FB2A9f14A8f4711E2206', image: 'https://i.postimg.cc/bv0KKFxy/91.jpg', description: 'Swiper React is available only via NPM as a part of the main Swiper library' },
 ];
 
-// const marketplaceContract: Address = '0xcb3D323aA579511874D5c7FBc905ec411d06Bd31'; // monad contract
-const marketplaceContract: Address = '0xe27Ee4CdDF7794cE36AEAb0Ebff3eDb73A892410'; // linea contract
+const marketContracts: Array<any> = [
+    {chainId: 10143, key: 'Monad', value: '0xcb3D323aA579511874D5c7FBc905ec411d06Bd31'},
+    {chainId: 59144, key: 'Linea', value: '0xe27Ee4CdDF7794cE36AEAb0Ebff3eDb73A892410'},
+];
 
 const metadataDefault = {
     "name": "Girl NFT",
@@ -70,7 +72,7 @@ const metadataDefault = {
 };
 
 export {
-    nftMonaContracts, marketplaceContract, metadataDefault
+    nftMonaContracts, marketContracts, metadataDefault
 }
 
 export type { IItemContract };

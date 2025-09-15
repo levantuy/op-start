@@ -11,12 +11,13 @@ import contractABI from "../../global-context/abi/Marketplace.ts";
 import NFT_ABI from "../../global-context/abi/DemoNFT.ts";
 import { Button, Input, Toast, ToastClose, ToastDescription, ToastProvider, ToastTitle, ToastViewport } from '../base/index.tsx';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../base/select/select.tsx";
-import { IItemContract, nftMonaContracts, marketplaceContract, metadataDefault } from "./Data.ts";
+import { IItemContract, nftMonaContracts, marketContracts, metadataDefault } from "./Data.ts";
 import { Label } from "@radix-ui/react-label";
 import axios from "axios";
 import { motion } from 'framer-motion';
 import { decodeErrorResult } from 'viem';
 import * as Slider from '@radix-ui/react-slider';
+import { set } from "zod";
 
 export const AccountNft = () => {
   const [nftAddress, setNftAddress] = useState<IItemContract>(); // Default NFT contract address
@@ -38,6 +39,7 @@ export const AccountNft = () => {
   const [selectedNFTs, setSelectedNFTs] = useState<Set<number>>(new Set());
   const [value, setValue] = useState(0);
   const min = 0;
+  const [marketplaceContract, setMarketplaceContract] = useState(marketContracts.find(market => market.chainId === chain?.id)?.value as Address);
 
   const { data: walletClient } = useWalletClient({
     chainId: chain?.id,
@@ -59,6 +61,7 @@ export const AccountNft = () => {
 
   useEffect(() => {
     setNftContracts(nftMonaContracts.filter(contract => contract.chainId === chain?.id));
+    setMarketplaceContract(marketContracts.find(market => market.chainId === chain?.id)?.value as Address);
   }, [chain]);
 
   useEffect(() => {
