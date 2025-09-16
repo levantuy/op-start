@@ -42,11 +42,11 @@ export const Minting = () => {
   const [isPublicOpen, setIsPublicOpen] = useState(false); // Toggle whitelist period  
   const [nftContracts, setNftContracts] = useState(nftMonaContracts.filter(contract => contract.chainId === chain?.id));
   const [nftAddress, setNftAddress] = useState<IItemContract>(); // Default NFT contract address
-  const [txnLink, setTxnLink] = useState(linkScans.find(link => link.chainId === chain?.id)?.value);
+  const [txnLink, setTxnLink] = useState(linkScans.find(link => { return link.chainId === chain?.id }));
 
   useEffect(() => {
     setNftContracts(nftMonaContracts.filter(contract => contract.chainId === chain?.id));
-    setTxnLink(linkScans.filter(link => link.chainId === chain?.id));
+    setTxnLink(linkScans.find(link => { return link.chainId === chain?.id }));
   }, [chain]);
 
   useEffect(() => {
@@ -163,7 +163,7 @@ export const Minting = () => {
       await publicClient.waitForTransactionReceipt({
         hash,
       });
-      setTxDetails(txnLink + hash);
+      setTxDetails(txnLink.value + hash);
       await refetch();
     } catch (error) {
       console.error(error);
@@ -191,7 +191,7 @@ export const Minting = () => {
       await publicClient.waitForTransactionReceipt({
         hash,
       });
-      setTxDetails(txnLink + hash);
+      setTxDetails(txnLink.value + hash);
       await refetch();
     } catch (error) {
       console.error(error);
@@ -295,7 +295,7 @@ export const Minting = () => {
       await publicClient.waitForTransactionReceipt({
         hash,
       });
-      setTxDetails(txnLink + hash);
+      setTxDetails(txnLink.value + hash);
       await refetch();
     } catch (error) {
       console.error(error);

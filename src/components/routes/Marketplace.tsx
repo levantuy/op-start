@@ -37,18 +37,18 @@ export const Marketplace = () => {
   const min = 0;
   const [nftContracts, setNftContracts] = useState(nftMonaContracts.filter(contract => contract.chainId === chain?.id));
   const [marketplaceContract, setMarketplaceContract] = useState(marketContracts.find(market => market.chainId === chain?.id)?.value as Address);
-  const [txnLink, setTxnLink] = useState(linkScans.find(link => link.chainId === chain?.id)?.value);
+  const [txnLink, setTxnLink] = useState(linkScans.find(link => { return link.chainId === chain?.id }));
 
   useEffect(() => {
     setNftContracts(nftMonaContracts.filter(contract => contract.chainId === chain?.id));
     setMarketplaceContract(marketContracts.find(market => market.chainId === chain?.id)?.value as Address);
-    setTxnLink(linkScans.filter(link => link.chainId === chain?.id));
+    setTxnLink(linkScans.find(link => { return link.chainId === chain?.id }));
   }, [chain]);
 
   useEffect(() => {
     if (nftContracts.length > 0) {
       const found = nftContracts.find(contract => contract.value === id);
-      setNftAddress(found || nftContracts[0]);      
+      setNftAddress(found || nftContracts[0]);
     }
   }, [nftContracts, id]);
 
@@ -149,8 +149,8 @@ export const Marketplace = () => {
       await publicClient.waitForTransactionReceipt({
         hash,
       });
-
-      setTxDetails(txnLink + hash);
+      console.log(txnLink.value + hash);
+      setTxDetails(txnLink.value + hash);
       refetchNfts();
     } catch (error) {
       console.error(error);
@@ -273,7 +273,7 @@ export const Marketplace = () => {
         <div className={"basis-2/4 bg-transparent mr-2"}>
           <Select onValueChange={item => handlechangeContract(item as Address)} value={nftAddress?.value as Address}>
             <SelectTrigger className="w-96 w-full">
-              <SelectValue placeholder="Select a contract"/>
+              <SelectValue placeholder="Select a contract" />
             </SelectTrigger>
             <SelectContent className="w-96 border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-500 focus:outline-none">
               {nftContracts.map((item, i) =>

@@ -39,7 +39,7 @@ export const AccountNft = () => {
   const [value, setValue] = useState(0);
   const min = 0;
   const [marketplaceContract, setMarketplaceContract] = useState(marketContracts.find(market => market.chainId === chain?.id)?.value as Address);
-  const [txnLink, setTxnLink] = useState(linkScans.find(link => link.chainId === chain?.id)?.value);
+  const [txnLink, setTxnLink] = useState(linkScans.find(link => { return link.chainId === chain?.id }));
 
   const { data: walletClient } = useWalletClient({
     chainId: chain?.id,
@@ -62,7 +62,7 @@ export const AccountNft = () => {
   useEffect(() => {
     setNftContracts(nftMonaContracts.filter(contract => contract.chainId === chain?.id));
     setMarketplaceContract(marketContracts.find(market => market.chainId === chain?.id)?.value as Address);
-    setTxnLink(linkScans.filter(link => link.chainId === chain?.id));
+    setTxnLink(linkScans.find(link => { return link.chainId === chain?.id }));
   }, [chain]);
 
   useEffect(() => {
@@ -98,7 +98,7 @@ export const AccountNft = () => {
         hash,
       });
 
-      setTxDetails(txnLink + hash);
+      setTxDetails(txnLink.value + hash);
       refetch();
     } catch (error) {
       console.error("Approval Failed:", error);
@@ -178,7 +178,7 @@ export const AccountNft = () => {
         hash,
       });
 
-      setTxDetails(txnLink + hash);
+      setTxDetails(txnLink.value + hash);
       clearData();
       refetchNfts();
     } catch (error) {
