@@ -17,7 +17,6 @@ import axios from "axios";
 import { motion } from 'framer-motion';
 import { decodeErrorResult } from 'viem';
 import * as Slider from '@radix-ui/react-slider';
-import { set } from "zod";
 
 export const AccountNft = () => {
   const [nftAddress, setNftAddress] = useState<IItemContract>(); // Default NFT contract address
