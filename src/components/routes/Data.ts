@@ -44,6 +44,13 @@ const nftMonaContracts: Array<IItemContract> = [
 const marketContracts: Array<any> = [
     {chainId: 10143, key: 'Monad', value: '0xcb3D323aA579511874D5c7FBc905ec411d06Bd31'},
     {chainId: 59144, key: 'Linea', value: '0xe27Ee4CdDF7794cE36AEAb0Ebff3eDb73A892410'},
+    {chainId: 10, key: 'Optimism', value: '0xF17AaDD2bC8b73987171d12503e37C3fd1250a9F'},
+];
+
+const linkScans: Array<any> = [
+    {chainId: 10143, key: 'Monad Explorer', value: 'https://testnet.monadexplorer.com/tx/'},
+    {chainId: 59144, key: 'Linea Scan', value: 'https://lineascan.build/tx/'},
+    {chainId: 10, key: 'Optimism Explorer', value: 'https://explorer.optimism.io/tx/'},
 ];
 
 const metadataDefault = {
@@ -72,7 +79,7 @@ const metadataDefault = {
 };
 
 export {
-    nftMonaContracts, marketContracts, metadataDefault
+    nftMonaContracts, marketContracts, metadataDefault, linkScans
 }
 
 export type { IItemContract };

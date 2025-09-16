@@ -11,7 +11,7 @@ import contractABI from "../../global-context/abi/Marketplace.ts";
 import NFT_ABI from "../../global-context/abi/DemoNFT.ts";
 import { Button, Toast, ToastClose, ToastDescription, ToastProvider, ToastTitle, ToastViewport } from '../base/index.tsx';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../base/select/select.tsx";
-import { nftMonaContracts, marketContracts, metadataDefault, IItemContract } from "./Data.ts";
+import { nftMonaContracts, marketContracts, metadataDefault, IItemContract, linkScans } from "./Data.ts";
 import { Label } from "@radix-ui/react-label";
 import axios from 'axios';
 import { motion } from 'framer-motion';
@@ -37,16 +37,18 @@ export const Marketplace = () => {
   const min = 0;
   const [nftContracts, setNftContracts] = useState(nftMonaContracts.filter(contract => contract.chainId === chain?.id));
   const [marketplaceContract, setMarketplaceContract] = useState(marketContracts.find(market => market.chainId === chain?.id)?.value as Address);
+  const [txnLink, setTxnLink] = useState(linkScans.find(link => link.chainId === chain?.id)?.value);
 
   useEffect(() => {
     setNftContracts(nftMonaContracts.filter(contract => contract.chainId === chain?.id));
+    setMarketplaceContract(marketContracts.find(market => market.chainId === chain?.id)?.value as Address);
+    setTxnLink(linkScans.filter(link => link.chainId === chain?.id));
   }, [chain]);
 
   useEffect(() => {
     if (nftContracts.length > 0) {
       const found = nftContracts.find(contract => contract.value === id);
-      setNftAddress(found || nftContracts[0]);
-      setMarketplaceContract(marketContracts.find(market => market.chainId === chain?.id)?.value as Address);
+      setNftAddress(found || nftContracts[0]);      
     }
   }, [nftContracts, id]);
 
@@ -148,7 +150,7 @@ export const Marketplace = () => {
         hash,
       });
 
-      setTxDetails(`https://testnet.monadexplorer.com/tx/${hash}`);
+      setTxDetails(txnLink + hash);
       refetchNfts();
     } catch (error) {
       console.error(error);

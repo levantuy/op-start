@@ -23,7 +23,7 @@ import {
 import NFT_ABI from "../../global-context/abi/DemoNFT.ts";
 import axios from 'axios';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../base/select/select.tsx";
-import { IItemContract, metadataDefault, nftMonaContracts } from "./Data.ts";
+import { IItemContract, linkScans, metadataDefault, nftMonaContracts } from "./Data.ts";
 import { motion } from 'framer-motion';
 import { useNavigate } from "react-router-dom";
 
@@ -42,9 +42,11 @@ export const Minting = () => {
   const [isPublicOpen, setIsPublicOpen] = useState(false); // Toggle whitelist period  
   const [nftContracts, setNftContracts] = useState(nftMonaContracts.filter(contract => contract.chainId === chain?.id));
   const [nftAddress, setNftAddress] = useState<IItemContract>(); // Default NFT contract address
+  const [txnLink, setTxnLink] = useState(linkScans.find(link => link.chainId === chain?.id)?.value);
 
   useEffect(() => {
     setNftContracts(nftMonaContracts.filter(contract => contract.chainId === chain?.id));
+    setTxnLink(linkScans.filter(link => link.chainId === chain?.id));
   }, [chain]);
 
   useEffect(() => {
@@ -161,7 +163,7 @@ export const Minting = () => {
       await publicClient.waitForTransactionReceipt({
         hash,
       });
-      setTxDetails(`https://testnet.monadexplorer.com/tx/${hash}`);
+      setTxDetails(txnLink + hash);
       await refetch();
     } catch (error) {
       console.error(error);
@@ -189,7 +191,7 @@ export const Minting = () => {
       await publicClient.waitForTransactionReceipt({
         hash,
       });
-      setTxDetails(`https://testnet.monadexplorer.com/tx/${hash}`);
+      setTxDetails(txnLink + hash);
       await refetch();
     } catch (error) {
       console.error(error);
@@ -293,7 +295,7 @@ export const Minting = () => {
       await publicClient.waitForTransactionReceipt({
         hash,
       });
-      setTxDetails(`https://testnet.monadexplorer.com/tx/${hash}`);
+      setTxDetails(txnLink + hash);
       await refetch();
     } catch (error) {
       console.error(error);

@@ -11,7 +11,7 @@ import contractABI from "../../global-context/abi/Marketplace.ts";
 import NFT_ABI from "../../global-context/abi/DemoNFT.ts";
 import { Button, Input, Toast, ToastClose, ToastDescription, ToastProvider, ToastTitle, ToastViewport } from '../base/index.tsx';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../base/select/select.tsx";
-import { IItemContract, nftMonaContracts, marketContracts, metadataDefault } from "./Data.ts";
+import { IItemContract, nftMonaContracts, marketContracts, metadataDefault, linkScans } from "./Data.ts";
 import { Label } from "@radix-ui/react-label";
 import axios from "axios";
 import { motion } from 'framer-motion';
@@ -39,6 +39,7 @@ export const AccountNft = () => {
   const [value, setValue] = useState(0);
   const min = 0;
   const [marketplaceContract, setMarketplaceContract] = useState(marketContracts.find(market => market.chainId === chain?.id)?.value as Address);
+  const [txnLink, setTxnLink] = useState(linkScans.find(link => link.chainId === chain?.id)?.value);
 
   const { data: walletClient } = useWalletClient({
     chainId: chain?.id,
@@ -61,6 +62,7 @@ export const AccountNft = () => {
   useEffect(() => {
     setNftContracts(nftMonaContracts.filter(contract => contract.chainId === chain?.id));
     setMarketplaceContract(marketContracts.find(market => market.chainId === chain?.id)?.value as Address);
+    setTxnLink(linkScans.filter(link => link.chainId === chain?.id));
   }, [chain]);
 
   useEffect(() => {
@@ -96,7 +98,7 @@ export const AccountNft = () => {
         hash,
       });
 
-      setTxDetails(`https://testnet.monadexplorer.com/tx/${hash}`);
+      setTxDetails(txnLink + hash);
       refetch();
     } catch (error) {
       console.error("Approval Failed:", error);
@@ -176,7 +178,7 @@ export const AccountNft = () => {
         hash,
       });
 
-      setTxDetails(`https://testnet.monadexplorer.com/tx/${hash}`);
+      setTxDetails(txnLink + hash);
       clearData();
       refetchNfts();
     } catch (error) {
