@@ -3,6 +3,9 @@ import { Address } from "abitype";
 interface IItemContract { chainId: number, key: string, value: Address, image: string, description: string };
 
 const nftMonaContracts: Array<IItemContract> = [
+    { chainId: 11155111, key: 'Ethereum Sepolia NFT', value: '0x56775d4D726e8E1dcb09e12ceb9344f479C3FA49', image: 'https://i.postimg.cc/Pq09Wzz8/base-nft.png', description: 'Ethereum Sepolia NFT' },
+    { chainId: 1, key: 'Ethereum NFT', value: '0x6960e382968f1bab30794a7bc8443dec257be1be', image: 'https://i.postimg.cc/Pq09Wzz8/base-nft.png', description: 'Ethereum NFT' },
+    { chainId: 8453, key: 'Base NFT', value: '0x12FCf0B1AE124737dD47F584bcC66B865Af2666D', image: 'https://i.postimg.cc/Pq09Wzz8/base-nft.png', description: 'Base NFT' },
     { chainId: 59144, key: 'Linea Contract NFT', value: '0x6960e382968F1bAb30794a7bc8443dEc257Be1Be', image: 'https://i.postimg.cc/c1RLMKz3/linea-contract.png', description: 'Linea Contract NFT' },
     { chainId: 59144, key: 'Linea TGE', value: '0xb919e0B0255359B067ED9C3B5F8723A33e9a1d0A', image: 'https://i.postimg.cc/XYH88Bd0/linea-nft.png', description: 'Linea Nft' },
     { chainId: 10, key: 'Optimism NFT', value: '0xa4661ABF257cDe99e9E46ad68F69d2304c1Bd8Bf', image: 'https://i.postimg.cc/1zmBTRRb/1a82bad1-0cf6-42ca-95b7-387c59821a3a.png', description: 'Optimism Nft' },
@@ -45,12 +48,18 @@ const marketContracts: Array<any> = [
     {chainId: 10143, key: 'Monad', value: '0xcb3D323aA579511874D5c7FBc905ec411d06Bd31'},
     {chainId: 59144, key: 'Linea', value: '0xe27Ee4CdDF7794cE36AEAb0Ebff3eDb73A892410'},
     {chainId: 10, key: 'Optimism', value: '0xF17AaDD2bC8b73987171d12503e37C3fd1250a9F'},
+    {chainId: 8453, key: 'Base', value: '0xCE1352999dB47B5720F63d126bBE1Eb05195cF65'},
+    {chainId: 1, key: 'Ethereum Mainnet', value: '0xe27Ee4CdDF7794cE36AEAb0Ebff3eDb73A892410'},
+    {chainId: 11155111, key: 'Ethereum Sepolia', value: '0x0d1556F133a8dc0c82796EB57b2Aa0f399c8df3a'},
 ];
 
 const linkScans: Array<any> = [
     {chainId: 10143, key: 'Monad Explorer', value: 'https://testnet.monadexplorer.com/tx/'},
     {chainId: 59144, key: 'Linea Scan', value: 'https://lineascan.build/tx/'},
     {chainId: 10, key: 'Optimism Explorer', value: 'https://explorer.optimism.io/tx/'},
+    {chainId: 8453, key: 'Base Scan', value: 'https://basescan.org/tx/'},
+    {chainId: 1, key: 'Ethereum Mainnet', value: 'https://etherscan.io/tx/'},
+    {chainId: 11155111, key: 'Ethereum Sepolia', value: 'https://sepolia.etherscan.io/tx/'},
 ];
 
 const metadataDefault = {
