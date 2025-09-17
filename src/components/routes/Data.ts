@@ -4,7 +4,7 @@ interface IItemContract { chainId: number, key: string, value: Address, image: s
 
 const nftMonaContracts: Array<IItemContract> = [
     { chainId: 11155111, key: 'Ethereum Sepolia NFT', value: '0x56775d4D726e8E1dcb09e12ceb9344f479C3FA49', image: 'https://i.postimg.cc/Pq09Wzz8/base-nft.png', description: 'Ethereum Sepolia NFT' },
-    { chainId: 1, key: 'Ethereum NFT', value: '0x6960e382968f1bab30794a7bc8443dec257be1be', image: 'https://i.postimg.cc/Pq09Wzz8/base-nft.png', description: 'Ethereum NFT' },
+    { chainId: 1, key: 'Ethereum NFT', value: '0x6960e382968f1bab30794a7bc8443dec257be1be', image: 'https://i.postimg.cc/mkW51LNx/ethereum-nft.png', description: 'Ethereum NFT' },
     { chainId: 8453, key: 'Base NFT', value: '0x12FCf0B1AE124737dD47F584bcC66B865Af2666D', image: 'https://i.postimg.cc/Pq09Wzz8/base-nft.png', description: 'Base NFT' },
     { chainId: 59144, key: 'Linea Contract NFT', value: '0x6960e382968F1bAb30794a7bc8443dEc257Be1Be', image: 'https://i.postimg.cc/c1RLMKz3/linea-contract.png', description: 'Linea Contract NFT' },
     { chainId: 59144, key: 'Linea TGE', value: '0xb919e0B0255359B067ED9C3B5F8723A33e9a1d0A', image: 'https://i.postimg.cc/XYH88Bd0/linea-nft.png', description: 'Linea Nft' },
